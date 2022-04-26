@@ -3,7 +3,7 @@ from downloadmanga.items import DownloadmangaItem as ImageItem
 
 class MangaSpider(scrapy.Spider):
     name = 'manga'
-    start_urls = ['https://readmanganato.com/manga-oc955385/chapter-390']
+    start_urls = ['https://readmanganato.com/manga-he984839/chapter-51']
 
     def parse(self, response):
         item = ImageItem()

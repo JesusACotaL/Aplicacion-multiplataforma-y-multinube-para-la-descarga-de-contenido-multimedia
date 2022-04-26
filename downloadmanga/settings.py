@@ -12,7 +12,7 @@ BOT_NAME = 'downloadmanga'
 SPIDER_MODULES = ['downloadmanga.spiders']
 NEWSPIDER_MODULE = 'downloadmanga.spiders'
 #pipeline
-ITEM_PIPELINES = {'scrapy.pipelines.images.ImagesPipeline': 1}
+ITEM_PIPELINES = {'downloadmanga.pipelines.CustomMangaImagesPipeline': 1}
 DOWNLOAD_DELAY = 2  # delay in downloading images
 #folder
 IMAGES_STORE = 'chapter_pages'

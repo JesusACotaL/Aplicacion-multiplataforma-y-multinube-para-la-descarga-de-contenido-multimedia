@@ -3,16 +3,12 @@ from downloadmanga.items import DownloadmangaItem as ImageItem
 
 class MangaSpider(scrapy.Spider):
     name = 'manga'
-    start_urls = ['https://es.wikipedia.org/wiki/México']
-    #start_urls = ['https://leermanga.net/capitulo/one-piece-988.00']
-    headers = {
-        'manganelo': 'https://chap.manganelo.com/'
-    }
+    start_urls = ['https://readmanganato.com/manga-oc955385/chapter-390']
 
     def parse(self, response):
         item = ImageItem()
         if response.status == 200:
-            rel_img_urls = response.xpath("//img/@src").extract()
+            rel_img_urls = response.xpath("//div[contains(@class, 'container-chapter-reader')]//img/@src").extract()
             item['image_urls'] = self.url_join(rel_img_urls, response)
         return item
 

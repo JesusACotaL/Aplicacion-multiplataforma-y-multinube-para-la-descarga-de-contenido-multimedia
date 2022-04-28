@@ -1,4 +1,6 @@
 import scrapy
+from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
 from downloadmanga.items import DownloadmangaItem as ImageItem
 
 class MangaSpider(scrapy.Spider):
@@ -19,4 +21,9 @@ class MangaSpider(scrapy.Spider):
 
         return joined_urls 
             
-            
+
+if __name__ == "__main__":
+    process = CrawlerProcess(get_project_settings())
+    process.crawl(MangaSpider)
+
+    process.start()

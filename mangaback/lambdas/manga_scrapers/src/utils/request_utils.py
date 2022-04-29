@@ -24,6 +24,6 @@ class RequestUtils:
             response.raise_for_status()
         except (HTTPError, RequestException) as e:
             print("Failed to make request")
-            raise RequestUtils(e) from e
+            raise RequestUtilsException(e) from e
 
         return response

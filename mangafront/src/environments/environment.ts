@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  mangaApiUrl: "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/v2"
 };
 
 /*

@@ -50,29 +50,31 @@
                 <div class="tile is-parent">
                   <article class="tile is-child box">
                     <h1 class="title">
-                      Descarga tu manga:
+                      Busca tu manga:
                     </h1>
-                    <div class="control is-loading">
-                      <input class="input" type="text" placeholder="Inserta el URL">
+                    <div class="control">
+                        <input id="buscador_manga" class="input" type="text" placeholder="Nombre del Manga">
                     </div>
                     <br>
-          
+
                     <div class="buttons">
-                      <button class="button is-primary">Descarga</button>
-        
+                      <button class="button is-primary" (click)="get_mangas_urls()">Buscar</button>
                     </div>
-                
-      
+
+
                   </article>
                 </div>
 
               </div>
-            
+
             </div>
 
 
             <div class="tile is-parent is is-vertical">
               <article class="tile is-child box">
+                <h1 class="title">
+                  Tutoriales:
+                </h1>
                 <br>
                 <a href="https://github.com/DiegoServinHdn" target="_blank" class="blacklink">
                   <span class="icon-text has-text">
@@ -83,14 +85,14 @@
               </article>
               <article class="tile is-child box">
                 <h1 class="title">
-                  Avisos:
+                  Tutoriales:
                 </h1>
-              
+
               </article>
             </div>
 
 
-            
+
           </div>
     </div>
   </section>

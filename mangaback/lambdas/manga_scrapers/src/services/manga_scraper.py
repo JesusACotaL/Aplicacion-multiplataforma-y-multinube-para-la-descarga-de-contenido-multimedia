@@ -5,20 +5,34 @@ from utils.request_utils import RequestUtils
 
 
 class MangaScraper:
-    def __init__(
-        self, images_xpath: str, chapters_xpath: str
-    ) -> None:
+    def __init__(self, images_xpath: str, chapters_xpath: str) -> None:
         self.images_xpath = images_xpath
         self.chapters_xpath = chapters_xpath
 
-    def crawl_chapters(self, chapters_url):
+    def crawl_chapters(self, chapters_url: str) -> List[dict]:
+        """
+        Gets manga chapters
+
+        Args:
+            chapter_url (str): Chapter url
+
+        Returns:
+            List[dict]: List of chapters
+        """
         chapters: List[dict] = []
         chapters_response = RequestUtils.call_get_request(chapters_url)
         chapters_doc = BeautifulSoup(chapters_response.text, "html.parser")
         chapters_dom = etree.HTML(str(chapters_doc))
 
-        chapters_element = chapters_dom.xpath(self.chapters_xpath)
-        chapters = {a.text: a.get("href") for a in chapters_element}
+        chapters_elements = chapters_dom.xpath(self.chapters_xpath)
+        chapter = {}
+        
+        for a in chapters_elements:
+            chapter = {
+                "name": a.text,
+                "url": a.get("href")
+            }
+            chapters.append(chapter)
 
         return chapters
 

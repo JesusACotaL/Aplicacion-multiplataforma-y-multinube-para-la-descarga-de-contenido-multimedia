@@ -1,5 +1,11 @@
 # visualstudio
 
+**/.coverage
+
+**/vscode
+
+**/.tox
+
 **/__pycache__
 
 **/local_test.py

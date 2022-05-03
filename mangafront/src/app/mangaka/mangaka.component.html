@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Generador de Manga</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  </head>
+  <body>
+  <section class="section">
+    <div class="container dosis bg-black">
+      <div class="content has-text-centered">
+      <h1 class="title whitetext">
+        Generador de Manga
+      </h1>
+      <p class="subtitle whitetext">
+        Proramado por: <b>Equipo 11</b>
+      </p>
+    </div>
+  </div>
+    <br>
+
+    <div class="container dosis">
+        <div class="tile is-ancestor"align="center">
+            <div class="tile is-vertical is-8">
+              <div class="tile">
+                <div class="tile is-parent is-vertical">
+                  <article class="tile is-child box">
+                    <div class="content has-text-centered">
+                    <h1 class="title">
+                        Acerca del autor: </h1>
+                        <div class="card-image has-text-centered">
+                        <figure class="image is-128x128 is-inline-block">
+                            <img src="https://bulma.io/images/placeholders/128x128.png">
+                          </figure>
+                        </div>
+
+                    </div>
+                      <div></div>
+                      <p class="subtitle">
+                        <strong>Título: Dragon Ball<br></strong>Autor: Akira Toriyama <br>
+                        <small>Fecha: January 2022</small><br>
+                        <small>Estrellas:</small><br>
+                        <small>Visitas:</small>
+                      </p>
+                  </article>
+                </div>
+
+              </div>
+            
+            </div>
+
+
+            <div class="tile is-parent is is-vertical">
+              <article class="tile is-child box">
+                <h1 class="title">
+                  Seleccionar Capítulos:
+                  <p class="subtitle">
+                    <ng-container *ngFor = "let capitulo of capitulos">
+                    <input type="checkbox">
+                    <label>
+                        {{capitulo.Nombre}}
+                    </label>
+                    </ng-container>
+                    <br>
+                  </p>
+                </h1>
+              </article>
+            </div>
+    </div>
+    </div>
+  </section>
+  </body>
+
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        <strong>Proyecto Final</strong> by Equipo 11 Programación para Internet. The source code is licensed
+        <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. Powered by <a href="https://bulma.io">Bulma</a>.
+      </p>
+    </div>
+  </footer>
+</html>

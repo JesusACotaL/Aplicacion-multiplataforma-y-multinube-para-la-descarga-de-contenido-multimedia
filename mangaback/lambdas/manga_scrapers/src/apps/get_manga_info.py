@@ -3,14 +3,14 @@ from services.manganelo_scraper import ManganeloScraper
 
 def scraper_handler(event: dict, context: str) -> dict:
     """
-    Get manga urls GET method handler
+    Get manga info GET method handler
 
     Args:
         event (dict): lambda event
         context (context): lambda context
 
     Returns:
-        dict: Manga images urls response
+        dict: Manga info response
     """
     print(event)
     print(context)

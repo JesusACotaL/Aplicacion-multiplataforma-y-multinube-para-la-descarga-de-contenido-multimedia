@@ -5,9 +5,10 @@ from utils.request_utils import RequestUtils
 
 
 class MangaScraper:
-    def __init__(self, images_xpath: str, chapters_xpath: str) -> None:
+    def __init__(self, images_xpath: str, chapters_xpath: str, info_xpath: str) -> None:
         self.images_xpath = images_xpath
         self.chapters_xpath = chapters_xpath
+        self.info_xpath = info_xpath
 
     def crawl_chapters(self, chapters_url: str) -> List[dict]:
         """
@@ -25,13 +26,9 @@ class MangaScraper:
         chapters_dom = etree.HTML(str(chapters_doc))
 
         chapters_elements = chapters_dom.xpath(self.chapters_xpath)
-        chapter = {}
-        
+
         for a in chapters_elements:
-            chapter = {
-                "name": a.text,
-                "url": a.get("href")
-            }
+            chapter = {"name": a.text, "url": a.get("href")}
             chapters.append(chapter)
 
         return chapters

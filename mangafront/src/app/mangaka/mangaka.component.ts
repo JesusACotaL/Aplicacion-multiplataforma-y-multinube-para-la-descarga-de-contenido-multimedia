@@ -9,7 +9,7 @@ export interface Capitulo{
 })
 
 export class MangakaComponent implements OnInit {
-  capitulos: Capitulo[]=[{Nombre:"juan jose"},{Nombre:"diego paco"}]
+  capitulos: Capitulo[]=[{Nombre:"cap 1"},{Nombre:"cap 2"},{Nombre:"cap 3"}]
   constructor() { }
   ngOnInit(): void { 
   }

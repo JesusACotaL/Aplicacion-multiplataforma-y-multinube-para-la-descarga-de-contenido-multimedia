@@ -14,7 +14,7 @@
         Generador de Manga
       </h1>
       <p class="subtitle whitetext">
-        Proramado por: <b>Equipo 11</b>
+        Programado por: <b>Equipo 11</b>
       </p>
     </div>
   </div>
@@ -31,17 +31,18 @@
                         Acerca del autor: </h1>
                         <div class="card-image has-text-centered">
                         <figure class="image is-128x128 is-inline-block">
-                            <img src="https://bulma.io/images/placeholders/128x128.png">
+                            <img src="{{image_url}}">
                           </figure>
                         </div>
 
                     </div>
                       <div></div>
                       <p class="subtitle">
-                        <strong>Título: Dragon Ball<br></strong>Autor: Akira Toriyama <br>
-                        <small>Fecha: January 2022</small><br>
-                        <small>Estrellas:</small><br>
-                        <small>Visitas:</small>
+                        <ng-container>
+                          <strong>Título: {{mangaName}}<br></strong>Autor: {{author}} <br>
+                          <small>Estrellas: {{stars}}</small><br>
+                        </ng-container>
+                        
                       </p>
                   </article>
                 </div>
@@ -55,6 +56,7 @@
               <article class="tile is-child box">
                 <h1 class="title">
                   Seleccionar Capítulos:
+                  <input name="chapterRange" id="chapterRange" class="input" type="text" placeholder="Rango de capitulos, utiliza - y ,,,,">
                   <p class="subtitle">
                     <ng-container *ngFor = "let capitulo of capitulos">
                     <input type="checkbox">
@@ -67,6 +69,9 @@
                   </p>
                 </h1>
               </article>
+              <div class="buttons">
+                <button  class="button is-primary" (click)="download_chapters()">Descargar Capitulos Marcados</button>
+              </div>
             </div>
     </div>
     </div>

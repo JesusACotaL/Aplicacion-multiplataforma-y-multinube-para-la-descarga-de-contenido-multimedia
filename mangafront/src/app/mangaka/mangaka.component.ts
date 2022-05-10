@@ -1,7 +1,14 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+
+
 export interface Capitulo{
-  Nombre: string
+  Nombre: string,
+  Url: string
 }
+
 @Component({
   selector: 'app-mangaka',
   templateUrl: './mangaka.component.html',
@@ -9,10 +16,89 @@ export interface Capitulo{
 })
 
 export class MangakaComponent implements OnInit {
-  capitulos: Capitulo[]=[{Nombre:"cap 1"},{Nombre:"cap 2"},{Nombre:"cap 3"}]
-  constructor() { }
-  ngOnInit(): void { 
+  capitulos: Capitulo[]=[]
+  mangaName : string | null="";
+  author : string | null = "";
+  stars : string | null = "";
+  chapter_url : string | null = "";
+  image_url : string | null = "";
+  headers : any ;
+
+  constructor(
+    private activatedRoute:ActivatedRoute,
+    private http : HttpClient
+  ) { 
+    this.activatedRoute.paramMap.subscribe(
+      (data) => {
+        this.mangaName = data.get('name')
+      }
+    ) 
+    this.headers = {'Access-Control-Allow-Headers':'*','Access-Control-Allow-Origin':'*',
+    'Content-Type': 'application/json','Access-Control-Allow-Methods':'OPTIONS, POST',
+    'Referrer-Policy':'strict-origin-when-cross-origin'};
   }
+
+  get_manga_chapters(): Observable<any>{
+    const headers = this.headers;
+    const body = { url: this.chapter_url };
+    let url = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/final/get-manga-chapters"
+    return this.http.post<any>(url,body,{headers});
+  }
+
+  get_manga_info(): Observable<any>{
+    const headers = this.headers
+    let re = /\ /gi;
+    let nombre = this.mangaName?.replace(re,"_");
+    const body = {url:'https://m.manganelo.com/search/story/'+`${nombre}`}
+    let url = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/final/get-manga-info"
+    return this.http.post<any>(url,body,{headers});
+  }
+
+  get_chapter_links(urls:string[]): void {
+    const headers = this.headers
+    let https = this.http;
+    let url = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/final/get-manga-urls";
+    urls.forEach(function(item){
+      const body = {url:item}
+      let chapter_images_urls = https.post<any>(url,body,{headers});
+      chapter_images_urls.subscribe(
+        (data)=>{
+          console.log(data) //links de las imagenes
+        }
+      );
+    });
+  }
+
+  ngOnInit(): void { 
+    this.get_manga_info().subscribe(
+      (data)=>{
+        this.mangaName = data[0].name
+        this.author = data[0].author
+        this.stars = data[0].stars
+        this.chapter_url = data[0].chapters_url
+        this.image_url = data[0].image_url
+        this.get_manga_chapters().subscribe(
+          (data)=>{
+            this.capitulos = data.body;
+            this.capitulos = this.capitulos.reverse()
+          }
+        )
+      }
+    )
+    
+  }
+
+  download_chapters():void{
+    let rango = ((document.getElementById("chapterRange") as HTMLInputElement).value);
+    let inicia = parseInt(rango.split('-')[0])
+    let final = parseInt(rango.split('-')[1])
+    let urls : string [] = [];
+    for (let i = inicia; i <=final; i++){
+      urls.push(this.capitulos[i-1].Url)
+    }
+    this.get_chapter_links(urls)
+  }
+
 }
 
 

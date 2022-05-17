@@ -11,3 +11,7 @@
 **/local_test.py
 
 /venv
+
+# local test files
+
+**/local_test*

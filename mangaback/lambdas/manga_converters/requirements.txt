@@ -2,3 +2,4 @@ requests
 MarkupSafe==2.0.1
 jinja2==2.11.3
 Pillow==8.1.0
+fpdf==1.7.2

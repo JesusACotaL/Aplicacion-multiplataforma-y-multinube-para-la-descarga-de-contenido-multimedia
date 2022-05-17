@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 
-
 export interface Capitulo{
   Nombre: string,
   Url: string
@@ -34,7 +33,7 @@ export class MangakaComponent implements OnInit {
       }
     ) 
     this.headers = {'Access-Control-Allow-Headers':'*','Access-Control-Allow-Origin':'*',
-    'Content-Type': 'application/json','Access-Control-Allow-Methods':'OPTIONS, POST',
+    'Content-Type': 'application/json','Access-Control-Allow-Methods':'OPTIONS, POST, GET',
     'Referrer-Policy':'strict-origin-when-cross-origin'};
   }
 
@@ -64,6 +63,26 @@ export class MangakaComponent implements OnInit {
       chapter_images_urls.subscribe(
         (data)=>{
           console.log(data) //links de las imagenes
+          let pdfname = ((document.getElementById("pdfName") as HTMLInputElement).value);
+          const body2 = {format:"pdf",book_name:pdfname,images_urls:data}
+          let url2 = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/v8/get-manga-file"
+          https.post<any>(url2,body2,{headers}).subscribe(response=>{
+            console.log(response)
+            let urldownload= response.body.file_url;
+            https.get(urldownload,{headers, responseType: 'blob' as 'json'}).subscribe(
+              (response: any) =>{
+                  let dataType = response.type;
+                  let binaryData = [];
+                  binaryData.push(response);
+                  let downloadLink = document.createElement('a');
+                  downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: dataType}));
+                  if (pdfname)
+                      downloadLink.setAttribute('download', pdfname+".pdf");
+                  document.body.appendChild(downloadLink);
+                  downloadLink.click();
+              }
+            )
+          })
         }
       );
     });

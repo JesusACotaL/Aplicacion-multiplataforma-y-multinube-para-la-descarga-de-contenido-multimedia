@@ -64,6 +64,9 @@ export class MangakaComponent implements OnInit {
         (data)=>{
           console.log(data) //links de las imagenes
           let pdfname = ((document.getElementById("pdfName") as HTMLInputElement).value);
+          if (pdfname==null){
+            pdfname = "manga";
+          }
           const body2 = {format:"pdf",book_name:pdfname,images_urls:data}
           let url2 = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/v8/get-manga-file"
           https.post<any>(url2,body2,{headers}).subscribe(response=>{

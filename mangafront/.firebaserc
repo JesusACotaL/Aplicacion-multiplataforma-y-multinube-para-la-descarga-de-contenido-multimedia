@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "mango-ec7e1"
+  },
+  "targets": {
+    "mango-ec7e1": {
+      "hosting": {
+        "mangafront": [
+          "mango-ec7e1"
+        ]
+      }
+    }
   }
 }

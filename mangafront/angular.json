@@ -104,6 +104,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "mangafront:build:production",
+            "firebaseProject": "mango-ec7e1",
+            "firebaseHostingSite": "mango-ec7e1"
+          }
         }
       }
     }

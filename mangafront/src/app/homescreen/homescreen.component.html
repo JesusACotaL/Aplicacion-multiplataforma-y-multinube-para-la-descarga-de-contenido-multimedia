@@ -7,9 +7,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
   </head>
   <body>
+  
   <section class="section">
     <div class="container dosis bg-black">
       <div class="content has-text-centered">
+        
+        <div class="buttons">
+          <button  class="button is-primary" (click)="logIn()">Login</button>
+          <button  class="button is-primary" (click)="signUp()">Sign Up</button>
+          <button  class="button is-primary" (click)="signOut()">Sign Out</button>
+        </div>
       <h1 class="title whitetext">
         Generador de Manga
       </h1>

@@ -1,2 +1,6 @@
 <h1>PDF desde frontend</h1>
-<button type="button" (click)="generarPDF()">Generar pdf</button>
+<button type="button" (click)="cargarImagenes()">Cargar imagenes</button>
+<button type="button" (click)="generarPDF(imgs)">Generar pdf</button>
+<ul>
+    <img *ngFor="let imagen of imgs" src={{imagen.src}} alt="">
+</ul>

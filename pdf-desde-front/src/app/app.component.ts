@@ -27,8 +27,8 @@ export class AppComponent {
   generarPDF(imagenes: Array<HTMLImageElement>) {
     const pdf = new jsPDF({
       orientation: "portrait",
-      unit: 'in',
-      format: 'a4'
+      unit: 'mm',
+      format: 'letter'
     });
     for (const [i,img] of imagenes.entries()) {
       if(i > 0) pdf.addPage();

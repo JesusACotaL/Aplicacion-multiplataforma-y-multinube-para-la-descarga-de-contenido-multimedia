@@ -32,7 +32,7 @@ export class AppComponent {
     });
     for (const [i,img] of imagenes.entries()) {
       if(i > 0) pdf.addPage();
-      pdf.addImage(img, 0, 0, pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
+      pdf.addImage(img, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
     }
     pdf.save("queso.pdf");
   }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "encoding/json"
+	//"encoding/json"
 	"fmt"
 	// "log"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -22,11 +22,10 @@ type MyEvent struct {
 }
 
 type MyResponse struct {
-	Message string `json:"message"`
+	SearchItems []MangaSearchItem `json:"search_items"`
 }
 
 func main() {
-	//goos=linux go build -o main main.go
 	lambda.Start(HandleLambdaEvent)
 }
 
@@ -38,7 +37,7 @@ func HandleLambdaEvent(event MyEvent)(MyResponse, error){
 	)
 
 	// On every a element which has href attribute call callback
-
+	searchItems := []MangaSearchItem{}
 	c.OnHTML("div[class=search-story-item]", func(e *colly.HTMLElement) {
 		item := MangaSearchItem{
 			Title: e.ChildText("h3"),
@@ -49,7 +48,7 @@ func HandleLambdaEvent(event MyEvent)(MyResponse, error){
 		//fmt.Printf("title: %q\n", e.ChildText("h3"))
 		//fmt.Printf("title: %q\n", e.ChildText("h3"))
 
-		fmt.Println(item)
+		searchItems = append(searchItems, item)
 	})
 
 	// Before making a request print "Visiting ..."
@@ -58,9 +57,12 @@ func HandleLambdaEvent(event MyEvent)(MyResponse, error){
 	})
 
 	// Start scraping on https://hackerspaces.org
-	c.Visit("https://m.manganelo.com/search/story/dragon_ball")
+	//c.Visit("https://m.manganelo.com/search/story/dragon_ball")
+	c.Visit(event.Body.Url)
 
-	return MyResponse{Message: "Esto es una lambda de GO :D"}, nil
+	return MyResponse{
+		SearchItems: searchItems,
+		}, nil
 }
 
 

@@ -18,6 +18,8 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { provideStorage,getStorage } from '@angular/fire/storage';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PruebaMaterialModule } from './prueba-material/prueba-material.module';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { CommonModule } from '@angular/common';
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
     provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage())
+    provideStorage(() => getStorage()),
+    BrowserAnimationsModule,
+    PruebaMaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]

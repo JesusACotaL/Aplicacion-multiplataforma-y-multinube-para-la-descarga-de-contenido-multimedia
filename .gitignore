@@ -2,6 +2,8 @@
 
 **/.coverage
 
+/.vscode
+
 **/vscode
 
 **/.tox
@@ -11,3 +13,9 @@
 **/local_test.py
 
 /venv
+
+**/.DS_Store
+
+**/main
+
+**.zip

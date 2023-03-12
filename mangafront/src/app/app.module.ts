@@ -20,6 +20,8 @@ import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
+import { BuscarComponent } from './buscar/buscar.component';
+import { MangaComponent } from './manga/manga.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { HomeComponent } from './home/home.component';
     HomescreenComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
+    BuscarComponent,
+    MangaComponent
   ],
   imports: [
     BrowserModule,

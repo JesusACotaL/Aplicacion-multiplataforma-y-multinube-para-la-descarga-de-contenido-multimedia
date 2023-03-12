@@ -1,2 +1,17 @@
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Colores */
+:root {
+    --bs-primary: #FFF; 
+    /* --bs-link-color-rgb: 7,7,7;
+    --bs-link-hover-color-rgb: 8,8,8; */
+}
+
+html, body {
+    font-size: 18px;
+    height: 100%;
+    background-color: #222;
+    color: var(--bs-primary);
+}
+body { 
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}

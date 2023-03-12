@@ -7,10 +7,14 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { canActivate,redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { HomeComponent } from './home/home.component';
+import { BuscarComponent } from './buscar/buscar.component';
+import { MangaComponent } from './manga/manga.component';
 
 const routes: Routes = [
   {path:'', redirectTo: 'home', pathMatch: 'full' },
   {path:'home',component:HomeComponent},
+  {path:'buscar/:name',component:BuscarComponent},
+  {path:'manga/:name',component:MangaComponent},
   {path:'homescreen',component:HomescreenComponent},
   {path:'mangaka/:name', component: MangakaComponent},
   {path:'login',component: LoginComponent},

@@ -20,6 +20,7 @@ import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PruebaMaterialModule } from './prueba-material/prueba-material.module';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { PruebaMaterialModule } from './prueba-material/prueba-material.module';
     MangakaComponent,
     HomescreenComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

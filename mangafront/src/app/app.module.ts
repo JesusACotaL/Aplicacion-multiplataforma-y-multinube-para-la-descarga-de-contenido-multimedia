@@ -19,7 +19,6 @@ import { provideStorage,getStorage } from '@angular/fire/storage';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PruebaMaterialModule } from './prueba-material/prueba-material.module';
 import { HomeComponent } from './home/home.component';
 
 @NgModule({
@@ -50,7 +49,6 @@ import { HomeComponent } from './home/home.component';
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     BrowserAnimationsModule,
-    PruebaMaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]

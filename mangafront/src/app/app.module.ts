@@ -22,6 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { BuscarComponent } from './buscar/buscar.component';
 import { MangaComponent } from './manga/manga.component';
+import { PerfilComponent } from './perfil/perfil.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MangaComponent } from './manga/manga.component';
     RegisterComponent,
     HomeComponent,
     BuscarComponent,
-    MangaComponent
+    MangaComponent,
+    PerfilComponent
   ],
   imports: [
     BrowserModule,

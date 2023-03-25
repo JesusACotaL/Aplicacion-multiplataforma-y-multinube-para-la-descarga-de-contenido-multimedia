@@ -1,0 +1,29 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+color: white;
+font-family: 'calibri';
+
+}
+
+header{
+background: url('fondo.jpg');
+height: 450px;
+background-size: cover;
+background-repeat: no-repeat;
+
+}
+
+section{
+    min-width: 1000px;
+    margin:auto;
+    padding: 30px 0;
+}
+
+section h1 {
+    font-size: 40px;
+}

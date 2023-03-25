@@ -9,6 +9,7 @@ import { canActivate,redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { HomeComponent } from './home/home.component';
 import { BuscarComponent } from './buscar/buscar.component';
 import { MangaComponent } from './manga/manga.component';
+import { PerfilComponent } from './perfil/perfil.component';
 
 const routes: Routes = [
   {path:'', redirectTo: 'home', pathMatch: 'full' },
@@ -18,7 +19,8 @@ const routes: Routes = [
   {path:'homescreen',component:HomescreenComponent},
   {path:'mangaka/:name', component: MangakaComponent},
   {path:'login',component: LoginComponent},
-  {path:'register',component: RegisterComponent}
+  {path:'register',component: RegisterComponent},
+  {path:'perfil',component:PerfilComponent},
 ];
 
 @NgModule({

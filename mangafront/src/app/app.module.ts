@@ -23,6 +23,7 @@ import { HomeComponent } from './home/home.component';
 import { BuscarComponent } from './buscar/buscar.component';
 import { MangaComponent } from './manga/manga.component';
 import { PerfilComponent } from './perfil/perfil.component';
+import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { PerfilComponent } from './perfil/perfil.component';
     HomeComponent,
     BuscarComponent,
     MangaComponent,
-    PerfilComponent
+    PerfilComponent,
+    PruebasAPIComponent
   ],
   imports: [
     BrowserModule,

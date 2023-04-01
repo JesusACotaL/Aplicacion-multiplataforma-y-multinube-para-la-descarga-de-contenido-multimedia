@@ -1,23 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-import { environment } from './../../environments/environment';
-
-
-
-export interface MangaSearch{
-  name: string,
-  image_url: string,
-  autor: string,
-  stars: number,
-}
-
-export interface MangaChapter{
-  name: string,
-  url: string,
-}
 
 @Injectable({
   providedIn: 'root'
@@ -26,32 +9,52 @@ export interface MangaChapter{
 export class MangaApiService {
 
   constructor(private http: HttpClient) {}
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type':  'application/json',
-    })
-  };
 
-  getMangas(): Observable<Array<MangaSearch>>{
-    let searchMangaEndpoint = `${environment.mangaApiUrl}/get-mangas`;
-    const mangas = this.http.get<Array<MangaSearch>>(searchMangaEndpoint);
+  private manganelo = 'https://m.manganelo.com';
+  private backend = 'https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/final';
+  private datosPrueba = true;
 
-    return mangas
+  buscarManga(nombre: string): Observable<any>{
+    if (this.datosPrueba) return this.http.get('assets/datosPrueba/get-manga-info.json');
+    
+    nombre = nombre.replace(/\ /gi,"_"); // Reemplazar espacios por _
+    const body = {
+      url:`${this.manganelo}/search/story/${nombre}`
+    }
+    const url = `${this.backend}/get-manga-info`;
+    return this.http.post<any>(url,body);
+  }
+  
+  buscarCapitulos(mangaURL: string): Observable<any>{
+    if (this.datosPrueba) return this.http.get('assets/datosPrueba/get-manga-chapters.json');
+    
+    const body = {
+      url: mangaURL
+    }
+    const url = `${this.backend}/get-manga-chapters`;
+    return this.http.post<any>(url,body);
   }
 
-  getMangasChapters(): Observable<Array<MangaChapter>>{
-    let getMangaChaptersEndpoint = `${environment.mangaApiUrl}/get-mangas-chapters`;
-    const chapters = this.http.get<Array<MangaChapter>>(getMangaChaptersEndpoint, );
-
-    return chapters
+  obtenerLinks(capituloURL: string): Observable<any>{
+    if (this.datosPrueba) return this.http.get('assets/datosPrueba/get-manga-urls.json');
+    
+    const body = {
+      url: capituloURL
+    }
+    const url = `${this.backend}/get-manga-urls`;
+    return this.http.post<any>(url,body);
   }
 
-
-  getMangasImagesUrl(): Observable<Array<string>>{
-    let getMangaImagesEndpoint = `${environment.mangaApiUrl}/get-mangas-urls`;
-
-    const images_urls = this.http.get<Array<string>>(getMangaImagesEndpoint);
-
-    return images_urls
+  obtenerArchivo(nombreArchivo: string,imagenesURLs: string[]): Observable<any>{
+    if (this.datosPrueba) return this.http.get('assets/datosPrueba/get-manga-file.json');
+    
+    const body = {
+      format: "pdf",
+      book_name: nombreArchivo,
+      images_urls: imagenesURLs
+    }
+    const url = `${this.backend}/get-manga-file`;
+    return this.http.post<any>(url,body);
   }
+  
 }

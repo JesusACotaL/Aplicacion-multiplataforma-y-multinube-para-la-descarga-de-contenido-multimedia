@@ -1,9 +1,9 @@
 <div class="h-100 d-flex flex-column p-4">
     <div class="buscador d-flex flex-column gap-2 w-100 my-auto">
         <span class="titulo"> <i class="bi bi-book-half"></i> Manganelo Scrapper</span>
-        <form class="input-group" role="search">
-            <input class="form-control " type="search" placeholder="Buscar un manga...">
-            <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+        <form #formularioBusqueda="ngForm" (ngSubmit)="formularioBusqueda.valid && buscar()" class="input-group" role="search">
+            <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control " type="search" placeholder="Buscar un manga...">
+            <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
         </form>
         <div class="busquedas mt-2">
             <span class="text-decoration-underline">Top busquedas:</span>

@@ -12,7 +12,7 @@ export class MangaApiService {
 
   private manganelo = 'https://m.manganelo.com';
   private backend = 'https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/final';
-  private datosPrueba = true;
+  private datosPrueba = false;
 
   buscarManga(nombre: string): Observable<any>{
     if (this.datosPrueba) return this.http.get('assets/datosPrueba/get-manga-info.json');

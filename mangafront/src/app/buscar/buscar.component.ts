@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
+import { Manga } from '../interfaces/manga.interface';
 
 @Component({
   selector: 'app-buscar',
@@ -8,8 +9,10 @@ import { MangaApiService } from '../services/manga-api.service';
   styleUrls: ['./buscar.component.css']
 })
 export class BuscarComponent implements OnInit {
+  cargando = true;
+  mangaBuscado = ''
   manga = '';
-  mangasEncontrados = [
+  mangasEncontrados: Manga[] = [
     {
       name: '',
       author: '',
@@ -19,20 +22,30 @@ export class BuscarComponent implements OnInit {
     }
   ];
 
-  constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService) { }
+  constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService, private router: Router) { }
 
   ngOnInit(): void {
     // Obtener nombre de manga
     this.route.params.subscribe( (parametros) => {
-      console.log(parametros);
       this.manga = parametros['name'];
-      // Buscar manga en API
-      this.mangaAPI.buscarManga(this.manga).subscribe( (mangas) => {
-        console.log('Mangas encontrados:');
-        console.log(mangas);
-        this.mangasEncontrados = mangas;
-      });
+      this.buscarAPI();  
     });
+  }
+  
+  buscarAPI() {
+    this.cargando = true;
+    // Buscar manga en API
+    this.mangaAPI.buscarManga(this.manga).subscribe( (mangas) => {
+      console.log('Mangas encontrados:');
+      console.log(mangas);
+      this.mangasEncontrados = mangas;
+      this.mangaBuscado = this.manga
+      this.cargando= false;
+    });
+  }
+
+  verManga(manga: Manga) {
+    this.router.navigate(['/manga',manga.name]);
   }
 
 }

@@ -24,6 +24,7 @@ import { BuscarComponent } from './buscar/buscar.component';
 import { MangaComponent } from './manga/manga.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
     BuscarComponent,
     MangaComponent,
     PerfilComponent,
-    PruebasAPIComponent
+    PruebasAPIComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,56 @@
+.manga-contenedor {
+    padding: 1rem;
+    gap: 2rem;
+    display: grid;
+    overflow: hidden;
+    justify-content: center;
+}
+
+.pagination .page-link {
+    background: #333;
+    border: 1px solid gray;
+    color: #FFF;
+    cursor: pointer;
+    font-size: .4rem;
+}
+
+.pagination .page-link:hover {
+    background: #555;
+}
+
+.pagination .active .page-link {
+    background: #FFF;
+    color: #000;
+}
+
+@media (min-width: 600px) {
+    .pagination .page-link {
+        font-size: 1rem;
+    }
+    .manga-contenedor {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 45%);
+        justify-content: space-evenly;
+    }
+}
+
+.resumen {
+    display: flex;
+    flex-direction: column;
+}
+
+.capitulos {
+    overflow: hidden;
+}
+
+.capitulo {
+    display: flex; 
+    cursor: pointer;
+    background: #333;
+    border: 1px solid gray;
+    text-overflow: ellipsis;
+}
+
+.capitulo:hover {
+    background: #555;
+}

@@ -1,6 +1,7 @@
 /* Colores */
 :root {
     --bs-primary: #FFF; 
+    --fondo: #222;
     /* --bs-link-color-rgb: 7,7,7;
     --bs-link-hover-color-rgb: 8,8,8; */
 }
@@ -8,7 +9,7 @@
 html, body {
     font-size: 18px;
     height: 100%;
-    background-color: #222;
+    background-color: var(--fondo);
     color: var(--bs-primary);
 }
 body { 

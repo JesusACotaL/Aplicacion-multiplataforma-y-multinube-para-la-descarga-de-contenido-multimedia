@@ -41,4 +41,8 @@ export class UserService{
         return flag;
     }
 
+    getCurrentUser(){
+        return this.auth.currentUser;
+    }
+
 }

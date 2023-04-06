@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider } from "@angular/fire/auth";
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn:'root'
@@ -7,7 +8,9 @@ import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signO
 export class UserService{
 
 
-    constructor(private auth:Auth){}
+    constructor(private auth:Auth,private router: Router){}
+
+    currentUser = this.auth.currentUser;
 
     register({email,password}: any){
         return createUserWithEmailAndPassword(this.auth,email,password);
@@ -23,6 +26,19 @@ export class UserService{
 
     loginWithGoogle(){
         return signInWithPopup(this.auth,new GoogleAuthProvider());
+    }
+
+    userAuthState(){
+        let flag: boolean = false;
+        var user = this.auth.currentUser;
+        if (user){
+            flag = true;
+            this.currentUser = user;
+        }
+        else{
+            flag = false;
+        }
+        return flag;
     }
 
 }

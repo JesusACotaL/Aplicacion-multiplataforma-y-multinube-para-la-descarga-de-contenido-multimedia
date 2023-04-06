@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
   // Como funcionan los template-driven forms: https://angular.io/guide/forms#summary
   manga = '';
   flag: boolean = false;
+  
 
   constructor(private router: Router, private userService: UserService,private auth:Auth) { }
 

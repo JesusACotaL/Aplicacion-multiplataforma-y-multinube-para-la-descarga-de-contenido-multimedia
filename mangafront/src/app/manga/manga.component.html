@@ -1,0 +1,55 @@
+<app-navbar></app-navbar>
+<div class="manga-contenedor">
+    <div class="resumen">
+        <h1> {{ manga.name }}</h1>
+        <img [src]="manga.image_url" alt="" class="img-fluid" width="225">
+        <hr>
+        <p class="card-text">
+            Estrellas: {{manga.stars}} <br>
+            Autor: {{manga.author}}
+        </p>
+    </div>
+    <div class="capitulos">
+        <div *ngIf="cargando">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
+                <div style="position: absolute; right: 50%+10rem;">Cargando...</div>
+                <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
+            </div>
+        </div>
+        <div *ngIf="!cargando">
+            <h1>Tomos</h1>
+            <nav class="navegador">
+                <ul class="pagination justify-content-center">
+                    <li>
+                        <span class="page-link" (click)="verColeccionPaginas(1)">Inicio</span>
+                    </li>
+                    <li>
+                        <span class="page-link" [ngClass]="{'disabled': paginaActual === 1}" (click)="!(paginaActual === 1) && verColeccionPaginas(coleccionPaginas-5)">
+                            &laquo;
+                        </span>
+                    </li>
+                    <li [ngClass]="{'active': i === paginaActual}" *ngFor="let i of paginas | slice: coleccionPaginas - 1: coleccionPaginas + 4" (click)="verPagina(i)">
+                        <span class="page-link">{{i}}</span>
+                    </li>
+                    <li>
+                        <span class="page-link" [ngClass]="{'disabled': paginaActual > paginas.length-5}" (click)="!(paginaActual > paginas.length-5) && verColeccionPaginas(coleccionPaginas+5)">
+                            &raquo;
+                        </span>
+                    </li>
+                    <li>
+                        <span class="page-link" (click)="verColeccionPaginas(paginas.length-4)">Ultimo</span>
+                    </li>
+                </ul>
+            </nav>
+            <ul class="list-group list-group-flush" style="border-radius: .5rem;">
+                <li (click)="descargarEpisodio(capitulo['Url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of capitulos | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
+                    <span>{{ capitulo['Nombre'] }}</span>
+                    <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
+                </li>
+            </ul>
+        </div>
+        <div *ngIf="!cargando && capitulos.length < 1" class="text-center">
+            No se encontraron capitulos.
+        </div>
+    </div>
+</div>

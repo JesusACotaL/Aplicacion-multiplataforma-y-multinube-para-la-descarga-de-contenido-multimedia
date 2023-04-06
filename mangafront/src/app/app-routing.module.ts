@@ -6,15 +6,23 @@ import { HomescreenComponent } from './homescreen/homescreen.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { canActivate,redirectUnauthorizedTo } from '@angular/fire/auth-guard';
-import { PruebaMaterialComponent } from './prueba-material/prueba-material.component';
+import { HomeComponent } from './home/home.component';
+import { BuscarComponent } from './buscar/buscar.component';
+import { MangaComponent } from './manga/manga.component';
+import { PerfilComponent } from './perfil/perfil.component';
+import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
 
 const routes: Routes = [
-  {path: 'homescreen',component:HomescreenComponent},
-  {path: 'prueba-material',component: PruebaMaterialComponent},
+  {path:'', redirectTo: 'home', pathMatch: 'full' },
+  {path:'home',component:HomeComponent},
+  {path:'pruebasAPI',component:PruebasAPIComponent},
+  {path:'buscar/:name',component:BuscarComponent},
+  {path:'manga/:name',component:MangaComponent},
+  {path:'homescreen',component:HomescreenComponent},
   {path:'mangaka/:name', component: MangakaComponent},
-  {path: 'login',component: LoginComponent},
-  {path: 'register',component: RegisterComponent},
-  { path: '', redirectTo: 'homescreen', pathMatch: 'full' }
+  {path:'login',component: LoginComponent},
+  {path:'register',component: RegisterComponent},
+  {path:'perfil',component:PerfilComponent},
 ];
 
 @NgModule({
@@ -23,5 +31,5 @@ const routes: Routes = [
 })
 
 export class AppRoutingModule { 
-
+  
 }

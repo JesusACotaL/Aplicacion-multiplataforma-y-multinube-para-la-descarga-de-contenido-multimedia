@@ -1,0 +1,46 @@
+.fondo-perfil{
+    background: url('/assets/fondo.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+section{
+    min-width: 1000px;
+    margin:auto;
+    padding: 30px 0;
+}
+
+section h1 {
+    font-size: 40px;
+}
+
+.acciones { 
+    width: 100%;
+    padding: 1em;
+}
+
+.imagen-perfil {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2em;
+}
+
+.imagen-perfil img {
+    border: 5px solid black;
+    border-radius: 50%;
+}
+@media (min-width: 600px) {
+    .acciones {
+        display: flex; 
+        flex-direction: row; 
+        align-items: center;
+    }
+}
+@media (max-width: 600px) {
+    .acciones button {
+        width: 100%;
+    }
+}

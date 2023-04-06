@@ -19,7 +19,12 @@ import { provideStorage,getStorage } from '@angular/fire/storage';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { PruebaMaterialModule } from './prueba-material/prueba-material.module';
+import { HomeComponent } from './home/home.component';
+import { BuscarComponent } from './buscar/buscar.component';
+import { MangaComponent } from './manga/manga.component';
+import { PerfilComponent } from './perfil/perfil.component';
+import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +32,13 @@ import { PruebaMaterialModule } from './prueba-material/prueba-material.module';
     MangakaComponent,
     HomescreenComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    HomeComponent,
+    BuscarComponent,
+    MangaComponent,
+    PerfilComponent,
+    PruebasAPIComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +59,6 @@ import { PruebaMaterialModule } from './prueba-material/prueba-material.module';
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     BrowserAnimationsModule,
-    PruebaMaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]

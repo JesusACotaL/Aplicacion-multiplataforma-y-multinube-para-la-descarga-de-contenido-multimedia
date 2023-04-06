@@ -1,6 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
-/* https://v11.material.angular.io/guide/theming */
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+/* Colores */
+:root {
+    --bs-primary: #FFF; 
+    --fondo: #222;
+    /* --bs-link-color-rgb: 7,7,7;
+    --bs-link-hover-color-rgb: 8,8,8; */
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+    font-size: 18px;
+    height: 100%;
+    background-color: var(--fondo);
+    color: var(--bs-primary);
+}
+body { 
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}

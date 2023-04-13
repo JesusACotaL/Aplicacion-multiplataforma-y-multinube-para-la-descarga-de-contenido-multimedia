@@ -25,9 +25,11 @@ import { MangaComponent } from './manga/manga.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 
 @NgModule({
-  declarations: [
+  declarations: [ 
     AppComponent,
     MangakaComponent,
     HomescreenComponent,
@@ -42,6 +44,8 @@ import { NavbarComponent } from './navbar/navbar.component';
   ],
   imports: [
     BrowserModule,
+    AngularFireModule,
+    AngularFireAuthModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,

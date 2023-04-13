@@ -24,6 +24,9 @@
         <button class="btn btn-outline-secondary" type="button" (click)="register();">Crear una cuenta</button>    
     </div>
     <div *ngIf="flag == true" class="d-flex align-items-center gap-2">
+        <div *ngIf="user">
+            <p>Bienvenido, {{ user.email }}</p>
+          </div>
         <button class="btn btn-outline-secondary" type="button" (click)="logOut();">Salir de la cuenta</button>   
     </div>
     <div class="ms-auto">

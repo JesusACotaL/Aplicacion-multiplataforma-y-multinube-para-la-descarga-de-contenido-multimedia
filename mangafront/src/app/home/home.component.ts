@@ -4,6 +4,7 @@ import { UserService } from '../services/user.service';
 import { Auth,GoogleAuthProvider } from "@angular/fire/auth";
 import { FirebaseApp } from '@angular/fire/app';
 import { User } from 'firebase/auth'; // Importar User de firebase/auth
+import { MangaApiService } from '../services/manga-api.service';
 
 
 @Component({
@@ -17,11 +18,18 @@ export class HomeComponent implements OnInit {
   flag: boolean = false;
   user: User | null = null;
 
-  constructor(private router: Router, private userService: UserService,private auth:Auth) { }
+  busquedasPopulares = [] as any
+
+  constructor(private router: Router, private userService: UserService, private auth:Auth, private mangaAPI: MangaApiService) { }
 
   ngOnInit(): void {
     this.userAuthState();
     this.user = this.userService.getCurrentUser();
+
+    // Obtener busquedas mas frecuentes
+    this.mangaAPI.obtenerBusquedasPopulares().subscribe((busquedas) => {
+      this.busquedasPopulares = busquedas;
+    });
   }
 
   buscar() {

@@ -8,14 +8,7 @@
         <div class="busquedas mt-2">
             <span class="text-decoration-underline">Top busquedas:</span>
             <ul>
-                <a href="">One Piece</a>
-                <a href="">Blue Lock</a>
-                <a href="">My Hero Academia Season 6</a>
-                <a href="">Attack on Titan</a>
-                <a href="">Naruto: Shippuden</a>
-                <a href="">Boruto: Naruto Next Generations</a>
-                <a href="">Tokyo Revengers: Christmas Showdown</a>
-                <a href="">Demon Slayer: Kimetsu no Yaiba</a>
+                <a *ngFor="let busqueda of busquedasPopulares" [href]="'/buscar/'+busqueda.name">{{busqueda.name}}</a>
             </ul>
         </div>
     </div>

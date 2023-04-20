@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../services/user.service';
-import { Auth,GoogleAuthProvider } from "@angular/fire/auth";
-import { FirebaseApp } from '@angular/fire/app';
-import { User } from 'firebase/auth'; // Importar User de firebase/auth
 import { MangaApiService } from '../services/manga-api.service';
+
+import { UserService } from '../services/user.service';
+import { User } from 'firebase/auth'; // Importar User de firebase/auth
 
 
 @Component({
@@ -20,11 +19,19 @@ export class HomeComponent implements OnInit {
 
   busquedasPopulares = [] as any
 
-  constructor(private router: Router, private userService: UserService, private auth:Auth, private mangaAPI: MangaApiService) { }
+  constructor(private router: Router, private userService: UserService, private mangaAPI: MangaApiService) { }
 
   ngOnInit(): void {
-    this.userAuthState();
-    this.user = this.userService.getCurrentUser();
+    // Recuperar usuario
+    this.userService.getAuth().onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        this.user = user;
+      } else {
+        // User is signed out
+      }
+    });
 
     // Obtener busquedas mas frecuentes
     this.mangaAPI.obtenerBusquedasPopulares().subscribe((busquedas) => {
@@ -48,14 +55,8 @@ export class HomeComponent implements OnInit {
     this.userService.logout()
     .then(()=>{
       this.router.navigate(['/home']);
-      this.flag = this.userService.userAuthState();
-      console.log("jijijaja");
     })
     .catch(error => console.log(error));
-  }
-
-  userAuthState(){
-    this.flag = this.userService.userAuthState();
   }
 
 }

@@ -19,17 +19,17 @@
             </ul>
         </div>
     </div>
-    <div *ngIf="flag == false" class="d-flex align-items-center gap-2">
-        <button class="btn btn-outline-secondary" type="button" (click)="login();">Usar una cuenta</button>
-        <button class="btn btn-outline-secondary" type="button" (click)="register();">Crear una cuenta</button>    
-    </div>
-    <div *ngIf="flag == true" class="d-flex align-items-center gap-2">
-        <div *ngIf="user">
-            <p>Bienvenido, {{ user.email }}</p>
-          </div>
-        <button class="btn btn-outline-secondary" type="button" (click)="logOut();">Salir de la cuenta</button>   
-    </div>
-    <div class="ms-auto">
-        Aviso de privacidad ©2023
+    <div class="d-flex align-items-center gap-2">
+        <div *ngIf="flag == false" class="d-flex align-items-center gap-2">
+            <button class="btn btn-outline-secondary" type="button" (click)="login();">Usar una cuenta</button>
+            <button class="btn btn-outline-secondary" type="button" (click)="register();">Crear una cuenta</button>    
+        </div>
+        <div *ngIf="flag == true && user" class="d-flex align-items-center gap-2">
+            <span>Bienvenido, {{ user.email }}</span>
+            <button class="btn btn-outline-secondary" type="button" (click)="logOut();">Salir de la cuenta</button>   
+        </div>
+        <div class="ms-auto">
+            Aviso de privacidad ©2023
+        </div>
     </div>
 </div>

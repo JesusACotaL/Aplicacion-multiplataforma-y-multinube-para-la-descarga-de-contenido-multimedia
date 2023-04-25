@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Manga } from '../interfaces/manga.interface';
 import { ActivatedRoute } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
+import { DescargarMangaService } from '../services/descargar-manga.service';
 
 @Component({
   selector: 'app-manga',
@@ -17,13 +18,12 @@ export class MangaComponent implements OnInit {
   paginas = [] as number[];
   coleccionPaginas = 1;
 
-  constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService) {}
+  constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService, private descargarAPI: DescargarMangaService) {}
 
   ngOnInit(): void {
     // Recuperar manga de API
     this.route.params.subscribe( (parametros) => {
       const nombre = parametros['name'];
-      console.log('Nombre del manga: '+nombre);
       this.mangaAPI.buscarManga(nombre).subscribe( (mangas) => {
         this.manga = mangas[0] as Manga;
         this.obtenerCapitulos();
@@ -34,19 +34,18 @@ export class MangaComponent implements OnInit {
   obtenerCapitulos() {
     this.cargando = true;
     this.mangaAPI.buscarCapitulos(this.manga.chapters_url).subscribe( (capitulos) => {
-      console.log(capitulos.body);
       this.capitulos = capitulos.body.reverse();
       this.cargando = false;
       const cantPaginas = this.capitulos.length / this.capitulosPorPagina;
       for (let i = 0; i < cantPaginas; i++) {
         this.paginas.push(i+1);
-        console.log(this.paginas);
       }
     });
   }
 
   descargarEpisodio(episodioURL: string) {
-    console.log('descargando: '+episodioURL);
+    let imagenes = this.descargarAPI.cargarImagenes('/assets/datosPrueba/img-goku-by-Jeet-Dhanoa.jpg');
+    this.descargarAPI.generarPDF(imagenes);
   }
 
   verPagina(pagina: number) {

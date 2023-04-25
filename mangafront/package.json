@@ -25,6 +25,7 @@
     "bootstrap-icons": "^1.10.3",
     "cors": "^2.8.5",
     "firebase": "^9.19.1",
+    "jspdf": "^2.5.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

@@ -1,21 +1,18 @@
 import { Injectable } from "@angular/core";
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider,} from "@angular/fire/auth";
-import { Router } from '@angular/router';
-import { Observable } from "rxjs";
-import { User } from 'firebase/auth'; // Importar User de firebase/auth
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider, browserSessionPersistence} from "@angular/fire/auth";
+import { User, onAuthStateChanged, setPersistence } from 'firebase/auth'; // Importar User de firebase/auth
 import { FirebaseApp } from '@angular/fire/app';
-
-
 
 @Injectable({
     providedIn:'root'
 })
 export class UserService{
 
-    constructor(private auth:Auth,private router: Router){
-    }
-
     currentUser = this.auth.currentUser;   
+
+    constructor(private auth:Auth){
+        setPersistence(this.auth, browserSessionPersistence);
+    }
 
     register({email,password}: any){
         return createUserWithEmailAndPassword(this.auth,email,password);
@@ -46,8 +43,8 @@ export class UserService{
         return flag;
     }
 
-    getCurrentUser(){
-        return this.auth.currentUser;
+    getAuth(){
+        return this.auth;
     }
 
 }

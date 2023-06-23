@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core";
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider,} from "@angular/fire/auth";
-import { Router } from '@angular/router';
-import { Observable } from "rxjs";
-import { User } from 'firebase/auth'; // Importar User de firebase/auth
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider, browserSessionPersistence} from "@angular/fire/auth";
+import { User, onAuthStateChanged, setPersistence } from 'firebase/auth'; // Importar User de firebase/auth
 import { FirebaseApp } from '@angular/fire/app';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 
 
@@ -12,13 +11,18 @@ import { FirebaseApp } from '@angular/fire/app';
 })
 export class UserService{
 
-    constructor(private auth:Auth,private router: Router){
-    }
-
     currentUser = this.auth.currentUser;   
 
-    register({email,password}: any){
-        return createUserWithEmailAndPassword(this.auth,email,password);
+    constructor(private auth:Auth,private firestore: AngularFirestore){
+        setPersistence(this.auth, browserSessionPersistence);
+    }
+
+    register({email, password}: any){
+        return createUserWithEmailAndPassword(this.auth, email, password)
+          .then(response => {
+            this.saveUserToFirestore(response.user);
+            return response;
+          });
     }
 
     login({email,password}: any){
@@ -29,10 +33,14 @@ export class UserService{
         return signOut(this.auth);
     }
 
-    loginWithGoogle(){
-        return signInWithPopup(this.auth,new GoogleAuthProvider());
-    }
-
+    loginWithGoogle() {
+        return signInWithPopup(this.auth, new GoogleAuthProvider())
+          .then(response => {
+            this.saveUserToFirestore(response.user);
+            return response;
+          });
+      }
+    
     userAuthState(){
         let flag: boolean = false;
         var user = this.auth.currentUser;
@@ -46,8 +54,17 @@ export class UserService{
         return flag;
     }
 
-    getCurrentUser(){
-        return this.auth.currentUser;
+    getAuth(){
+        return this.auth;
+    }
+
+    saveUserToFirestore(user: User) {
+        return this.firestore.collection('users').doc(user.uid).set({
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            uid: user.uid
+        });
     }
 
 }

@@ -8,28 +8,21 @@
         <div class="busquedas mt-2">
             <span class="text-decoration-underline">Top busquedas:</span>
             <ul>
-                <a href="">One Piece</a>
-                <a href="">Blue Lock</a>
-                <a href="">My Hero Academia Season 6</a>
-                <a href="">Attack on Titan</a>
-                <a href="">Naruto: Shippuden</a>
-                <a href="">Boruto: Naruto Next Generations</a>
-                <a href="">Tokyo Revengers: Christmas Showdown</a>
-                <a href="">Demon Slayer: Kimetsu no Yaiba</a>
+                <a *ngFor="let busqueda of busquedasPopulares" [href]="'/buscar/'+busqueda.name">{{busqueda.name}}</a>
             </ul>
         </div>
     </div>
-    <div *ngIf="flag == false" class="d-flex align-items-center gap-2">
-        <button class="btn btn-outline-secondary" type="button" (click)="login();">Usar una cuenta</button>
-        <button class="btn btn-outline-secondary" type="button" (click)="register();">Crear una cuenta</button>    
-    </div>
-    <div *ngIf="flag == true" class="d-flex align-items-center gap-2">
-        <div *ngIf="user">
-            <p>Bienvenido, {{ user.email }}</p>
-          </div>
-        <button class="btn btn-outline-secondary" type="button" (click)="logOut();">Salir de la cuenta</button>   
-    </div>
-    <div class="ms-auto">
-        Aviso de privacidad ©2023
+    <div class="d-flex align-items-center gap-2">
+        <div *ngIf="!user" class="d-flex align-items-center gap-2">
+            <button class="btn btn-outline-secondary" type="button" (click)="login();">Usar una cuenta</button>
+            <button class="btn btn-outline-secondary" type="button" (click)="register();">Crear una cuenta</button>    
+        </div>
+        <div *ngIf="user" class="d-flex align-items-center gap-2">
+            <span>Bienvenido, {{ user.email }}</span>
+            <button class="btn btn-outline-secondary" type="button" (click)="logOut();">Salir de la cuenta</button>   
+        </div>
+        <div class="ms-auto">
+            Aviso de privacidad ©2023
+        </div>
     </div>
 </div>

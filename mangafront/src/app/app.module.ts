@@ -27,6 +27,7 @@ import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 @NgModule({
   declarations: [ 
@@ -44,8 +45,9 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
   ],
   imports: [
     BrowserModule,
-    AngularFireModule,
+    AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    AngularFirestoreModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,

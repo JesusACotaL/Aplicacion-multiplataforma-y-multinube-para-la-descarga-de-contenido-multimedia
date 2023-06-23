@@ -10,7 +10,8 @@
                     <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control me-2" type="search" placeholder="Buscar un manga...">
                     <button class="btn btn-outline-success" type="submit">Buscar</button>
                 </form>
-                <button class="btn btn-success ms-auto" type="button">Usar una cuenta</button>
+                <button *ngIf="!user" class="btn btn-success ms-auto" type="button" (click)="login()">Usar una cuenta</button>
+                <button *ngIf="user" class="btn btn-success ms-auto" type="button" (click)="verPerfil()">{{user.email}}</button>
             </div>
         </div>
     </div>

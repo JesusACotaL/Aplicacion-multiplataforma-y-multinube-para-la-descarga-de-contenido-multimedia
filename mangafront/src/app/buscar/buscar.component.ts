@@ -18,7 +18,8 @@ export class BuscarComponent implements OnInit {
       author: '',
       image_url: '',
       chapters_url: '',
-      stars: ''
+      stars: '',
+      genres: ''
     }
   ];
 

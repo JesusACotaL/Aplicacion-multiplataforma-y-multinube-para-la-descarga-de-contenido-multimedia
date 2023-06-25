@@ -54,7 +54,7 @@ export class MangaComponent implements OnInit {
     this.cargando = true;
     this.mangaAPI.buscarCapitulos(this.manga.chapters_url).subscribe( (capitulos) => {
       console.log(capitulos.body);
-      this.capitulos = capitulos.body.reverse();
+      this.capitulos = capitulos.search_items.reverse();
       this.cargando = false;
       const cantPaginas = this.capitulos.length / this.capitulosPorPagina;
       for (let i = 0; i < cantPaginas; i++) {
@@ -68,11 +68,12 @@ export class MangaComponent implements OnInit {
     console.log('descargando: ' + episodioURL);
     console.log(this.manga);
     if (this.user) {
-      const docRef = this.firestore.collection('downloads').doc(this.user.uid);
+      const docRef = this.firestore.collection('ratings').doc(this.user.uid);
       return docRef.set(
         {
           uid: this.user.uid,
-          genres: FieldValue.arrayUnion('action')
+          title: FieldValue.arrayUnion(this.manga.name),
+          ratings: FieldValue.arrayUnion(this.manga.stars)
         },
         { merge: true }
       );

@@ -11,8 +11,8 @@ import csv
 def parseMangaSoup(soup, debug=False):
     output_dict = {}
 
-    # Japanese name
-    name = soup.find('span', itemprop='name').text
+    # Original name
+    name = soup.find('span', itemprop='name').find(string=True)
     output_dict['name'] = name
     if debug: print(name)
 
@@ -66,7 +66,9 @@ def parseMangaSoup(soup, debug=False):
     statistics = {}
     score = soup.find('span', string='Score:').find_next_sibling('span').span.string
     scoreUsers = soup.find('span', string='Score:').find_next_sibling('span').find(itemprop='ratingCount').string
-    statistics['score'] = scoreUsers
+    statistics['score'] = score
+    statistics['scoreUsers'] = scoreUsers
+    if debug: print(score, 'by', score)
     if debug: print(score, 'by', scoreUsers)
     
     ranked = soup.find('span', string='Ranked:').next_sibling.strip()

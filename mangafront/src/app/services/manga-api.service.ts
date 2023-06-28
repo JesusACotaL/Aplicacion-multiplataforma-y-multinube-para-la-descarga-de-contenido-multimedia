@@ -11,8 +11,12 @@ export class MangaApiService {
   constructor(private http: HttpClient) {}
 
   private manganelo = 'https://m.manganelo.com';
-  private backend = 'https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/final';
+  private backend = 'https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/si';
   private datosPrueba = false;
+
+  obtenerBusquedasPopulares() {
+    return this.http.get('assets/datosPrueba/get-popular-search.json');
+  }
 
   buscarManga(nombre: string): Observable<any>{
     if (this.datosPrueba) return this.http.get('assets/datosPrueba/get-manga-info.json');

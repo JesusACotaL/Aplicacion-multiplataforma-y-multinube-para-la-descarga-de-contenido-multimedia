@@ -1,14 +1,14 @@
 
-<div class="fondo-perfil" style="height: 100%; margin: 0; padding: 0;">
+<div *ngIf="user" class="fondo-perfil" style="height: 100%; margin: 0; padding: 0;">
     <div> 
         <div class="acciones">
-            <button type="button" class="btn btn-primary p-2" style="margin-left: auto;">
+            <button type="button" class="btn btn-primary p-2" style="margin-left: auto;" (click)="volver()">
                 <span>Regresar</span>
                 <i class="bi bi-android2"></i>
             </button>
         </div>
         <div class="imagen-perfil">
-            <div style="font-size: 2em;">Bienvenido a tu perfil!</div>
+            <div style="font-size: 2em;">Bienvenido, {{user.email}}!</div>
             <img src="assets\bills.jpg" class="img-fluid mx-auto" width="300"> 
         </div>
     </div>
@@ -16,7 +16,7 @@
     <div class="p-5">
         <div class="list-group"> 
             <button type="button" class="list-group-item list-group-item-action active" aria-current="true">
-                Nombre del Usuario:
+                Nombre del Usuario: {{user.email}}
             </button>
             <button type="button" class="list-group-item list-group-item-action">Nombre del Usuario:</button>
             <button type="button" class="list-group-item list-group-item-action">A third button item</button>

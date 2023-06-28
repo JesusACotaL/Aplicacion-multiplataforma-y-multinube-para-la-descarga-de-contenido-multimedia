@@ -25,9 +25,12 @@ import { MangaComponent } from './manga/manga.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 @NgModule({
-  declarations: [
+  declarations: [ 
     AppComponent,
     MangakaComponent,
     HomescreenComponent,
@@ -42,6 +45,9 @@ import { NavbarComponent } from './navbar/navbar.component';
   ],
   imports: [
     BrowserModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFirestoreModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,

@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+
+
 
 @Component({
   selector: 'app-login',
@@ -29,7 +32,7 @@ export class LoginComponent implements OnInit {
     this.userService.login(this.formLogin.value)
       .then(response => {
         console.log(response);
-        this.router.navigate(['/homescreen/']);
+        this.router.navigate(['/home/']);
       })
       .catch(error => console.log(error));
   }
@@ -38,7 +41,7 @@ export class LoginComponent implements OnInit {
     this.userService.loginWithGoogle()
       .then(response => {
         console.log(response);
-        this.router.navigate(['/homescreen/']);
+        this.router.navigate(['/home/']);
       })
       .catch(error => console.log(error))
   }

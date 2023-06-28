@@ -3,5 +3,6 @@ export interface Manga {
     author: string,
     image_url: string,
     chapters_url: string,
-    stars: string
+    stars: string,
+    genres: string
 }

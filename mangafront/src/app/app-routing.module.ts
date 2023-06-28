@@ -17,7 +17,7 @@ const routes: Routes = [
   {path:'home',component:HomeComponent},
   {path:'pruebasAPI',component:PruebasAPIComponent},
   {path:'buscar/:name',component:BuscarComponent},
-  {path:'manga/:name',component:MangaComponent},
+  {path:'manga',component:MangaComponent},
   {path:'homescreen',component:HomescreenComponent},
   {path:'mangaka/:name', component: MangakaComponent},
   {path:'login',component: LoginComponent},

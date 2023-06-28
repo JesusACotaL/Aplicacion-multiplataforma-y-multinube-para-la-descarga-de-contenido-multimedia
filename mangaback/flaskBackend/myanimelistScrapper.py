@@ -80,8 +80,10 @@ def parseMangaSoup(soup, debug=False):
     if debug: print(popularity)
     output_dict['statistics'] = statistics
 
-    # Oficial site
-    site = soup.find(lambda tag:tag.name=="h2" and "Available At" in tag.text).next_sibling.a['href']
+    # Oficial site (if exists)
+    site = soup.find(lambda tag:tag.name=="h2" and "Available At" in tag.text)
+    if(site):
+        site = site.next_sibling.a['href']
     if debug: print(site)
     output_dict['site'] = site
 

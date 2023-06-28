@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
-import { Manga } from '../interfaces/manga.interface';
 
 @Component({
   selector: 'app-buscar',
@@ -12,14 +11,13 @@ export class BuscarComponent implements OnInit {
   cargando = true;
   mangaBuscado = ''
   manga = '';
-  mangasEncontrados: Manga[] = [
+  mangasEncontrados: any[] = [
     {
       name: '',
-      author: '',
-      image_url: '',
-      chapters_url: '',
-      stars: '',
-      genres: ''
+      img: '',
+      score: '',
+      short_desc: '',
+      url: ''
     }
   ];
 
@@ -45,8 +43,8 @@ export class BuscarComponent implements OnInit {
     });
   }
 
-  verManga(manga: Manga) {
-    this.router.navigate(['/manga',manga.name]);
+  verManga(manga : any) {
+    this.router.navigate(['/manga'], { queryParams: { manga: manga.url } });
   }
 
 }

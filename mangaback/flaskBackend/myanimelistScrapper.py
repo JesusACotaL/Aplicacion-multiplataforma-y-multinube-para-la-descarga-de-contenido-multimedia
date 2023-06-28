@@ -1,5 +1,5 @@
 # This is a myAnimeList scrapper made for the purpose of searching and finding the most accurate information possible.
-# Version: 1.0.1
+# Version: 1.0.2
 from bs4 import BeautifulSoup
 import requests
 
@@ -108,7 +108,6 @@ def scrapManga(manga_url):
     return result
 
 def searchMangaOnline(text, debug=False):
-    results = {}
     search_url = 'https://myanimelist.net/manga.php?cat=manga'
     res = requests.get(search_url, params=[('q',text)])
     res.raise_for_status()
@@ -121,8 +120,8 @@ def searchMangaOnline(text, debug=False):
     mangasFound = []
     for mangaDiv in html:
         manga = {}
-        title = mangaDiv.select('td:nth-child(2) > a.hoverinfo_trigger.fw-b')[0].find('strong').text
-        manga['title'] = title
+        name = mangaDiv.select('td:nth-child(2) > a.hoverinfo_trigger.fw-b')[0].find('strong').text
+        manga['name'] = name
         
         url = mangaDiv.select('td:nth-child(2) > a.hoverinfo_trigger.fw-b')[0]['href']
         manga['url'] = url
@@ -145,8 +144,7 @@ def searchMangaOnline(text, debug=False):
         if debug: print(img)
         if debug: print(short_desc)
         mangasFound.append(manga)
-    results['mangasFound'] = mangasFound
-    return results
+    return mangasFound
 
 def testlocal():
     # Test de scrap

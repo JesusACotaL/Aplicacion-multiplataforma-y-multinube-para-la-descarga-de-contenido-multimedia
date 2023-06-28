@@ -10,14 +10,14 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 @app.post("/searchManga")
-def searchManga():
+def searchMangaAnimelist():
     data = request.json
     query = data['manga']
     mangas = searchMangaOnline(query)
     return jsonify(mangas)
 
 @app.post("/getMangaInfo")
-def getMangaInfo():
+def getMangaInfoAnimelist():
     data = request.json
     url = data['url']
     mangaInfo = scrapManga(url)

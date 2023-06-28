@@ -1,5 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import requests
+
+from myanimelistScrapper import scrapManga, searchMangaOnline
 
 app = Flask(__name__)
 
@@ -8,10 +10,18 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 @app.post("/searchManga")
-def search():
+def searchManga():
     data = request.json
-    text = data['text']
-    return "<p>Hello, World!</p>"
+    query = data['manga']
+    mangas = searchMangaOnline(query)
+    return jsonify(mangas)
+
+@app.post("/getMangaInfo")
+def getMangaInfo():
+    data = request.json
+    url = data['url']
+    mangaInfo = scrapManga(url)
+    return jsonify(mangaInfo)
 
 @app.post("/downloadImage")
 def downloadImage():
@@ -23,7 +33,3 @@ def downloadImage():
     #         for chunk in res:
     #             f.write(chunk)     
     return res.content
-
-@app.post("/getMangaInfo")
-def getMangaInfo():
-    return ""

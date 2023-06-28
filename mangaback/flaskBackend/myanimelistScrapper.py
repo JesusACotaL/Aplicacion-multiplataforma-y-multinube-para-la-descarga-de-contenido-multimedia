@@ -1,5 +1,5 @@
 # This is a myAnimeList scrapper made for the purpose of searching and finding the most accurate information possible.
-# Version: 1.0.0
+# Version: 1.0.1
 from bs4 import BeautifulSoup
 import requests
 
@@ -37,15 +37,10 @@ def parseMangaSoup(soup, debug=False):
     if debug: print(status)
 
     # Genres
-    genresDiv = soup.find('span', string='Genres:').find_next_siblings('span')
+    genresDiv = soup.find_all('span', itemprop='genre')
     genres = ', '.join([g.string for g in genresDiv])
     output_dict['genres'] = genres
     if debug: print(genres)
-
-    # Demographic
-    demographic = soup.find('span', string='Demographic:').find_next_sibling(itemprop='genre').string
-    output_dict['demographic'] = demographic
-    if debug: print(demographic)
 
     # Characters
     charactersDiv = soup.find(lambda tag:tag.name=="h2" and "Characters" in tag.text).next_sibling
@@ -60,7 +55,9 @@ def parseMangaSoup(soup, debug=False):
         character['role']=c.next_sibling.next_sibling.find('small').string
         if debug: print(c.next_sibling.next_sibling.find('small').string)
         # Image
-        character['image']=c.parent.find_previous_sibling().a.img['data-src']
+        cImgSrc=c.parent.find_previous_sibling().a.img['data-src']
+        cImgSrc = re.sub(r'r/\d+x\d+/', '', cImgSrc)
+        character['image'] = cImgSrc
         if debug: print(c.parent.find_previous_sibling().a.img['data-src'])
         charactersList.append(character)
     output_dict['characters'] = charactersList
@@ -112,8 +109,8 @@ def scrapManga(manga_url):
 
 def searchMangaOnline(text, debug=False):
     results = {}
-    search_url = 'https://myanimelist.net/manga.php?cat=manga&q='
-    res = requests.get(search_url  + str(text))
+    search_url = 'https://myanimelist.net/manga.php?cat=manga'
+    res = requests.get(search_url, params=[('q',text)])
     res.raise_for_status()
     manga_soup = BeautifulSoup(res.content, 'html.parser')
     
@@ -153,8 +150,8 @@ def searchMangaOnline(text, debug=False):
 
 def testlocal():
     # Test de scrap
-    # manga_soup = BeautifulSoup(open('onepiece.html', encoding="utf8"), 'html.parser')
-    # print(parseMangaSoup(manga_soup))
+    manga_soup = BeautifulSoup(open('onepiece.html', encoding="utf8"), 'html.parser')
+    print(parseMangaSoup(manga_soup)['genres'])
     
     # Test de busqueda
     # manga_soup = BeautifulSoup(open('testBusqueda.html', encoding="utf8"), 'html.parser')
@@ -175,5 +172,5 @@ def testlocal():
     pass
 
 if __name__ == '__main__':
-    #testlocal()
-    print(searchMangaOnline('one+piece'))
+    testlocal()
+    #print(searchMangaOnline('one piece'))

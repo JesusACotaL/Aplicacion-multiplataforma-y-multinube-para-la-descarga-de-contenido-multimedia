@@ -11,6 +11,7 @@ import { BuscarComponent } from './buscar/buscar.component';
 import { MangaComponent } from './manga/manga.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
+import { MangaModalComponent } from './manga-modal/manga-modal.component';
 
 const routes: Routes = [
   {path:'', redirectTo: 'home', pathMatch: 'full' },
@@ -18,6 +19,7 @@ const routes: Routes = [
   {path:'pruebasAPI',component:PruebasAPIComponent},
   {path:'buscar/:name',component:BuscarComponent},
   {path:'manga',component:MangaComponent},
+  {path:'manga-modal',component:MangaModalComponent},
   {path:'homescreen',component:HomescreenComponent},
   {path:'mangaka/:name', component: MangakaComponent},
   {path:'login',component: LoginComponent},

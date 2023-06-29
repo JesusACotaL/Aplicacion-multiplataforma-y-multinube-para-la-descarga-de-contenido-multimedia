@@ -27,6 +27,10 @@ export class MangaComponent implements OnInit {
 
   fuentes: any[] = []
 
+  // Para el modal
+  mostrarModal = false;
+  fuenteActual = '';
+
 
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
      private firestore: AngularFirestore) {}
@@ -78,7 +82,8 @@ export class MangaComponent implements OnInit {
 
   descargarEpisodio(episodioURL: string) {
     console.log('descargando: ' + episodioURL);
-    console.log(this.manga);
+    this.fuenteActual = episodioURL;
+    this.mostrarModal = true;
     if (this.user) {
       const docRef = this.firestore.collection('ratings').doc(this.user.uid);
       return docRef.set(

@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import requests
 from flask_cors import CORS
 
 from myanimelistScrapper import scrapManga, searchMangaOnline
 import re
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -63,9 +64,16 @@ def getChapterLinks():
 def downloadChapterImage():
     data = request.json
     url = data['url']
-    res = requests.get(url, headers={'referer': 'https://chapmanganelo.com/'}, stream=True)
-    # if res.status_code == 200:
-    #     with open('imagendescargada.jpg', 'wb') as f:
-    #         for chunk in res:
-    #             f.write(chunk)     
-    return res.content
+    res = requests.get(url, headers={'referer': 'https://chapmanganelo.com/'})
+    res.raise_for_status()
+    if res.status_code == 200:
+        image_string = base64.b64encode(res.content)
+        response = make_response(image_string)
+        #response = make_response(res.content)
+        response.headers.set('Content-Type', 'image/jpeg')
+        return response
+    else:
+        return 'no'
+    # with open('imagendescargada.jpg', 'wb') as f:
+    #     for chunk in res:
+    #         f.write(chunk)     

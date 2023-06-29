@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -55,8 +55,14 @@ export class MangaApiService {
     const body = {
       url: imagenURL
     }
+    let options = {
+      headers: new HttpHeaders({
+         'Accept':'image/jpeg'
+      }),
+      'responseType': 'text' as 'json'
+    } 
     const url = `${this.backend}/downloadChapterImage`;
-    return this.http.post<any>(url,body);
+    return this.http.post<any>(url,body,options);
   }
 
   obtenerBusquedasPopulares() {

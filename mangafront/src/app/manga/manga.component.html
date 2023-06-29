@@ -1,12 +1,12 @@
 <app-navbar></app-navbar>
 <div class="manga-contenedor">
-    <div class="resumen">
+    <div *ngIf="manga.name" class="resumen">
         <h1> {{ manga.name }}</h1>
-        <img [src]="manga.image_url" alt="" class="img-fluid" width="225">
+        <img [src]="manga.img" alt="" class="img-fluid" width="225">
         <hr>
         <p class="card-text">
-            Estrellas: {{manga.stars}} <br>
-            Autor: {{manga.author}}
+            Calificacion: {{manga.statistics.score}} <br>
+            Autores: {{manga.authors}}
         </p>
     </div>
     <div class="capitulos">
@@ -16,7 +16,19 @@
                 <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
             </div>
         </div>
-        <div *ngIf="!cargando">
+        <div *ngIf="seleccionandoManga">
+            <h4>Selecciona una fuente para leer el manga: </h4>
+            <div class="fuentes">
+                <div class="fuenteManga" *ngFor="let fuente of fuentes" (click)="obtenerCapitulos(fuente.chapters_url)">
+                    <img [src]="fuente.image_url" alt="" width="50">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span>{{fuente.name}}</span>
+                        <span>{{fuente.chapters_url}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!cargando && !seleccionandoManga">
             <h1>Tomos</h1>
             <nav class="navegador">
                 <ul class="pagination justify-content-center">
@@ -48,8 +60,10 @@
                 </li>
             </ul>
         </div>
-        <div *ngIf="!cargando && capitulos.length < 1" class="text-center">
+        <div *ngIf="!cargando && !seleccionandoManga && capitulos.length < 1" class="text-center">
             No se encontraron capitulos.
         </div>
     </div>
 </div>
+
+<app-manga-modal [pFuenteManga]="fuenteActual" [pMostrar]="mostrarModal"></app-manga-modal>

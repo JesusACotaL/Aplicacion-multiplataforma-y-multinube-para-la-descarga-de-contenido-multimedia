@@ -28,7 +28,7 @@ export class PruebasAPIComponent implements OnInit {
 
   buscarCapitulos() {
     const mangaURL = 'https://chapmanganelo.com/manga-aa88620';
-    this.mangaAPI.buscarCapitulos(mangaURL).subscribe( (datos) => {
+    this.mangaAPI.obtenerCapitulos(mangaURL).subscribe( (datos) => {
       console.log('Buscando capitulos de manga: '+mangaURL);
       console.log(datos);
     });
@@ -36,21 +36,21 @@ export class PruebasAPIComponent implements OnInit {
   
   obtenerLinks() {
     const capituloURL = 'https://chapmanganelo.com/manga-aa88620/chapter-1'
-    this.mangaAPI.obtenerLinks(capituloURL).subscribe( (datos) => {
+    this.mangaAPI.obtenerLinksCapitulo(capituloURL).subscribe( (datos) => {
       console.log('Buscando imagenes de capitulo: '+capituloURL);
       console.log(datos);
     });
   }
   
   obtenerArchivo() {
-    const nombreArchivo = 'ejemplo.pdf';
-    const imagenesURLs = [
-      'asd.jpg',
-      'asd2.jpg'
-    ];
-    this.mangaAPI.obtenerArchivo(nombreArchivo, imagenesURLs).subscribe( (datos) => {
-      console.log('Generando archivo: '+nombreArchivo);
-      console.log(datos);
-    });
+    // const nombreArchivo = 'ejemplo.pdf';
+    // const imagenesURLs = [
+    //   'asd.jpg',
+    //   'asd2.jpg'
+    // ];
+    // this.mangaAPI.descargarImagenCapitulo(nombreArchivo, imagenesURLs).subscribe( (datos) => {
+    //   console.log('Generando archivo: '+nombreArchivo);
+    //   console.log(datos);
+    // });
   }
 }

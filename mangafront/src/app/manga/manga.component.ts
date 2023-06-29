@@ -30,6 +30,7 @@ export class MangaComponent implements OnInit {
   // Para el modal
   mostrarModal = false;
   fuenteActual = '';
+  tituloActual = '';
 
 
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
@@ -80,8 +81,9 @@ export class MangaComponent implements OnInit {
     });
   }
 
-  descargarEpisodio(episodioURL: string) {
+  mostrarEpisodio(titulo: string, episodioURL: string) {
     console.log('descargando: ' + episodioURL);
+    this.tituloActual = titulo;
     this.fuenteActual = episodioURL;
     this.mostrarModal = true;
     if (this.user) {

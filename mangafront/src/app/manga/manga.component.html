@@ -54,7 +54,7 @@
                 </ul>
             </nav>
             <ul class="list-group list-group-flush" style="border-radius: .5rem;">
-                <li (click)="descargarEpisodio(capitulo['url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of capitulos | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
+                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of capitulos | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
                     <span>{{ capitulo['name'] }}</span>
                     <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
                 </li>
@@ -66,4 +66,4 @@
     </div>
 </div>
 
-<app-manga-modal [pFuenteManga]="fuenteActual" [pMostrar]="mostrarModal"></app-manga-modal>
+<app-manga-modal [pFuenteManga]="fuenteActual" [pMostrar]="mostrarModal" [pTitulo]="tituloActual"></app-manga-modal>

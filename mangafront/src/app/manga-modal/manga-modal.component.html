@@ -1,12 +1,21 @@
 <!-- Modal -->
-<div>
-    <div class="modal fade" id="exampleModal">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button class="btn btn-primary" data-bs-dismiss="modal">Volver</button>
-                    <div id="ImagenesCapitulo"></div>
-                </div>
+<div class="modal fade" id="exampleModal">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="barraNavegacion">
+                <button class="btn btn-danger" style="display: flex; gap: 1rem;" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-return-left"></i>
+                    <span>Volver</span>
+                </button>
+                <span>{{cargadas}} / {{total}} imagenes cargadas</span>
+                <span class="ms-auto">{{titulo}}</span>
+                <button class="btn btn-danger" style="display: flex; gap: 1rem;">
+                    <span>Descargar (.pdf)</span>
+                    <i class="bi bi-download"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="ImagenesCapitulo"></div>
             </div>
         </div>
     </div>

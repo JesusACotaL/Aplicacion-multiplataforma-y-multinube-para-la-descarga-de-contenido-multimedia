@@ -25,7 +25,7 @@ export class MangaModalComponent implements OnInit, OnChanges {
     if(this.pMostrar) {
       this.mostrar();
     }
-  }
+  } 
 
   ngOnInit(): void {
     this.mangaModal = new bootstrap.Modal('#exampleModal', {keyboard: false});

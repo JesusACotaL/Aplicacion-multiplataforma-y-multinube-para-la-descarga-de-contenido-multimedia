@@ -17,7 +17,11 @@ def parseMangaSoup(soup, debug=False):
     if debug: print(name)
 
     # English name
-    name_english = soup.find('span', string='English:').next_sibling.strip()
+    name_english = soup.find('span', string='English:')
+    if(name_english):
+        name_english = name_english.next_sibling.strip()
+    else:
+        name_english=''
     output_dict['name_english'] = name_english
     if debug: print(name_english)
 

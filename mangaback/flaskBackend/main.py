@@ -35,6 +35,8 @@ def findMangaSource():
     manga = data['manga']
     # Manganelo source
     manga = re.sub(r'\ ','_',manga) # replace whitespaces with underscores
+    manga = ''.join(e for e in manga if e.isalnum() or e == '/' or e == '_' or e == ':') # remove weird characters
+    manga = manga.lower() # uncapitalize
     body = {"url": "https://m.manganelo.com/search/story/"+manga}
     res = requests.post(scrapperManganeloAPI+"/get-manga-info", json=body)
     res.raise_for_status()
@@ -66,14 +68,7 @@ def downloadChapterImage():
     url = data['url']
     res = requests.get(url, headers={'referer': 'https://chapmanganelo.com/'})
     res.raise_for_status()
-    if res.status_code == 200:
-        image_string = base64.b64encode(res.content)
-        response = make_response(image_string)
-        #response = make_response(res.content)
-        response.headers.set('Content-Type', 'image/jpeg')
-        return response
-    else:
-        return 'no'
-    # with open('imagendescargada.jpg', 'wb') as f:
-    #     for chunk in res:
-    #         f.write(chunk)     
+    image_string = base64.b64encode(res.content)
+    response = make_response(image_string)
+    response.headers.set('Content-Type', 'image/jpeg')
+    return response

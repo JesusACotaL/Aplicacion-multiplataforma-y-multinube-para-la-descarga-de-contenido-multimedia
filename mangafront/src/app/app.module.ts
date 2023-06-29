@@ -28,6 +28,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { MangaModalComponent } from './manga-modal/manga-modal.component';
 
 @NgModule({
   declarations: [ 
@@ -41,7 +42,8 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     MangaComponent,
     PerfilComponent,
     PruebasAPIComponent,
-    NavbarComponent
+    NavbarComponent,
+    MangaModalComponent
   ],
   imports: [
     BrowserModule,

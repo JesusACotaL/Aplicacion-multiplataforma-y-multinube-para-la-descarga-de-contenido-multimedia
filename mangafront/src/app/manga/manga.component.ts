@@ -18,11 +18,18 @@ export class MangaComponent implements OnInit {
   manga = {} as Manga
   capitulos = [];
   cargando = true;
+  seleccionandoManga = false;
   capitulosPorPagina = 10;
   paginaActual = 1;
   paginas = [] as number[];
   coleccionPaginas = 1;
   user: User | null = null;
+
+  fuentes: any[] = []
+
+  // Para el modal
+  mostrarModal = false;
+  fuenteActual = '';
 
 
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
@@ -30,12 +37,12 @@ export class MangaComponent implements OnInit {
 
   ngOnInit(): void {
     // Recuperar manga de API
-    this.route.params.subscribe( (parametros) => {
-      const nombre = parametros['name'];
-      console.log('Nombre del manga: '+nombre);
-      this.mangaAPI.buscarManga(nombre).subscribe( (mangas) => {
-        this.manga = mangas[0] as Manga;
-        this.obtenerCapitulos();
+    this.route.queryParams.subscribe( (parametros) => {
+      const url = parametros['manga'];
+      console.log('Manga URl: '+url);
+      this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga) => {
+        this.manga = manga;
+        this.obtenerFuentes();
       });
     });
 
@@ -50,9 +57,18 @@ export class MangaComponent implements OnInit {
     });
   }
 
-  obtenerCapitulos() {
+  obtenerFuentes() {
+    this.mangaAPI.encontrarFuentes(this.manga.name).subscribe( (mangas) => {
+      this.cargando = false;
+      this.seleccionandoManga = true;
+      this.fuentes = mangas
+    });
+  }
+
+  obtenerCapitulos(fuente_url: string) {
+    this.seleccionandoManga = false;
     this.cargando = true;
-    this.mangaAPI.buscarCapitulos(this.manga.chapters_url).subscribe( (capitulos) => {
+    this.mangaAPI.obtenerCapitulos(fuente_url).subscribe( (capitulos) => {
       console.log(capitulos.body);
       this.capitulos = capitulos.search_items.reverse();
       this.cargando = false;
@@ -66,14 +82,15 @@ export class MangaComponent implements OnInit {
 
   descargarEpisodio(episodioURL: string) {
     console.log('descargando: ' + episodioURL);
-    console.log(this.manga);
+    this.fuenteActual = episodioURL;
+    this.mostrarModal = true;
     if (this.user) {
       const docRef = this.firestore.collection('ratings').doc(this.user.uid);
       return docRef.set(
         {
           uid: this.user.uid,
           title: FieldValue.arrayUnion(this.manga.name),
-          ratings: FieldValue.arrayUnion(this.manga.stars)
+          ratings: FieldValue.arrayUnion(this.manga.statistics.score)
         },
         { merge: true }
       );

@@ -35,12 +35,24 @@
 }
 
 .resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 45%);
+    overflow: hidden;
+    word-wrap: break-word;
+    justify-content: space-evenly;
+}
+
+.resumen .informacion{
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .capitulos {
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
+    justify-content: center;
 }
 
 .capitulo {
@@ -72,4 +84,20 @@
 
 .fuenteManga:hover {
     background-color: #555;
+}
+
+.info-adicional {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.characters{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 200px);
+    gap: 1rem;
+    justify-content: center;
+}
+
+.character {
+    width: 100px;
 }

@@ -26,7 +26,7 @@ export class MangaComponent implements OnInit {
   user: User | null = null;
 
   fuentes: any[] = []
-
+  myanimelisturl = '';
   // Para el modal
   mostrarModal = false;
   fuenteActual = '';
@@ -40,6 +40,7 @@ export class MangaComponent implements OnInit {
     // Recuperar manga de API
     this.route.queryParams.subscribe( (parametros) => {
       const url = parametros['manga'];
+      this.myanimelisturl = url;
       console.log('Manga URl: '+url);
       this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga) => {
         this.manga = manga;
@@ -56,6 +57,20 @@ export class MangaComponent implements OnInit {
         // User is signed out
       }
     });
+  }
+
+  getMainPlot() {
+    if(this.manga.characters)
+    return this.manga.characters.filter(c=>c.role=='Main');
+    else
+    return []
+  }
+
+  getAdditionalCharacters() {
+    if(this.manga.characters)
+    return this.manga.characters.filter(c=>c.role!='Main')
+    else
+    return []
   }
 
   obtenerFuentes() {

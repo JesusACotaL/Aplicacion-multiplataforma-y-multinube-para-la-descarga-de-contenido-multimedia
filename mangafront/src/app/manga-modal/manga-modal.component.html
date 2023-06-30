@@ -7,10 +7,11 @@
                     <i class="bi bi-arrow-return-left"></i>
                     <span>Volver</span>
                 </button>
-                <span>{{cargadas}} / {{total}} imagenes cargadas</span>
+                <span>{{cargadas}} / {{total}} pages loaded</span>
                 <span class="ms-auto">{{titulo}}</span>
-                <button class="btn btn-danger" style="display: flex; gap: 1rem;">
-                    <span>Descargar (.pdf)</span>
+                <button class="btn btn-danger" style="display: flex; gap: 1rem;" (click)="descargarEpisodio()" [ngClass]="{'disabled':loadingImages()}">
+                    <span *ngIf="loadingImages()">(Loading pages...)</span> 
+                    <span *ngIf="!loadingImages()">Download (.pdf)</span> 
                     <i class="bi bi-download"></i>
                 </button>
             </div>

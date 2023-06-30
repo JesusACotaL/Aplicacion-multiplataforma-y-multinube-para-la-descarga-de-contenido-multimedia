@@ -15,7 +15,7 @@
             <span>{{manga.genres}}</span>
             <span>{{manga.date}}</span>
             <span>Status: {{manga.status}}</span>
-            <a [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
+            <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
             <a [href]="myanimelisturl" target="_blank">Visit on myanimelist <i class="bi bi-box-arrow-up-right"></i></a>
         </div>
     </div>

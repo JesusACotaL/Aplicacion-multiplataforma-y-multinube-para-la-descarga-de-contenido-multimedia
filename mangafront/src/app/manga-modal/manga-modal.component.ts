@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import * as bootstrap from 'bootstrap';
 import { MangaApiService } from '../services/manga-api.service';
+import { jsPDF } from "jspdf";
 
 @Component({
   selector: 'app-manga-modal',
@@ -65,6 +66,29 @@ export class MangaModalComponent implements OnInit, OnChanges {
         });
       }
     });
+  }
+
+  loadingImages() {
+    if(this.total > this.cargadas) return true;
+    else return false;
+  }
+
+  descargarEpisodio() {
+    if(!this.loadingImages) return;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: 'mm',
+      format: 'letter'
+    });
+    if(this.div) {
+      let imgCollection = Array.from(this.div.children);
+      for (let i = 0; i < imgCollection.length; i++) {
+        const img = imgCollection[i];
+        if(i > 0) pdf.addPage();
+        pdf.addImage(img.getAttribute('src')!, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
+      }
+      pdf.save(this.titulo+".pdf");
+    }
   }
 
 }

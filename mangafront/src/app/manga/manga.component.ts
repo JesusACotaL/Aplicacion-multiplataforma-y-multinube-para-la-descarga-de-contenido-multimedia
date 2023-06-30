@@ -41,7 +41,6 @@ export class MangaComponent implements OnInit {
     this.route.queryParams.subscribe( (parametros) => {
       const url = parametros['manga'];
       this.myanimelisturl = url;
-      console.log('Manga URl: '+url);
       this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga) => {
         this.manga = manga;
         this.obtenerFuentes();
@@ -85,19 +84,16 @@ export class MangaComponent implements OnInit {
     this.seleccionandoManga = false;
     this.cargando = true;
     this.mangaAPI.obtenerCapitulos(fuente_url).subscribe( (capitulos) => {
-      console.log(capitulos.body);
       this.capitulos = capitulos.search_items.reverse();
       this.cargando = false;
       const cantPaginas = this.capitulos.length / this.capitulosPorPagina;
       for (let i = 0; i < cantPaginas; i++) {
         this.paginas.push(i+1);
-        console.log(this.paginas);
       }
     });
   }
 
   mostrarEpisodio(titulo: string, episodioURL: string) {
-    console.log('descargando: ' + episodioURL);
     this.tituloActual = titulo;
     this.fuenteActual = episodioURL;
     this.mostrarModal = true;

@@ -1,18 +1,28 @@
 <app-navbar></app-navbar>
+<div style="padding: 1rem;">
+    <h2> {{ manga.name }}</h2>
+</div>
 <div class="manga-contenedor">
     <div *ngIf="manga.name" class="resumen">
-        <h1> {{ manga.name }}</h1>
-        <img [src]="manga.img" alt="" class="img-fluid" width="225">
-        <hr>
-        <p class="card-text">
-            Calificacion: {{manga.statistics.score}} <br>
-            Autores: {{manga.authors}}
-        </p>
+        <div class="logotipo">
+            <img [src]="manga.img" alt="" class="img-fluid" width="225">
+        </div>
+        <div class="informacion">     
+            <h5>Ranking {{manga.statistics.popularity}}</h5>
+            <span>{{manga.name_english}}</span>
+            <span>{{manga.statistics.score}} <i class="bi bi-star-fill"></i></span>
+            <span>By: {{manga.authors}}</span>
+            <span>{{manga.genres}}</span>
+            <span>{{manga.date}}</span>
+            <span>Status: {{manga.status}}</span>
+            <a [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
+            <a [href]="myanimelisturl" target="_blank">Visit on myanimelist <i class="bi bi-box-arrow-up-right"></i></a>
+        </div>
     </div>
     <div class="capitulos">
         <div *ngIf="cargando">
             <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
-                <div style="position: absolute; right: 50%+10rem;">Cargando...</div>
+                <div style="position: absolute; right: 50%+10rem;">Cargando <br> fuentes...</div>
                 <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
             </div>
         </div>
@@ -54,7 +64,7 @@
                 </ul>
             </nav>
             <ul class="list-group list-group-flush" style="border-radius: .5rem;">
-                <li (click)="descargarEpisodio(capitulo['url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of capitulos | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
+                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of capitulos | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
                     <span>{{ capitulo['name'] }}</span>
                     <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
                 </li>
@@ -65,5 +75,31 @@
         </div>
     </div>
 </div>
+<div class="info-adicional">
+    <hr>
+    <span style="font-style: italic;">
+        {{manga.synopsis}}
+    </span>
+    <br><br>
+    <span>
+        {{manga.background}}
+    </span>
+    <div>
+        <h4>Main Plot</h4>
+        <div class="characters">
+            <div class="character" *ngFor="let character of getMainPlot()">
+                <img [src]="character.image" alt="" class="img-fluid">
+                <div>{{character.name}}</div>
+            </div>
+        </div>
+        <h4>Adittional characters</h4>
+        <div class="characters">
+            <div class="character" *ngFor="let character of getAdditionalCharacters()">
+                <img [src]="character.image" alt="" class="img-fluid">
+                <div>{{character.name}}</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<app-manga-modal [pFuenteManga]="fuenteActual" [pMostrar]="mostrarModal"></app-manga-modal>
+<app-manga-modal [pFuenteManga]="fuenteActual" [pMostrar]="mostrarModal" [pTitulo]="tituloActual"></app-manga-modal>

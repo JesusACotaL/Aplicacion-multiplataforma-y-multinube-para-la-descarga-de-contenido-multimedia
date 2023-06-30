@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
 import { UserService } from '../services/user.service';
 import { User } from 'firebase/auth'; // Importar User de firebase/auth
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreCollection, QuerySnapshot } from '@angular/fire/compat/firestore';
 import firebase from "firebase/compat/app";
 import FieldValue = firebase.firestore.FieldValue;
 
@@ -26,10 +26,11 @@ export class MangaComponent implements OnInit {
   user: User | null = null;
 
   fuentes: any[] = []
-
+  myanimelisturl = '';
   // Para el modal
   mostrarModal = false;
   fuenteActual = '';
+  tituloActual = '';
 
 
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
@@ -39,6 +40,7 @@ export class MangaComponent implements OnInit {
     // Recuperar manga de API
     this.route.queryParams.subscribe( (parametros) => {
       const url = parametros['manga'];
+      this.myanimelisturl = url;
       console.log('Manga URl: '+url);
       this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga) => {
         this.manga = manga;
@@ -55,6 +57,20 @@ export class MangaComponent implements OnInit {
         // User is signed out
       }
     });
+  }
+
+  getMainPlot() {
+    if(this.manga.characters)
+    return this.manga.characters.filter(c=>c.role=='Main');
+    else
+    return []
+  }
+
+  getAdditionalCharacters() {
+    if(this.manga.characters)
+    return this.manga.characters.filter(c=>c.role!='Main')
+    else
+    return []
   }
 
   obtenerFuentes() {
@@ -80,20 +96,30 @@ export class MangaComponent implements OnInit {
     });
   }
 
-  descargarEpisodio(episodioURL: string) {
+  mostrarEpisodio(titulo: string, episodioURL: string) {
     console.log('descargando: ' + episodioURL);
+    this.tituloActual = titulo;
     this.fuenteActual = episodioURL;
     this.mostrarModal = true;
+  
     if (this.user) {
-      const docRef = this.firestore.collection('ratings').doc(this.user.uid);
-      return docRef.set(
-        {
-          uid: this.user.uid,
-          title: FieldValue.arrayUnion(this.manga.name),
-          ratings: FieldValue.arrayUnion(this.manga.statistics.score)
-        },
-        { merge: true }
-      );
+      const title = this.manga.name;
+      const ratingsCollection: AngularFirestoreCollection<any> = this.firestore.collection('ratings');
+  
+      // Realizar la consulta para verificar si el título ya existe
+      return ratingsCollection.ref.where('title', '==', title).get().then((querySnapshot: QuerySnapshot<any>) => {
+        if (querySnapshot.empty) {
+          // No hay documentos que coincidan con el título, agregarlo
+          return ratingsCollection.add({
+            uid: this.user?.uid, // Navegación segura para acceder a this.user.uid
+            title: title,
+            ratings: this.manga.statistics.score
+          });
+        } else {
+          // El título ya existe, no hacer nada
+          return;
+        }
+      });
     } else {
       return;
     }

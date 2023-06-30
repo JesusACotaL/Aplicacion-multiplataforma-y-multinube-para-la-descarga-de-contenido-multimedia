@@ -11,17 +11,23 @@ export class MangaModalComponent implements OnInit, OnChanges {
   fuenteManga: string; 
   mangaModal!: bootstrap.Modal;
   div!: HTMLElement | null;
+  titulo!: string;
   @Input() pFuenteManga: string;
+  @Input() pTitulo: string;
   @Input() pMostrar: boolean;
+  cargadas = 0;
+  total = 0;
   
   constructor(private mangaAPI: MangaApiService) {
     this.fuenteManga = '';
     this.pFuenteManga = '';
+    this.pTitulo = '';
     this.pMostrar=false;
   }
 
   ngOnChanges() {
     this.fuenteManga = this.pFuenteManga;   
+    this.titulo = this.pTitulo
     if(this.pMostrar) {
       this.mostrar();
     }
@@ -44,14 +50,16 @@ export class MangaModalComponent implements OnInit, OnChanges {
 
   cargarImagenes(url: string) { 
     this.mangaAPI.obtenerLinksCapitulo(url).subscribe( async (imagenes: Array<string>) => {
+      this.cargadas = 0;
+      this.total = imagenes.length;
       for (const imagen of imagenes) {
         await new Promise<void>(resolve => {
           this.mangaAPI.descargarImagenCapitulo(imagen).subscribe( ( imagenBase64 ) => {
             let htmlimg = new Image();
-            htmlimg.style.maxWidth = "100%";
+            htmlimg.className = "img-fluid";
             htmlimg.src = 'data:image/jpeg;base64,'+imagenBase64;
             this.div?.append(htmlimg);
-            console.log('Cargando: '+imagen);
+            this.cargadas = this.cargadas + 1;
             resolve();
           });
         });

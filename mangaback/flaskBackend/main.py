@@ -6,10 +6,34 @@ from myanimelistScrapper import scrapManga, searchMangaOnline
 import re
 import base64
 
+from firebase_admin import credentials, firestore, initialize_app
+from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones
+
+scrapperManganeloAPI = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/si"
+
+# Create connection to firebase and keep it alive
+cred = credentials.Certificate('firebase-credentials.json')
+initialize_app(cred)
+db = firestore.client()
+
+# Initialize API
 app = Flask(__name__)
 CORS(app)
 
-scrapperManganeloAPI = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/si"
+def getUserRatings(uid):
+    # Fetch all user ratings
+    query = db.collection('ratings').where('uid', '==', uid).get()
+
+    # Generate list and return it
+    userRatings = []
+    for doc in query:
+        title = doc.get('title')
+        rating = float(doc.get('ratings'))
+        userRatings.append({
+            'title': title,
+            'rating': rating
+        })
+    return userRatings
 
 @app.route("/")
 def hello_world():
@@ -72,3 +96,19 @@ def downloadChapterImage():
     response = make_response(image_string)
     response.headers.set('Content-Type', 'image/jpeg')
     return response
+
+@app.post("/user/getUserGenres")
+def getUserGenres():
+    data = request.json
+    uid = data['uid']
+    userInput = getUserRatings(uid)
+    userGenres = obtener_generos(userInput)
+    return jsonify(userGenres)
+
+@app.post("/user/getUserRecomendations")
+def getUserRecomendations():
+    data = request.json
+    uid = data['uid']
+    userInput = getUserRatings(uid)
+    userGenres = obtener_recomendaciones(userInput)
+    return jsonify(userGenres)

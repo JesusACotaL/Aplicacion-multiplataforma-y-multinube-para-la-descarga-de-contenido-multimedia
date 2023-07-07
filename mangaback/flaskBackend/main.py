@@ -113,6 +113,21 @@ def getUserRecomendations():
     userGenres = obtener_recomendaciones(userInput)
     return jsonify(userGenres)
 
+@app.post("/user/getMangaRating")
+def getMangaRating():
+    data = request.json
+    uid = data['uid']
+    title = data['title']
+    query = db.collection('ratings').where('uid', '==', uid)
+    query = query.where('title', '==', title).get()
+    userRatings = []
+    for doc in query:
+        rating = float(doc.get('ratings'))
+        userRatings.append({
+            'rating': rating
+        })
+    return userRatings[0] if (len(userRatings) > 0) else ''
+
 @app.post("/user/rate")
 def rateManga():
     data = request.json
@@ -135,4 +150,4 @@ def rateManga():
             'ratings': data['ratings']
         }
         document_ref.update(updated_rating)
-    return 'Rating operation succesful'
+    return jsonify({'result': 'Rating operation succesful'})

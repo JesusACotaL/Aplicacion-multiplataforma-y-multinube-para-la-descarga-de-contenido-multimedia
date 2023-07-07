@@ -79,4 +79,12 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
   
+  getMangaRating(uid: string, title: string) {
+    const body = {
+      uid: uid,
+      title: title
+    }
+    const url = `${this.backend}/user/getMangaRating`;
+    return this.http.post<any>(url,body);
+  }
 }

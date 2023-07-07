@@ -8,19 +8,19 @@
             <img [src]="manga.img" alt="" class="img-fluid" width="225">
             <div *ngIf="user">
                 <br>
-                <span>Your rating: </span>
+                <span>Your rating: {{userRating}}</span>
                 <div class="rating">
                     <form>
                         <p class="clasificacion">
-                          <input id="radio1" type="radio" name="estrellas" value="5" (click)="rate(5)">
+                          <input id="radio1" type="radio" name="estrellas" [value]="radio1" (click)="rate(5)" [(ngModel)]="radio1">
                           <label for="radio1">★</label>
-                          <input id="radio2" type="radio" name="estrellas" value="4"  (click)="rate(4)">
+                          <input id="radio2" type="radio" name="estrellas" [value]="radio2"  (click)="rate(4)" [(ngModel)]="radio2">
                           <label for="radio2">★</label>
-                          <input id="radio3" type="radio" name="estrellas" value="3"  (click)="rate(3)">
+                          <input id="radio3" type="radio" name="estrellas" [value]="radio3"  (click)="rate(3)" [(ngModel)]="radio3">
                           <label for="radio3">★</label>
-                          <input id="radio4" type="radio" name="estrellas" value="2"  (click)="rate(2)">
+                          <input id="radio4" type="radio" name="estrellas" [value]="radio4"  (click)="rate(2)" [(ngModel)]="radio4">
                           <label for="radio4">★</label>
-                          <input id="radio5" type="radio" name="estrellas" value="1"  (click)="rate(1)">
+                          <input id="radio5" type="radio" name="estrellas" [value]="radio5"  (click)="rate(1)" [(ngModel)]="radio5">
                           <label for="radio5">★</label>
                         </p>
                     </form>

@@ -32,6 +32,13 @@ export class MangaComponent implements OnInit {
   fuenteActual = '';
   tituloActual = '';
 
+  userRating = '0.0';
+
+  radio1 = true;
+  radio2 = true;
+  radio3 = true;
+  radio4 = true;
+  radio5 = true;
 
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
      private firestore: AngularFirestore) {}
@@ -44,18 +51,19 @@ export class MangaComponent implements OnInit {
       this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga) => {
         this.manga = manga;
         this.obtenerFuentes();
+        this.userService.getAuth().onAuthStateChanged((user) => {
+          if (user) {
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/firebase.User
+            this.user = user;
+            this.getRating();
+          } else {
+            // User is signed out
+          }
+        });
       });
     });
 
-    this.userService.getAuth().onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        this.user = user;
-      } else {
-        // User is signed out
-      }
-    });
   }
 
   getMainPlot() {
@@ -97,28 +105,6 @@ export class MangaComponent implements OnInit {
     this.tituloActual = titulo;
     this.fuenteActual = episodioURL;
     this.mostrarModal = true;
-  
-    if (this.user) {
-      const title = this.manga.name;
-      const ratingsCollection: AngularFirestoreCollection<any> = this.firestore.collection('ratings');
-  
-      // Realizar la consulta para verificar si el título ya existe
-      return ratingsCollection.ref.where('title', '==', title).get().then((querySnapshot: QuerySnapshot<any>) => {
-        if (querySnapshot.empty) {
-          // No hay documentos que coincidan con el título, agregarlo
-          return ratingsCollection.add({
-            uid: this.user?.uid, // Navegación segura para acceder a this.user.uid
-            title: title,
-            ratings: this.manga.statistics.score
-          });
-        } else {
-          // El título ya existe, no hacer nada
-          return;
-        }
-      });
-    } else {
-      return;
-    }
   }
 
   verPagina(pagina: number) {
@@ -128,6 +114,54 @@ export class MangaComponent implements OnInit {
   verColeccionPaginas(pagina: number) {
     this.coleccionPaginas = pagina;
     this.verPagina(pagina);
+  }
+
+  rate(value: number) {
+    if (this.user) {
+      const uid = this.user?.uid;
+      const title = this.manga.name;
+      this.mangaAPI.calificarManga(uid, title, value.toString()).subscribe((data)=>{})
+    } else {
+      return;
+    }
+  }
+
+  getRating() {
+    const uid = this.user?.uid;
+    const title = this.manga.name;
+    this.mangaAPI.getMangaRating(uid!, title).subscribe((result)=>{
+      this.userRating = result['rating'];
+      switch (this.userRating) {
+        case '1.0':
+          this.radio1 = true;
+          break;
+        case '2.0':
+          this.radio1 = true;
+          this.radio2 = true;
+          break;
+        case '3.0':
+          this.radio1 = true;
+          this.radio2 = true;
+          this.radio3 = true;
+          break;
+        case '4.0':
+          this.radio1 = true;
+          this.radio2 = true;
+          this.radio3 = true;
+          this.radio4 = true;
+          break;
+        case '5.0':
+          this.radio1 = true;
+          this.radio2 = true;
+          this.radio3 = true;
+          this.radio4 = true;
+          this.radio5 = true;
+          break;
+      
+        default:
+          break;
+      }
+    })
   }
 
 }

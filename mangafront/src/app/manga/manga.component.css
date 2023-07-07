@@ -101,3 +101,42 @@
 .character {
     width: 100px;
 }
+
+/* Rating CSS */
+.rating #form {
+    width: 250px;
+    margin: 0 auto;
+    height: 50px;
+}
+
+.rating #form p {
+    text-align: center;
+}
+
+.rating #form label {
+    font-size: 20px;
+}
+
+    input[type="radio"] {
+    display: none;
+}
+
+.rating label {
+    color: grey;
+}
+
+.rating .clasificacion {
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    float: left;
+    font-size: 3rem;
+}
+
+.rating label:hover,
+.rating label:hover ~ label {
+    color: orange;
+}
+
+.rating input[type="radio"]:checked ~ label {
+    color: orange;
+}

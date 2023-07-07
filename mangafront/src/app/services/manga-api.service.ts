@@ -68,5 +68,23 @@ export class MangaApiService {
   obtenerBusquedasPopulares() {
     return this.http.get('assets/datosPrueba/get-popular-search.json');
   }
+
+  calificarManga(uid: string, title: string, rating: string) {
+    const body = {
+      uid: uid,
+      title: title,
+      ratings: rating
+    }
+    const url = `${this.backend}/user/rate`;
+    return this.http.post<any>(url,body);
+  }
   
+  getMangaRating(uid: string, title: string) {
+    const body = {
+      uid: uid,
+      title: title
+    }
+    const url = `${this.backend}/user/getMangaRating`;
+    return this.http.post<any>(url,body);
+  }
 }

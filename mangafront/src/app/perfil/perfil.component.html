@@ -1,27 +1,52 @@
 
-<div *ngIf="user" class="fondo-perfil" style="height: 100%; margin: 0; padding: 0;">
+<app-navbar></app-navbar>
+<div *ngIf="user" class="fondo-perfil">
     <div> 
-        <div class="acciones">
-            <button type="button" class="btn btn-primary p-2" style="margin-left: auto;" (click)="volver()">
-                <span>Regresar</span>
-                <i class="bi bi-android2"></i>
-            </button>
-        </div>
         <div class="imagen-perfil">
-            <div style="font-size: 2em;">Bienvenido, {{user.email}}!</div>
+            <div style="font-size: 2em;">Welcome, {{user.email}}!</div>
             <img src="assets\bills.jpg" class="img-fluid mx-auto" width="300"> 
         </div>
     </div>
-    
-    <div class="p-5">
-        <div class="list-group"> 
-            <button type="button" class="list-group-item list-group-item-action active" aria-current="true">
-                Nombre del Usuario: {{user.email}}
-            </button>
-            <button type="button" class="list-group-item list-group-item-action">Nombre del Usuario:</button>
-            <button type="button" class="list-group-item list-group-item-action">A third button item</button>
-            <button type="button" class="list-group-item list-group-item-action">A fourth button item</button>
-            <button type="button" class="list-group-item list-group-item-action" disabled>A disabled button item</button>
+    <div class="p-4">
+        <h4>Continue reading</h4>
+        <div class="lista-mangas">
+            <div #listaMangas *ngFor="let manga of [1,2,3,4,5,6]" class="card bg-dark manga">
+                <img [src]="'https://via.placeholder.com/200x300?text='+manga" class="card-img-top" alt="..." style="background-color: white; height: 250px;">
+                <div class="card-body d-flex flex-column p-0">
+                    <div class="p-2">
+                        <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga}}</h5>
+                    </div>
+                    <button type="button" class="btn btn-success mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-4">
+        <h4>Recommended</h4>
+        <div class="lista-mangas">
+            <div #listaMangas *ngFor="let manga of [1,2,3,4,5,6]" class="card bg-dark manga">
+                <img [src]="'https://via.placeholder.com/200x300?text='+manga" class="card-img-top" alt="..." style="background-color: white; height: 250px;">
+                <div class="card-body d-flex flex-column p-0">
+                    <div class="p-2">
+                        <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga}}</h5>
+                    </div>
+                    <button type="button" class="btn btn-success mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-4">
+        <h4>Favorites</h4>
+        <div class="lista-mangas">
+            <div #listaMangas *ngFor="let manga of [1,2,3,4,5,6]" class="card bg-dark manga">
+                <img [src]="'https://via.placeholder.com/200x300?text='+manga" class="card-img-top" alt="..." style="background-color: white; height: 250px;">
+                <div class="card-body d-flex flex-column p-0">
+                    <div class="p-2">
+                        <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga}}</h5>
+                    </div>
+                    <button type="button" class="btn btn-success mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</button>
+                </div>
+            </div>
         </div>
     </div>
     

@@ -1,11 +1,11 @@
 <app-navbar></app-navbar>
 <div class="p-4">
-    <span>Resultados de la busqueda: <span style="font-weight: bold;"> {{ mangaBuscado }} </span></span>
+    <span>Showing search results for: <span style="font-weight: bold;"> {{ mangaBuscado }} </span></span>
     <hr>
     <div>
         <div *ngIf="cargando">
             <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
-                <div style="position: absolute; right: 50%+10rem;">Cargando...</div>
+                <div style="position: absolute; right: 50%+10rem;">Loading...</div>
                 <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
             </div>
         </div>
@@ -16,12 +16,12 @@
                     <div class="p-2">
                         <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga.name}}</h5>
                     </div>
-                    <button type="button" (click)="verManga(manga)" class="btn btn-success mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Ver manga</button>
+                    <button type="button" (click)="verManga(manga)" class="btn btn-success mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</button>
                 </div>
             </div>
         </div>
         <div *ngIf="!cargando && mangasEncontrados.length < 1" class="text-center">
-            No se encontraron resultados.
+            No search results.
         </div>
     </div>
 </div>

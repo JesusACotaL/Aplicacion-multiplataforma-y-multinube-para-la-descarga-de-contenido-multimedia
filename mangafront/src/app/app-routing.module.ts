@@ -24,7 +24,7 @@ const routes: Routes = [
   {path:'mangaka/:name', component: MangakaComponent},
   {path:'login',component: LoginComponent},
   {path:'register',component: RegisterComponent},
-  {path:'perfil',component:PerfilComponent},
+  {path:'user',component:PerfilComponent},
 ];
 
 @NgModule({

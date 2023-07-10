@@ -7,10 +7,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="d-flex w-100">
                 <form #formularioBusqueda="ngForm" (ngSubmit)="formularioBusqueda.valid && buscarManga()" class="d-flex" role="search">
-                    <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control me-2" type="search" placeholder="Buscar un manga...">
-                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                    <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control me-2" type="search" placeholder="Search a manga...">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
-                <button *ngIf="!user" class="btn btn-success ms-auto" type="button" (click)="login()">Usar una cuenta</button>
+                <button *ngIf="!user" class="btn btn-success ms-auto" type="button" (click)="login()">Log in</button>
                 <button *ngIf="user" class="btn btn-success ms-auto" type="button" (click)="verPerfil()">{{user.email}}</button>
             </div>
         </div>

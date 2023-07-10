@@ -122,7 +122,7 @@ def getMangaRating():
     query = query.where('title', '==', title).get()
     userRatings = []
     for doc in query:
-        rating = float(doc.get('ratings'))
+        rating = int(doc.get('ratings'))
         userRatings.append({
             'rating': rating
         })
@@ -131,23 +131,26 @@ def getMangaRating():
 @app.post("/user/rate")
 def rateManga():
     data = request.json
-    # Realizar la consulta para verificar si el título ya existe
-    ratings_collection = db.collection('ratings')
+    # Verify existance
+    ratings_collection = db.collection('ratings').where('uid', '==', data['uid'])
     query = ratings_collection.where('title', '==', data['title']).get()
+    # Set rating to 0 if invalid
+    rating = data['rating']
+    if(rating != '1' and rating != '2' and rating != '3' and rating != '4' and rating != '5'):
+        rating = 0
     if len(query) == 0:
-        # No hay documentos que coincidan con el título, agregarlo
+        # Add
         new_rating = {
             'uid': data['uid'],
             'title': data['title'],
-            'ratings': data['ratings']
+            'ratings': rating
         }
-        ratings_collection.add(new_rating)
+        db.collection('ratings').add(new_rating)
     else:
-        # El título ya existe, actualizar el documento existente
-        existing_document = query[0]
-        document_ref = ratings_collection.document(existing_document.id)
+        # Update
+        document_ref = db.collection('ratings').document(query[0].id)
         updated_rating = {
-            'ratings': data['ratings']
+            'ratings': rating
         }
         document_ref.update(updated_rating)
     return jsonify({'result': 'Rating operation succesful'})

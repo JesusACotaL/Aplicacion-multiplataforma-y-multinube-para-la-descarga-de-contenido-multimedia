@@ -2,11 +2,11 @@
     <div class="buscador d-flex flex-column gap-2 w-100 my-auto">
         <span class="titulo"> <i class="bi bi-book-half"></i> Manganelo Scrapper</span>
         <form #formularioBusqueda="ngForm" (ngSubmit)="formularioBusqueda.valid && buscar()" class="input-group" role="search">
-            <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control " type="search" placeholder="Buscar un manga...">
+            <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control " type="search" placeholder="Search a manga...">
             <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
         </form>
         <div class="busquedas mt-2">
-            <span class="text-decoration-underline">Top busquedas:</span>
+            <span class="text-decoration-underline">Top search:</span>
             <ul>
                 <a *ngFor="let busqueda of busquedasPopulares" [href]="'/buscar/'+busqueda.name">{{busqueda.name}}</a>
             </ul>
@@ -14,15 +14,15 @@
     </div>
     <div class="d-flex align-items-center gap-2">
         <div *ngIf="!user" class="d-flex align-items-center gap-2">
-            <button class="btn btn-outline-secondary" type="button" (click)="login();">Usar una cuenta</button>
-            <button class="btn btn-outline-secondary" type="button" (click)="register();">Crear una cuenta</button>    
+            <button class="btn btn-outline-secondary" type="button" (click)="login();">Log in</button>
+            <button class="btn btn-outline-secondary" type="button" (click)="register();">Sign up</button>    
         </div>
         <div *ngIf="user" class="d-flex align-items-center gap-2">
-            <span>Bienvenido, {{ user.email }}</span>
-            <button class="btn btn-outline-secondary" type="button" (click)="logOut();">Salir de la cuenta</button>   
+            <span>Logged in as: {{ user.email }}</span>
+            <button class="btn btn-outline-secondary" type="button" (click)="logOut();">Log out</button>   
         </div>
         <div class="ms-auto">
-            Aviso de privacidad ©2023
+            <a href="">Terms of usage ©2023</a>
         </div>
     </div>
 </div>

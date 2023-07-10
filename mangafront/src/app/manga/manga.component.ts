@@ -32,13 +32,7 @@ export class MangaComponent implements OnInit {
   fuenteActual = '';
   tituloActual = '';
 
-  userRating = '0.0';
-
-  radio1 = true;
-  radio2 = true;
-  radio3 = true;
-  radio4 = true;
-  radio5 = true;
+  userRating = 'Not rated yet';
 
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
      private firestore: AngularFirestore) {}
@@ -120,7 +114,9 @@ export class MangaComponent implements OnInit {
     if (this.user) {
       const uid = this.user?.uid;
       const title = this.manga.name;
-      this.mangaAPI.calificarManga(uid, title, value.toString()).subscribe((data)=>{})
+      this.mangaAPI.rateManga(uid, title, value.toString()).subscribe((data)=>{
+        this.getRating()
+      })
     } else {
       return;
     }
@@ -130,36 +126,35 @@ export class MangaComponent implements OnInit {
     const uid = this.user?.uid;
     const title = this.manga.name;
     this.mangaAPI.getMangaRating(uid!, title).subscribe((result)=>{
-      this.userRating = result['rating'];
-      switch (this.userRating) {
-        case '1.0':
-          this.radio1 = true;
-          break;
-        case '2.0':
-          this.radio1 = true;
-          this.radio2 = true;
-          break;
-        case '3.0':
-          this.radio1 = true;
-          this.radio2 = true;
-          this.radio3 = true;
-          break;
-        case '4.0':
-          this.radio1 = true;
-          this.radio2 = true;
-          this.radio3 = true;
-          this.radio4 = true;
-          break;
-        case '5.0':
-          this.radio1 = true;
-          this.radio2 = true;
-          this.radio3 = true;
-          this.radio4 = true;
-          this.radio5 = true;
-          break;
-      
-        default:
-          break;
+      if(result) {
+        this.userRating = result['rating'].toString();
+        const radio1 = document.getElementById('radio1') as HTMLInputElement | null;
+        const radio2 = document.getElementById('radio2') as HTMLInputElement | null;
+        const radio3 = document.getElementById('radio3') as HTMLInputElement | null;
+        const radio4 = document.getElementById('radio4') as HTMLInputElement | null;
+        const radio5 = document.getElementById('radio5') as HTMLInputElement | null;
+        switch (result['rating']) {
+          case 1:
+            radio1!.checked = true;
+            break;
+          case 2:
+            radio2!.checked = true;
+            break;
+          case 3:
+            radio3!.checked = true;
+            break;
+          case 4:
+            radio4!.checked = true;
+            break;
+          case 5:
+            radio5!.checked = true;
+            break;
+        
+          default:
+            break;
+        }
+      } else {
+        this.userRating = 'Not rated yet.'
       }
     })
   }

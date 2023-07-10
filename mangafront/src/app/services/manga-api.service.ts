@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 
 export class MangaApiService {
 
+  backend = 'http://127.0.0.1:5000'
   constructor(private http: HttpClient) {}
-  private backend = 'http://127.0.0.1:5000'
 
   buscarManga(nombre: string): Observable<any>{
     const body = {
@@ -67,24 +67,5 @@ export class MangaApiService {
 
   obtenerBusquedasPopulares() {
     return this.http.get('assets/datosPrueba/get-popular-search.json');
-  }
-
-  rateManga(uid: string, title: string, rating: string) {
-    const body = {
-      uid: uid,
-      title: title,
-      rating: rating
-    }
-    const url = `${this.backend}/user/rate`;
-    return this.http.post<any>(url,body);
-  }
-  
-  getMangaRating(uid: string, title: string) {
-    const body = {
-      uid: uid,
-      title: title
-    }
-    const url = `${this.backend}/user/getMangaRating`;
-    return this.http.post<any>(url,body);
   }
 }

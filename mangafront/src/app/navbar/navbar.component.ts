@@ -38,6 +38,6 @@ export class NavbarComponent implements OnInit {
   }
   
   verPerfil() {
-    this.router.navigate(['/perfil'])
+    this.router.navigate(['/user'])
   }
 }

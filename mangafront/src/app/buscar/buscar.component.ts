@@ -35,8 +35,6 @@ export class BuscarComponent implements OnInit {
     this.cargando = true;
     // Buscar manga en API
     this.mangaAPI.buscarManga(this.manga).subscribe( (mangas) => {
-      console.log('Mangas encontrados:');
-      console.log(mangas);
       this.mangasEncontrados = mangas;
       this.mangaBuscado = this.manga
       this.cargando= false;

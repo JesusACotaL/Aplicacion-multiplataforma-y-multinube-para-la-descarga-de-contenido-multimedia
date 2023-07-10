@@ -42,12 +42,12 @@
     <div class="capitulos">
         <div *ngIf="cargando">
             <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
-                <div style="position: absolute; right: 50%+10rem;">Cargando <br> fuentes...</div>
+                <div style="position: absolute; right: 50%+10rem;">Indexing <br> sources...</div>
                 <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
             </div>
         </div>
         <div *ngIf="seleccionandoManga">
-            <h4>Selecciona una fuente para leer el manga: </h4>
+            <h4>Choose a source to read this manga: </h4>
             <div class="fuentes">
                 <div class="fuenteManga" *ngFor="let fuente of fuentes" (click)="obtenerCapitulos(fuente.chapters_url)">
                     <img [src]="fuente.image_url" alt="" width="50">
@@ -59,11 +59,11 @@
             </div>
         </div>
         <div *ngIf="!cargando && !seleccionandoManga">
-            <h1>Tomos</h1>
+            <h1>Chapters</h1>
             <nav class="navegador">
                 <ul class="pagination justify-content-center">
                     <li>
-                        <span class="page-link" (click)="verColeccionPaginas(1)">Inicio</span>
+                        <span class="page-link" (click)="verColeccionPaginas(1)">First</span>
                     </li>
                     <li>
                         <span class="page-link" [ngClass]="{'disabled': paginaActual === 1}" (click)="!(paginaActual === 1) && verColeccionPaginas(coleccionPaginas-5)">
@@ -79,7 +79,7 @@
                         </span>
                     </li>
                     <li>
-                        <span class="page-link" (click)="verColeccionPaginas(paginas.length-4)">Ultimo</span>
+                        <span class="page-link" (click)="verColeccionPaginas(paginas.length-4)">Last</span>
                     </li>
                 </ul>
             </nav>
@@ -91,7 +91,7 @@
             </ul>
         </div>
         <div *ngIf="!cargando && !seleccionandoManga && capitulos.length < 1" class="text-center">
-            No se encontraron capitulos.
+            No chapters found.
         </div>
     </div>
 </div>

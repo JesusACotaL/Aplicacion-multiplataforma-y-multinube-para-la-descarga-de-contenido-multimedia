@@ -114,7 +114,7 @@ export class MangaComponent implements OnInit {
     if (this.user) {
       const uid = this.user?.uid;
       const title = this.manga.name;
-      this.mangaAPI.rateManga(uid, title, value.toString()).subscribe((data)=>{
+      this.userService.rateManga(uid, title, value.toString()).subscribe((data)=>{
         this.getRating()
       })
     } else {
@@ -125,7 +125,7 @@ export class MangaComponent implements OnInit {
   getRating() {
     const uid = this.user?.uid;
     const title = this.manga.name;
-    this.mangaAPI.getMangaRating(uid!, title).subscribe((result)=>{
+    this.userService.getMangaRating(uid!, title).subscribe((result)=>{
       if(result) {
         this.userRating = result['rating'].toString();
         const radio1 = document.getElementById('radio1') as HTMLInputElement | null;

@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MangakaComponent } from './mangaka/mangaka.component';
-import { HomescreenComponent } from './homescreen/homescreen.component';
 
 import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -23,7 +22,6 @@ import { HomeComponent } from './home/home.component';
 import { BuscarComponent } from './buscar/buscar.component';
 import { MangaComponent } from './manga/manga.component';
 import { PerfilComponent } from './perfil/perfil.component';
-import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -34,14 +32,12 @@ import { MangaModalComponent } from './manga-modal/manga-modal.component';
   declarations: [ 
     AppComponent,
     MangakaComponent,
-    HomescreenComponent,
     LoginComponent,
     RegisterComponent,
     HomeComponent,
     BuscarComponent,
     MangaComponent,
     PerfilComponent,
-    PruebasAPIComponent,
     NavbarComponent,
     MangaModalComponent
   ],

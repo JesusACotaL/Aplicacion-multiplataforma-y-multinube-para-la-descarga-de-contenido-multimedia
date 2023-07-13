@@ -19,11 +19,13 @@ export class MangaComponent implements OnInit {
   capitulos = [];
   cargando = true;
   seleccionandoManga = false;
-  capitulosPorPagina = 10;
+  capitulosPorPagina = 6;
   paginaActual = 1;
   paginas = [] as number[];
   coleccionPaginas = 1;
   user: User | null = null;
+  chapQuery = '';
+  filtrados: any[] = [];
 
   fuentes: any[] = []
   myanimelisturl = '';
@@ -45,6 +47,12 @@ export class MangaComponent implements OnInit {
       this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga) => {
         this.manga = manga;
         this.obtenerFuentes();
+        // Reabrir capitulo si se accede con URL
+        if(parametros['title'] && parametros['chap']) {
+          const titulo = parametros['title'];
+          const fuente = parametros['chap'];
+          this.mostrarEpisodio(titulo, fuente);
+        }
         this.userService.getAuth().onAuthStateChanged((user) => {
           if (user) {
             // User is signed in, see docs for a list of available properties
@@ -87,12 +95,26 @@ export class MangaComponent implements OnInit {
     this.cargando = true;
     this.mangaAPI.obtenerCapitulos(fuente_url).subscribe( (capitulos) => {
       this.capitulos = capitulos.search_items.reverse();
+      this.filtrados = this.capitulos;
       this.cargando = false;
       const cantPaginas = this.capitulos.length / this.capitulosPorPagina;
       for (let i = 0; i < cantPaginas; i++) {
         this.paginas.push(i+1);
       }
     });
+  }
+
+  filterChapters() {
+    this.paginas = []
+    const cantPaginas = this.filtrados.length / this.capitulosPorPagina;
+    for (let i = 0; i < cantPaginas; i++) {
+      this.paginas.push(i+1);
+    }
+    if(this.chapQuery != '') {
+      this.filtrados = this.capitulos.filter( (element: any) => element['name'].toLowerCase().search(this.chapQuery.toLowerCase()) != -1);
+    } else {
+      this.filtrados = this.capitulos;
+    }
   }
 
   mostrarEpisodio(titulo: string, episodioURL: string) {

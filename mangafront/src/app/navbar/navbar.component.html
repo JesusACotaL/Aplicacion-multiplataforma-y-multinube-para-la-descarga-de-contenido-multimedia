@@ -1,17 +1,27 @@
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #444;">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color);">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Manganelo Scrapper</a>
+        <a href="#" style="padding-right: 1rem;">
+            <img src="/assets/personaje.png" alt="Bootstrap" width="70">
+        </a>      
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="d-flex w-100">
+            <div class="d-flex w-100" style="align-items: center;">
                 <form #formularioBusqueda="ngForm" (ngSubmit)="formularioBusqueda.valid && buscarManga()" class="d-flex" role="search">
                     <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control me-2" type="search" placeholder="Search a manga...">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <button class="btn btnPrimary" type="submit">Search</button>
                 </form>
-                <button *ngIf="!user" class="btn btn-success ms-auto" type="button" (click)="login()">Log in</button>
-                <button *ngIf="user" class="btn btn-success ms-auto" type="button" (click)="verPerfil()">{{user.email}}</button>
+                <button *ngIf="!user" class="btn btnPrimary ms-auto" type="button" (click)="login()">Log in</button>
+                <button *ngIf="user" class="btn btnPrimary userProfileBtn dropdown text-white" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span>{{user.email}}</span>
+                    <img class="img-fluid" src="assets\bills.jpg" alt="user">
+                    <ul class="dropdown-menu dropdown-menu-end text-end">
+                      <li><a class="dropdown-item" (click)="verPerfil()">Go to my homepage</a></li>
+                      <li><a class="dropdown-item">Modify user info</a></li>
+                      <li><a class="dropdown-item" (click)="logOut()">Log out <i class="bi bi-box-arrow-right"></i></a></li>
+                    </ul>
+                </button>
             </div>
         </div>
     </div>

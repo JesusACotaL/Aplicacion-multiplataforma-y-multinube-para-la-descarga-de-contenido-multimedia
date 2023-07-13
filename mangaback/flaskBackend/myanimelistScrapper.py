@@ -64,6 +64,9 @@ def parseMangaSoup(soup, debug=False):
         character['image'] = cImgSrc
         if debug: print(c.parent.find_previous_sibling().a.img['data-src'])
         charactersList.append(character)
+        # URL
+        character['url']=c['href']
+        if debug: print(c['href'])
     output_dict['characters'] = charactersList
     
     # Statistics
@@ -157,7 +160,7 @@ def searchMangaOnline(text, debug=False):
 def testlocal():
     # Test de scrap
     manga_soup = BeautifulSoup(open('onepiece.html', encoding="utf8"), 'html.parser')
-    print(parseMangaSoup(manga_soup)['genres'])
+    print(parseMangaSoup(manga_soup)['characters'])
     
     # Test de busqueda
     # manga_soup = BeautifulSoup(open('testBusqueda.html', encoding="utf8"), 'html.parser')

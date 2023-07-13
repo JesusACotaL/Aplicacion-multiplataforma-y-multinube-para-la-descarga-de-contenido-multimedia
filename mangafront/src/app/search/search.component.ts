@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
 
 @Component({
-  selector: 'app-buscar',
-  templateUrl: './buscar.component.html',
-  styleUrls: ['./buscar.component.css']
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.css']
 })
-export class BuscarComponent implements OnInit {
+export class SearchComponent implements OnInit {
   cargando = true;
   mangaBuscado = ''
   manga = '';

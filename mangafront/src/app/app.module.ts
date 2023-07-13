@@ -3,8 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MangakaComponent } from './mangaka/mangaka.component';
-import { HomescreenComponent } from './homescreen/homescreen.component';
 
 import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -20,10 +18,9 @@ import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
-import { BuscarComponent } from './buscar/buscar.component';
+import { SearchComponent } from './search/search.component';
 import { MangaComponent } from './manga/manga.component';
-import { PerfilComponent } from './perfil/perfil.component';
-import { PruebasAPIComponent } from './pruebas-api/pruebas-api.component';
+import { AccountComponent } from './account/account.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -33,15 +30,12 @@ import { MangaModalComponent } from './manga-modal/manga-modal.component';
 @NgModule({
   declarations: [ 
     AppComponent,
-    MangakaComponent,
-    HomescreenComponent,
     LoginComponent,
     RegisterComponent,
     HomeComponent,
-    BuscarComponent,
+    SearchComponent,
     MangaComponent,
-    PerfilComponent,
-    PruebasAPIComponent,
+    AccountComponent,
     NavbarComponent,
     MangaModalComponent
   ],

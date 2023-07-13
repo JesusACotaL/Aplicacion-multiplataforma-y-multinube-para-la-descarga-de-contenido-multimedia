@@ -39,6 +39,10 @@ def getUserRatings(uid):
 def hello_world():
     return "<p>Hello, World!</p>"
 
+@app.route("/user/getUser")
+def getUser():
+    return "<p>Hello, World!</p>"
+
 @app.post("/searchManga")
 def searchMangaAnimelist():
     data = request.json

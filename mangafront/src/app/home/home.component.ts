@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
   }
 
   buscar() {
-    this.router.navigate(['/buscar',this.manga]);
+    this.router.navigate(['/search',this.manga]);
   }
 
   login(){
@@ -57,6 +57,7 @@ export class HomeComponent implements OnInit {
       this.user = null;
     })
     .catch(error => console.log(error));
+    this.router.navigate(['/'])
   }
 
 }

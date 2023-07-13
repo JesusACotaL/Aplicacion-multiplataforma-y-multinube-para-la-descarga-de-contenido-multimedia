@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import * as bootstrap from 'bootstrap';
 import { MangaApiService } from '../services/manga-api.service';
 import { jsPDF } from "jspdf";
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
   selector: 'app-manga-modal',
@@ -19,7 +20,7 @@ export class MangaModalComponent implements OnInit, OnChanges {
   cargadas = 0;
   total = 0;
   
-  constructor(private mangaAPI: MangaApiService) {
+  constructor(private mangaAPI: MangaApiService, private router: Router, private route: ActivatedRoute) {
     this.fuenteManga = '';
     this.pFuenteManga = '';
     this.pTitulo = '';
@@ -40,6 +41,14 @@ export class MangaModalComponent implements OnInit, OnChanges {
   }
   
   mostrar() {
+    const queryParams: Params = { chap: this.fuenteManga, title: this.titulo };
+    this.router.navigate(
+      [], 
+      {
+        relativeTo: this.route,
+        queryParams: queryParams, 
+        queryParamsHandling: 'merge', // remove to replace all query params by provided
+    });
     this.mangaModal.show();
     if(this.div) {
       this.div.innerHTML = '';
@@ -49,21 +58,36 @@ export class MangaModalComponent implements OnInit, OnChanges {
     }
   }
 
+  closeModal() {
+    const queryParams: Params = { chap: null, title: null };
+    this.router.navigate(
+      [], 
+      {
+        relativeTo: this.route,
+        queryParams: queryParams, 
+        queryParamsHandling: 'merge', // remove to replace all query params by provided
+    });
+    this.titulo = '';
+    this.fuenteManga = '';
+  }
+
   cargarImagenes(url: string) { 
     this.mangaAPI.obtenerLinksCapitulo(url).subscribe( async (imagenes: Array<string>) => {
       this.cargadas = 0;
       this.total = imagenes.length;
       for (const imagen of imagenes) {
-        await new Promise<void>(resolve => {
-          this.mangaAPI.descargarImagenCapitulo(imagen).subscribe( ( imagenBase64 ) => {
-            let htmlimg = new Image();
-            htmlimg.className = "img-fluid";
-            htmlimg.src = 'data:image/jpeg;base64,'+imagenBase64;
-            this.div?.append(htmlimg);
-            this.cargadas = this.cargadas + 1;
-            resolve();
+        if(this.fuenteManga != '') { // Cancel if user closed modal
+          await new Promise<void>(resolve => {
+            this.mangaAPI.descargarImagenCapitulo(imagen).subscribe( ( imagenBase64 ) => {
+              let htmlimg = new Image();
+              htmlimg.className = "img-fluid";
+              htmlimg.src = 'data:image/jpeg;base64,'+imagenBase64;
+              this.div?.append(htmlimg);
+              this.cargadas = this.cargadas + 1;
+              resolve();
+            });
           });
-        });
+        }
       }
     });
   }

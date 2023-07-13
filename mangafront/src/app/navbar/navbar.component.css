@@ -1,0 +1,12 @@
+.userProfileBtn {
+    margin-left: auto; 
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    height: 3rem;
+}
+.userProfileBtn img {
+    height: 2rem;
+    border-radius: 1rem;
+    margin-left: 1rem;
+}

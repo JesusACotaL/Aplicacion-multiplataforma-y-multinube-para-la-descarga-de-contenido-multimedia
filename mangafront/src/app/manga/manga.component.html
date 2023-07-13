@@ -1,13 +1,23 @@
 <app-navbar></app-navbar>
-<div style="padding: 1rem;">
+<div style="padding: 1rem; padding-bottom: 0;">
     <h2> {{ manga.name }}</h2>
 </div>
 <div class="manga-contenedor">
     <div *ngIf="manga.name" class="resumen">
         <div class="logotipo">
             <img [src]="manga.img" alt="" class="img-fluid" width="225">
-            <div *ngIf="user">
-                <br>
+        </div>
+        <div class="informacion">     
+            <h5>Ranking {{manga.statistics.popularity}}</h5>
+            <span>{{manga.name_english}}</span>
+            <span>{{manga.statistics.score}} <i class="bi bi-star-fill"></i></span>
+            <span>By: {{manga.authors}}</span>
+            <span>{{manga.genres}}</span>
+            <span>{{manga.date}}</span>
+            <span>Status: {{manga.status}}</span>
+            <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
+            <a [href]="myanimelisturl" target="_blank">Visit on myanimelist <i class="bi bi-box-arrow-up-right"></i></a>
+            <div *ngIf="user" style="margin-top: .5rem;">
                 <span>Your rating: {{userRating}}</span>
                 <div class="rating">
                     <form>
@@ -26,17 +36,6 @@
                     </form>
                 </div>
             </div>
-        </div>
-        <div class="informacion">     
-            <h5>Ranking {{manga.statistics.popularity}}</h5>
-            <span>{{manga.name_english}}</span>
-            <span>{{manga.statistics.score}} <i class="bi bi-star-fill"></i></span>
-            <span>By: {{manga.authors}}</span>
-            <span>{{manga.genres}}</span>
-            <span>{{manga.date}}</span>
-            <span>Status: {{manga.status}}</span>
-            <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
-            <a [href]="myanimelisturl" target="_blank">Visit on myanimelist <i class="bi bi-box-arrow-up-right"></i></a>
         </div>
     </div>
     <div class="capitulos">
@@ -59,15 +58,17 @@
             </div>
         </div>
         <div *ngIf="!cargando && !seleccionandoManga">
-            <h1>Chapters</h1>
             <nav class="navegador">
-                <ul class="pagination justify-content-center">
+                <input [(ngModel)]="chapQuery" name="chapQuery" class="form-control mb-1" type="search" placeholder="Filter chapters by search..." (input)="filterChapters()">
+                <ul class="pagination justify-content-center mb-1">
                     <li>
-                        <span class="page-link" (click)="verColeccionPaginas(1)">First</span>
+                        <span class="page-link" (click)="verColeccionPaginas(1)">
+                            First
+                        </span>
                     </li>
                     <li>
                         <span class="page-link" [ngClass]="{'disabled': paginaActual === 1}" (click)="!(paginaActual === 1) && verColeccionPaginas(coleccionPaginas-5)">
-                            &laquo;
+                            <i class="bi bi-arrow-left"></i>
                         </span>
                     </li>
                     <li [ngClass]="{'active': i === paginaActual}" *ngFor="let i of paginas | slice: coleccionPaginas - 1: coleccionPaginas + 4" (click)="verPagina(i)">
@@ -75,16 +76,24 @@
                     </li>
                     <li>
                         <span class="page-link" [ngClass]="{'disabled': paginaActual > paginas.length-5}" (click)="!(paginaActual > paginas.length-5) && verColeccionPaginas(coleccionPaginas+5)">
-                            &raquo;
+                            <i class="bi bi-arrow-right"></i>
                         </span>
                     </li>
                     <li>
-                        <span class="page-link" (click)="verColeccionPaginas(paginas.length-4)">Last</span>
+                        <span class="page-link" (click)="verColeccionPaginas(paginas.length)">
+                            Last
+                        </span>
                     </li>
                 </ul>
             </nav>
-            <ul class="list-group list-group-flush" style="border-radius: .5rem;">
-                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of capitulos | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
+            <ul *ngIf="chapQuery == ''" class="list-group list-group-flush" style="border-radius: .5rem;">
+                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
+                    <span>{{ capitulo['name'] }}</span>
+                    <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
+                </li>
+            </ul>
+            <ul *ngIf="chapQuery != ''" class="list-group list-group-flush" style="border-radius: .5rem;">
+                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados">
                     <span>{{ capitulo['name'] }}</span>
                     <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
                 </li>
@@ -104,13 +113,13 @@
     <span>
         {{manga.background}}
     </span>
-    <div>
+    <div style="margin-top: 1rem;">
         <div>
             <h4>Main Plot</h4>
             <div class="characters">
                 <div class="character" *ngFor="let character of getMainPlot()">
                     <img [src]="character.image" alt="" class="img-fluid">
-                    <div>{{character.name}}</div>
+                    <a target="_blank" [href]="character.url">{{character.name}}</a>
                 </div>
             </div>
         </div>
@@ -119,7 +128,7 @@
             <div class="characters">
                 <div class="character" *ngFor="let character of getAdditionalCharacters()">
                     <img [src]="character.image" alt="" class="img-fluid">
-                    <div>{{character.name}}</div>
+                    <a target="_blank" [href]="character.url">{{character.name}}</a>
                 </div>
             </div>
         </div>

@@ -5,11 +5,11 @@ import { UserService } from '../services/user.service';
 import { User } from 'firebase/auth'; // Importar User de firebase/auth
 
 @Component({
-  selector: 'app-perfil',
-  templateUrl: './perfil.component.html',
-  styleUrls: ['./perfil.component.css']
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css']
 })
-export class PerfilComponent implements OnInit {
+export class AccountComponent implements OnInit {
   user: User | null = null;
 
   constructor( private _location: Location, private userService: UserService ) { }

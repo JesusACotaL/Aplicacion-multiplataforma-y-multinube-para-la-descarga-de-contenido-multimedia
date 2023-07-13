@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MangakaComponent } from './mangaka/mangaka.component';
 
 import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -31,7 +30,6 @@ import { MangaModalComponent } from './manga-modal/manga-modal.component';
 @NgModule({
   declarations: [ 
     AppComponent,
-    MangakaComponent,
     LoginComponent,
     RegisterComponent,
     HomeComponent,

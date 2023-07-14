@@ -100,17 +100,29 @@ export class MangaModalComponent implements OnInit, OnChanges {
   descargarEpisodio() {
     if(!this.loadingImages) return;
     const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: 'mm',
+      orientation: 'portrait',
+      unit: 'px',
       format: 'letter'
     });
     if(this.div) {
       let imgCollection = Array.from(this.div.children);
       for (let i = 0; i < imgCollection.length; i++) {
         const img = imgCollection[i];
-        if(i > 0) pdf.addPage();
-        pdf.addImage(img.getAttribute('src')!, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());
+        const imgWidth = img.clientWidth;
+        const imgHeight = img.clientHeight;
+        console.log('Image #'+i+' size: '+'w='+imgWidth+'h='+imgHeight);
+        const imgRatio = imgWidth / imgHeight;
+        if (imgRatio >= 1) {
+            pdf.addPage([imgWidth, imgHeight], 'landscape');
+        } else {
+            pdf.addPage([imgWidth, imgHeight], 'portrait');
+        }
+        let pageHeight = pdf.internal.pageSize.getHeight();
+        let pageWidth = pdf.internal.pageSize.getWidth();
+        //pdf.setPage(i + 2);
+        pdf.addImage(img.getAttribute('src')!, 'JPEG', 0, 0, imgWidth, imgHeight);
       }
+      pdf.deletePage(1); // first page is by default blank in jspdf
       pdf.save(this.titulo+".pdf");
     }
   }

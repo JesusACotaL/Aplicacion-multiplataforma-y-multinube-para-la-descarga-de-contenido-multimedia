@@ -6,7 +6,7 @@ from myanimelistScrapper import scrapManga, searchMangaOnline
 import re
 import base64
 
-from firebase_admin import credentials, firestore, initialize_app
+from firebase_admin import credentials, firestore, initialize_app, auth
 from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones
 
 scrapperManganeloAPI = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/si"
@@ -158,3 +158,22 @@ def rateManga():
         }
         document_ref.update(updated_rating)
     return jsonify({'result': 'Rating operation succesful'})
+
+@app.post("/user/updateEmail")
+def updateUserEmail():
+    data = request.json
+    uid = data['uid']
+    mail = data['email']
+    auth.update_user(uid, email= mail)
+    user_ref = db.collection("users").document(uid)
+    user_ref.update({"email": mail})
+    return "E-Mail Successfully Updated"
+
+
+@app.post("/user/updatePassword")
+def updateUserPassword():
+    data = request.json
+    uid = data['uid']
+    passw = data['password']
+    auth.update_user(uid, password = passw)
+    return "Password Successfully Updated"

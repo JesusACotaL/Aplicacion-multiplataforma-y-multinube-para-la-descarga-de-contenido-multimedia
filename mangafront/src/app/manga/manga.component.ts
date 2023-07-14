@@ -32,6 +32,7 @@ export class MangaComponent implements OnInit {
   // Para el modal
   mostrarModal = false;
   fuenteActual = '';
+  fuenteActualNombre = '';
   tituloActual = '';
 
   userRating = 'Not rated yet';
@@ -51,7 +52,8 @@ export class MangaComponent implements OnInit {
         if(parametros['title'] && parametros['chap']) {
           const titulo = parametros['title'];
           const fuente = parametros['chap'];
-          this.mostrarEpisodio(titulo, fuente);
+          const fuenteNombre = parametros['chapSrcName'];
+          this.mostrarEpisodio(titulo, fuente, fuenteNombre);
         }
         this.userService.getAuth().onAuthStateChanged((user) => {
           if (user) {
@@ -90,11 +92,11 @@ export class MangaComponent implements OnInit {
     });
   }
 
-  obtenerCapitulos(fuente_url: string) {
+  obtenerCapitulos(fuente_nombre:string, fuente_url: string) {
     this.seleccionandoManga = false;
     this.cargando = true;
-    this.mangaAPI.obtenerCapitulos(fuente_url).subscribe( (capitulos) => {
-      this.capitulos = capitulos.search_items.reverse();
+    this.mangaAPI.obtenerCapitulos(fuente_nombre,fuente_url).subscribe( (capitulos) => {
+      this.capitulos = capitulos.reverse();
       this.filtrados = this.capitulos;
       this.cargando = false;
       const cantPaginas = this.capitulos.length / this.capitulosPorPagina;
@@ -117,9 +119,10 @@ export class MangaComponent implements OnInit {
     }
   }
 
-  mostrarEpisodio(titulo: string, episodioURL: string) {
+  mostrarEpisodio(titulo: string, episodioURL: string, fuenteNombre: string) {
     this.tituloActual = titulo;
     this.fuenteActual = episodioURL;
+    this.fuenteActualNombre = fuenteNombre;
     this.mostrarModal = true;
   }
 

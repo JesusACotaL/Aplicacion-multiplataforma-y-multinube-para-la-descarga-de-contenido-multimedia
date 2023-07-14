@@ -35,24 +35,27 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
   
-  obtenerCapitulos(mangaURL: string): Observable<any>{
+  obtenerCapitulos(fuenteNombre: string, mangaURL: string): Observable<any>{
     const body = {
+      source: fuenteNombre,
       url: mangaURL
     }
     const url = `${this.backend}/getMangaChapters`;
     return this.http.post<any>(url,body);
   }
 
-  obtenerLinksCapitulo(capituloURL: string): Observable<any>{
+  obtenerLinksCapitulo(fuenteNombre: string, capituloURL: string): Observable<any>{
     const body = {
+      source: fuenteNombre,
       url: capituloURL
     }
     const url = `${this.backend}/getChapterLinks`;
     return this.http.post<any>(url,body);
   }
 
-  descargarImagenCapitulo(imagenURL: string): Observable<any>{
+  descargarImagenCapitulo(fuenteNombre: string, imagenURL: string): Observable<any>{
     const body = {
+      source: fuenteNombre,
       url: imagenURL
     }
     let options = {

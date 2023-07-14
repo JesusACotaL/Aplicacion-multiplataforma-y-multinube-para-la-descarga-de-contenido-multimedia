@@ -1,15 +1,12 @@
 from flask import Flask, request, jsonify, make_response
-import requests
 from flask_cors import CORS
 
 from myanimelistScrapper import scrapManga, searchMangaOnline
-import re
-import base64
-
 from firebase_admin import credentials, firestore, initialize_app, auth
 from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones
 
-scrapperManganeloAPI = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/si"
+from importlib import import_module
+import json
 
 # Create connection to firebase and keep it alive
 cred = credentials.Certificate('firebase-credentials.json')
@@ -35,12 +32,16 @@ def getUserRatings(uid):
         })
     return userRatings
 
+def readSourcesFile():
+    sources = []
+    with open('mangaSources.json', 'r', encoding='utf-8') as f:
+        sources = json.load(f)['mangaSources']
+        sources = [s for s in sources if s['enabled'] == True]
+    f.close()
+    return sources
+
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
-
-@app.route("/user/getUser")
-def getUser():
     return "<p>Hello, World!</p>"
 
 @app.post("/searchManga")
@@ -57,46 +58,98 @@ def getMangaInfoAnimelist():
     mangaInfo = scrapManga(url)
     return jsonify(mangaInfo)
 
+@app.post("/getMangaSources")
+def getMangaSources():
+    sources = readSourcesFile()
+    return jsonify(sources)
+
+@app.post("/addMangaSource")
+def addMangaSource():
+    data = request.json
+    name = data['name']
+    file = data['file']
+    sources = readSourcesFile()
+    sources.append({"name":name,"file":file})
+    with open('mangaSources.json', 'w', encoding='utf-8') as f:
+        sources = json.dump({"mangaSources": sources}, f)
+    f.close()
+    return jsonify({'result': 'Source added succesfully'})
+
+@app.post("/removeMangaSource")
+def removeMangaSource():
+    data = request.json
+    name = data['name']
+    sources = readSourcesFile()
+    sources = [s for s in sources if s['name'] != name]
+    with open('mangaSources.json', 'w', encoding='utf-8') as f:
+        sources = json.dump({"mangaSources": sources}, f)
+    f.close()
+    return jsonify({'result': 'Source removed succesfully'})
+
 @app.post("/findMangaSource")
 def findMangaSource():
     data = request.json
     manga = data['manga']
-    # Manganelo source
-    manga = re.sub(r'\ ','_',manga) # replace whitespaces with underscores
-    manga = ''.join(e for e in manga if e.isalnum() or e == '/' or e == '_' or e == ':') # remove weird characters
-    manga = manga.lower() # uncapitalize
-    body = {"url": "https://m.manganelo.com/search/story/"+manga}
-    res = requests.post(scrapperManganeloAPI+"/get-manga-info", json=body)
-    res.raise_for_status()
-    return res.content
+    sources = readSourcesFile()
+    results = []
+    for source in sources:
+        sourceFile = source['file']
+        moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
+        module = import_module(moduleName)
+        result = module.searchManga(manga)
+        for res in result:
+            res['source'] = source['name']
+        results = results + result
+    return results
 
 @app.post("/getMangaChapters")
 def getMangaChapters():
     data = request.json
     url = data['url']
-    # Manganelo source
-    body = {"url": url}
-    res = requests.post(scrapperManganeloAPI+"/get-manga-chapters", json=body)
-    res.raise_for_status()
-    return res.content
+    sourceName = data['source']
+    sources = readSourcesFile()
+    results = []
+    for source in sources:
+        if(source['name'] == sourceName):
+            sourceFile = source['file']
+            moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
+            module = import_module(moduleName)
+            result = module.getMangaChapters(url)
+            for res in result:
+                res['source'] = source['name']
+            results = result
+    return results
 
 @app.post("/getChapterLinks")
 def getChapterLinks():
     data = request.json
     url = data['url']
-    # Manganelo source
-    body = {"url": url}
-    res = requests.post(scrapperManganeloAPI+"/get-manga-urls", json=body)
-    res.raise_for_status()
-    return res.content
+    sourceName = data['source']
+    sources = readSourcesFile()
+    results = []
+    for source in sources:
+        if(source['name'] == sourceName):
+            sourceFile = source['file']
+            moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
+            module = import_module(moduleName)
+            result = module.getChapterURLS(url)
+            for res in result:
+                results.append({'source':source['name'],'url':res})
+    return results
 
 @app.post("/downloadChapterImage")
 def downloadChapterImage():
     data = request.json
     url = data['url']
-    res = requests.get(url, headers={'referer': 'https://chapmanganelo.com/'})
-    res.raise_for_status()
-    image_string = base64.b64encode(res.content)
+    sourceName = data['source']
+    sources = readSourcesFile()
+    image_string = ''
+    for source in sources:
+        if(source['name'] == sourceName):
+            sourceFile = source['file']
+            moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
+            module = import_module(moduleName)
+            image_string = module.getImageBase64(url)
     response = make_response(image_string)
     response.headers.set('Content-Type', 'image/jpeg')
     return response
@@ -167,7 +220,7 @@ def updateUserEmail():
     auth.update_user(uid, email= mail)
     user_ref = db.collection("users").document(uid)
     user_ref.update({"email": mail})
-    return "E-Mail Successfully Updated"
+    return jsonify({'result': 'E-Mail Successfully Updated'})
 
 
 @app.post("/user/updatePassword")
@@ -176,4 +229,4 @@ def updateUserPassword():
     uid = data['uid']
     passw = data['password']
     auth.update_user(uid, password = passw)
-    return "Password Successfully Updated"
+    return jsonify({'result': 'Password Successfully Updated'})

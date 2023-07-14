@@ -87,4 +87,22 @@ export class UserService{
     const url = `${this.backend}/user/getMangaRating`;
     return this.http.post<any>(url,body);
     }
+
+    updateUserEmail(uid: string, email: string){
+        const body = {
+            uid: uid,
+            email: email
+        }
+        const url = `${this.backend}/user/updateEmail`;
+        return this.http.post<any>(url,body);
+    }
+
+    updateUserPassword(uid: string, password: string){
+        const body = {
+            uid: uid,
+            password: password
+        }
+        const url = `${this.backend}/user/updatePassword`;
+        return this.http.post<any>(url,body);
+    }
 }

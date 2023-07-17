@@ -48,7 +48,7 @@
         <div *ngIf="seleccionandoManga">
             <h4>Choose a source to read this manga: </h4>
             <div class="fuentes">
-                <div class="fuenteManga" *ngFor="let fuente of fuentes" (click)="obtenerCapitulos(fuente.chapters_url)">
+                <div class="fuenteManga" *ngFor="let fuente of fuentes" (click)="obtenerCapitulos(fuente.source, fuente.chapters_url)">
                     <img [src]="fuente.image_url" alt="" width="50">
                     <div style="display: flex; flex-direction: column; justify-content: center;">
                         <span>{{fuente.name}}</span>
@@ -87,13 +87,13 @@
                 </ul>
             </nav>
             <ul *ngIf="chapQuery == ''" class="list-group list-group-flush" style="border-radius: .5rem;">
-                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
+                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'], capitulo['source'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
                     <span>{{ capitulo['name'] }}</span>
                     <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
                 </li>
             </ul>
             <ul *ngIf="chapQuery != ''" class="list-group list-group-flush" style="border-radius: .5rem;">
-                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados">
+                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'], capitulo['source'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados">
                     <span>{{ capitulo['name'] }}</span>
                     <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
                 </li>
@@ -135,4 +135,4 @@
     </div>
 </div>
 
-<app-manga-modal [pFuenteManga]="fuenteActual" [pMostrar]="mostrarModal" [pTitulo]="tituloActual"></app-manga-modal>
+<app-manga-modal [pFuenteMangaNombre]="fuenteActualNombre" [pFuenteManga]="fuenteActual" [pMostrar]="mostrarModal" [pTitulo]="tituloActual"></app-manga-modal>

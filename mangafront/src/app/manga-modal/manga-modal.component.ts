@@ -14,6 +14,7 @@ export class MangaModalComponent implements OnInit, OnChanges {
   mangaModal!: bootstrap.Modal;
   div!: HTMLElement | null;
   titulo!: string;
+  @Input() pFuenteMangaNombre: string;
   @Input() pFuenteManga: string;
   @Input() pTitulo: string;
   @Input() pMostrar: boolean;
@@ -21,10 +22,11 @@ export class MangaModalComponent implements OnInit, OnChanges {
   total = 0;
   
   constructor(private mangaAPI: MangaApiService, private router: Router, private route: ActivatedRoute) {
-    this.fuenteManga = '';
+    this.pFuenteMangaNombre = '';
     this.pFuenteManga = '';
     this.pTitulo = '';
     this.pMostrar=false;
+    this.fuenteManga = '';
   }
 
   ngOnChanges() {
@@ -41,7 +43,7 @@ export class MangaModalComponent implements OnInit, OnChanges {
   }
   
   mostrar() {
-    const queryParams: Params = { chap: this.fuenteManga, title: this.titulo };
+    const queryParams: Params = { chap: this.fuenteManga, title: this.titulo, chapSrcName: this.pFuenteMangaNombre };
     this.router.navigate(
       [], 
       {
@@ -54,7 +56,7 @@ export class MangaModalComponent implements OnInit, OnChanges {
       this.div.innerHTML = '';
     }
     if(this.fuenteManga != '') {
-      this.cargarImagenes(this.fuenteManga);
+      this.cargarImagenes(this.pFuenteMangaNombre, this.fuenteManga);
     }
   }
 
@@ -71,14 +73,14 @@ export class MangaModalComponent implements OnInit, OnChanges {
     this.fuenteManga = '';
   }
 
-  cargarImagenes(url: string) { 
-    this.mangaAPI.obtenerLinksCapitulo(url).subscribe( async (imagenes: Array<string>) => {
+  cargarImagenes(fuente_nombre: string, url: string) { 
+    this.mangaAPI.obtenerLinksCapitulo(fuente_nombre, url).subscribe( async (imagenes: Array<any>) => {
       this.cargadas = 0;
       this.total = imagenes.length;
       for (const imagen of imagenes) {
         if(this.fuenteManga != '') { // Cancel if user closed modal
           await new Promise<void>(resolve => {
-            this.mangaAPI.descargarImagenCapitulo(imagen).subscribe( ( imagenBase64 ) => {
+            this.mangaAPI.descargarImagenCapitulo(imagen['source'], imagen['url']).subscribe( ( imagenBase64 ) => {
               let htmlimg = new Image();
               htmlimg.className = "img-fluid";
               htmlimg.src = 'data:image/jpeg;base64,'+imagenBase64;

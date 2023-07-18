@@ -100,7 +100,7 @@ export class AccountComponent implements OnInit {
     this.userService.getBookmarks(this.user!.uid).subscribe( async (bookmarks: Array<any>) => {
       for (const manga of bookmarks) {
         await new Promise<void>(resolve => {
-          this.mangaAPI.buscarManga(manga['manga']).subscribe( ( mangas ) => {
+          this.mangaAPI.buscarManga(manga).subscribe( ( mangas ) => {
             this.favoritos.push(mangas[0]);
             resolve();
           });

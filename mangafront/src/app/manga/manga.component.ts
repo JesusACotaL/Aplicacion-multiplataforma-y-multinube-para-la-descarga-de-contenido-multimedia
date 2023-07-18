@@ -37,6 +37,8 @@ export class MangaComponent implements OnInit {
 
   userRating = 'Not rated yet';
 
+  inBookmarks = false;
+
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
      private firestore: AngularFirestore) {}
 
@@ -61,6 +63,7 @@ export class MangaComponent implements OnInit {
             // https://firebase.google.com/docs/reference/js/firebase.User
             this.user = user;
             this.getRating();
+            this.checkIfInBookmarks();
           } else {
             // User is signed out
           }
@@ -124,6 +127,11 @@ export class MangaComponent implements OnInit {
     this.fuenteActual = episodioURL;
     this.fuenteActualNombre = fuenteNombre;
     this.mostrarModal = true;
+
+    // Agregar a historial de vista del usuario
+    if(this.user) {
+      this.userService.addToHistory(this.user.uid, this.manga.name).subscribe( () => {});
+    }
   }
 
   verPagina(pagina: number) {
@@ -182,6 +190,31 @@ export class MangaComponent implements OnInit {
         this.userRating = 'Not rated yet.'
       }
     })
+  }
+
+  checkIfInBookmarks() {
+    if(this.user && this.manga.name) {
+      this.userService.getBookmarks(this.user.uid).subscribe((bookmarks: Array<string>) => {
+        if (bookmarks.indexOf(this.manga.name) > -1)
+          this.inBookmarks = true;
+      });
+    }
+  }
+
+  addToBookmarks() {
+    if(this.user && this.manga.name) {
+      this.userService.addMangaToBookmarks(this.user.uid,this.manga.name).subscribe(() => {
+        this.inBookmarks = true;
+      });
+    }
+  }
+
+  removeFromBookmarks() {
+    if(this.user && this.manga.name) {
+      this.userService.removeMangaFromBookmarks(this.user.uid,this.manga.name).subscribe(() => {
+        this.inBookmarks = false;
+      });
+    }
   }
 
 }

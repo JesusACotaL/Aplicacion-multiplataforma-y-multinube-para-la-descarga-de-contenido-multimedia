@@ -1,6 +1,8 @@
 <app-navbar></app-navbar>
-<div style="padding: 1rem; padding-bottom: 0;">
+<div style="padding: 1rem; padding-bottom: 0; display: flex;">
     <h2> {{ manga.name }}</h2>
+    <button *ngIf="user && manga.name && !this.inBookmarks" type="button" class="btn btnBookmark ms-auto" (click)="addToBookmarks()"><i class="bi bi-bookmark-plus"></i></button>
+    <button *ngIf="user && manga.name && this.inBookmarks" type="button" class="btn btnBookmark ms-auto" (click)="removeFromBookmarks()"><i class="bi bi-bookmark-x"></i></button>
 </div>
 <div class="manga-contenedor">
     <div *ngIf="manga.name" class="resumen">

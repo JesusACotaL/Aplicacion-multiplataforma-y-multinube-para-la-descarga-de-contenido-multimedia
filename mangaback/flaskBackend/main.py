@@ -27,7 +27,7 @@ def getUserRatings(uid):
         title = doc.get('title')
         rating = float(doc.get('ratings'))
         userRatings.append({
-            'title': title,
+            'name': title,
             'rating': rating
         })
     return userRatings
@@ -172,6 +172,7 @@ def getUserRecomendations():
     uid = data['uid']
     userInput = getUserRatings(uid)
     userGenres = obtener_recomendaciones(userInput)
+    print(userGenres)
     return jsonify(userGenres)
 
 @app.post("/user/getMangaRating")

@@ -7,14 +7,24 @@ import logging
 import re
 import time
 import csv
+import base64
+from urllib.error import HTTPError
 
 def parseMangaSoup(soup, debug=False):
+    """ Parses a full manga page soup into a dictionary """
     output_dict = {}
 
     # Original name
     name = soup.find('span', itemprop='name').find(string=True)
     output_dict['name'] = name
     if debug: print(name)
+
+    # Original url
+    mangaURL = soup.find('div', attrs={'class': 'breadcrumb','itemtype':'http://schema.org/BreadcrumbList'})
+    mangaURL = mangaURL.find('meta', attrs={'content':'3'}).find_previous_sibling()
+    mangaURL = mangaURL['href']
+    output_dict['mangaURL'] = mangaURL
+    if debug: print(mangaURL)
 
     # English name
     name_english = soup.find('span', string='English:')
@@ -101,13 +111,18 @@ def parseMangaSoup(soup, debug=False):
     output_dict['site'] = site
 
     # Synopsis
-    synopsis = soup.find('span', itemprop='description').text
+    synopsis = ''
+    synopsisDiv = soup.find('span', itemprop='description')
+    if(synopsisDiv):
+        synopsis = synopsisDiv.text
     output_dict['synopsis'] = synopsis
     if debug: print(synopsis)
 
     # Background
+    background = ''
     backgroundDiv = soup.find(lambda tag:tag.name=="h2" and "Background" in tag.text).next_siblings
-    background = ' '.join([item.text for item in backgroundDiv])
+    if(backgroundDiv):
+        background = ' '.join([item.text for item in backgroundDiv])
     if debug: print(background)
     output_dict['background'] = background
 
@@ -118,11 +133,18 @@ def parseMangaSoup(soup, debug=False):
     return output_dict
 
 def scrapManga(manga_url):
-    res = requests.get(manga_url)
-    res.raise_for_status()
-    manga_soup = BeautifulSoup(res.content, 'html.parser')
-    result = parseMangaSoup(manga_soup)
-    return result
+    try:
+        res = requests.get(manga_url)
+        res.raise_for_status()
+        manga_soup = BeautifulSoup(res.content, 'html.parser')
+        result = parseMangaSoup(manga_soup)
+        # Original myanimelist ID
+        mangaID = re.findall("\/[0-9]+\/",manga_url)[0][1:-1]
+        result['mangaID'] = mangaID
+        return result
+    except HTTPError:
+        print('Couldnt scrap manga: '+str(manga_url))
+        return None
 
 def searchMangaOnline(text, debug=False):
     search_url = 'https://myanimelist.net/manga.php?cat=manga'
@@ -166,7 +188,7 @@ def searchMangaOnline(text, debug=False):
 def testlocal():
     # Test de scrap
     manga_soup = BeautifulSoup(open('onepiece.html', encoding="utf8"), 'html.parser')
-    print(parseMangaSoup(manga_soup)['characters'])
+    print(parseMangaSoup(manga_soup))
     
     # Test de busqueda
     # manga_soup = BeautifulSoup(open('testBusqueda.html', encoding="utf8"), 'html.parser')
@@ -186,6 +208,81 @@ def testlocal():
     # print(short_desc)
     pass
 
+def getImageBase64(imageURL):
+    """
+    Returns a single binary image encoded in base64 format
+    """
+    url = imageURL
+    res = requests.get(url)
+    res.raise_for_status()
+    binaryImage = res.content
+    image_string = base64.b64encode(binaryImage) # Base64 compressed image
+    return image_string
+
+def createCSV():
+    """ Creates and erases csv for mangas"""
+    fieldnames = ['mangaID', 'name', 'genres', 'authors', 'img', 'mangaURL']
+    with open('mangas.csv', 'w', encoding="utf-8", newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        csv_file.close()
+
+def csvWriter(manga):
+    """ Writes the most important data of a manga dictionary in a CSV file """
+    fieldnames = ['mangaID', 'name', 'genres', 'authors', 'img', 'mangaURL']
+    del manga['synopsis']
+    del manga['background']
+    del manga['name_english']
+    del manga['site']
+    del manga['statistics']
+    del manga['characters']
+    del manga['status']
+    del manga['date']
+    with open('mangas.csv', 'a', encoding="utf-8", newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writerow(manga)
+        time.sleep(1)
+        csv_file.close()
+
+def getTopMangas(limit, delay=1):
+    """ Fetches 50 top mangas, starting on number <LIMIT> and then writes the most important data in a CSV file """
+    url = 'https://myanimelist.net/topmanga.php'
+    res = requests.get(url, params=[('limit',limit)])
+    res.raise_for_status()
+    topmanga_soup = BeautifulSoup(res.content, 'html.parser')
+    topmanga_soupTable = topmanga_soup.find('table', attrs={'class':'top-ranking-table'})
+    mangaList = topmanga_soupTable.find_all('tr', attrs={'class':'ranking-list'})
+    mangasInfo = []
+    for manga in mangaList:
+        mangaURL = manga.find('td', attrs={'class':'title al va-t clearfix word-break'}).findChildren('a')
+        mangaURL = mangaURL[0]['href']
+        print(mangaURL)
+        mangaInfo = scrapManga(mangaURL)
+        if(mangaInfo):
+            mangasInfo.append(mangaInfo)
+        time.sleep(delay)
+    for manga in mangasInfo:
+        csvWriter(manga)
+    print(mangasInfo)
+
+def getMangasByID(amount, delay=1):
+    """ Fetches a bunch of manga based on IDs, and then writes the most important data in a CSV file """
+    mangaURL = 'https://myanimelist.net/manga/'
+    mangaID = 1
+    mangasInfo = []
+    while mangaID < amount:
+        url = mangaURL+str(mangaID)
+        print(url)
+        mangaInfo = scrapManga(url)
+        if(mangaInfo):
+            mangasInfo.append(mangaInfo)
+        mangaID = mangaID + 1
+        time.sleep(delay)
+    for manga in mangasInfo:
+        csvWriter(manga)
+    print(mangasInfo)
+
 if __name__ == '__main__':
-    testlocal()
-    #print(searchMangaOnline('one piece'))
+    #testlocal()
+    #createCSV()
+    getTopMangas(50)

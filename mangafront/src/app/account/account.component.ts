@@ -72,14 +72,7 @@ export class AccountComponent implements OnInit {
 
   obtenerRecomendados() {
     this.userService.getUserRecommendations(this.user!.uid).subscribe( async (recommendations: Array<any>) => {
-      for (const manga of recommendations) {
-        await new Promise<void>(resolve => {
-          this.mangaAPI.buscarManga(manga['titulo']).subscribe( ( mangas ) => {
-            this.recomendados.push(mangas[0]);
-            resolve();
-          });
-        });
-      }
+      this.recomendados = recommendations;
     });
   }
 

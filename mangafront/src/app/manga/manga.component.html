@@ -121,7 +121,7 @@
         {{manga.background}}
     </span>
     <div style="margin-top: 1rem;">
-        <div>
+        <div *ngIf="getMainPlot().length > 0">
             <h4>Main Plot</h4>
             <div class="characters">
                 <div class="character" *ngFor="let character of getMainPlot()">

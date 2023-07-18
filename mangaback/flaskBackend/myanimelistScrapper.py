@@ -50,33 +50,39 @@ def parseMangaSoup(soup, debug=False):
     charactersDiv = soup.find(lambda tag:tag.name=="h2" and "Characters" in tag.text).next_sibling
     characters = charactersDiv.find_all(lambda tag:tag.name=="a" and tag.string != None)
     charactersList = []
-    for c in characters:
-        character = {}
-        # Name
-        character['name']=c.string
-        if debug: print(c.string)
-        # Role
-        character['role']=c.next_sibling.next_sibling.find('small').string
-        if debug: print(c.next_sibling.next_sibling.find('small').string)
-        # Image
-        cImgSrc=c.parent.find_previous_sibling().a.img['data-src']
-        cImgSrc = re.sub(r'r/\d+x\d+/', '', cImgSrc)
-        character['image'] = cImgSrc
-        if debug: print(c.parent.find_previous_sibling().a.img['data-src'])
-        charactersList.append(character)
-        # URL
-        character['url']=c['href']
-        if debug: print(c['href'])
+    if(characters[0].string != 'here'): # Check if there are any characters
+        for c in characters:
+            character = {}
+            # Name
+            character['name']=c.string
+            if debug: print(c.string)
+            # Role
+            character['role']=c.next_sibling.next_sibling.find('small').string
+            if debug: print(c.next_sibling.next_sibling.find('small').string)
+            # Image
+            cImgSrc=c.parent.find_previous_sibling().a.img['data-src']
+            cImgSrc = re.sub(r'r/\d+x\d+/', '', cImgSrc)
+            character['image'] = cImgSrc
+            if debug: print(c.parent.find_previous_sibling().a.img['data-src'])
+            charactersList.append(character)
+            # URL
+            character['url']=c['href']
+            if debug: print(c['href'])    
     output_dict['characters'] = charactersList
     
     # Statistics
     statistics = {}
-    score = soup.find('span', string='Score:').find_next_sibling('span').span.string
-    scoreUsers = soup.find('span', string='Score:').find_next_sibling('span').find(itemprop='ratingCount').string
+    scoreDiv = soup.find('span', string='Score:').find_next_sibling('span').span
+    score = 'N/A'
+    scoreUsers = 'N/A'
+    if(not scoreDiv.find(string="N/A")):
+        score = soup.find('span', string='Score:').find_next_sibling('span').span.string
+        scoreUsers = soup.find('span', string='Score:').find_next_sibling('span').find(itemprop='ratingCount').string
     statistics['score'] = score
     statistics['scoreUsers'] = scoreUsers
     if debug: print(score, 'by', score)
     if debug: print(score, 'by', scoreUsers)
+
     
     ranked = soup.find('span', string='Ranked:').next_sibling.strip()
     statistics['ranked'] = ranked

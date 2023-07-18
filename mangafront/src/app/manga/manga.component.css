@@ -72,6 +72,23 @@
     height: 18.5rem;
 }
 
+.fuentes::-webkit-scrollbar {
+    height: .5rem;
+}
+
+.fuentes::-webkit-scrollbar-thumb,
+.fuentes::-webkit-scrollbar-track {
+  border-radius: 92px;
+}
+
+.fuentes::-webkit-scrollbar-thumb {
+  background: var(--bs-primary);
+}
+
+.fuentes::-webkit-scrollbar-track {
+  background: var(--bs-gray);
+}
+
 .fuenteManga {
     display: flex;
     gap: 1rem;

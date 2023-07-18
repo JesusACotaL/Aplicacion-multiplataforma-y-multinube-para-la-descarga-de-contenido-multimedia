@@ -16,7 +16,7 @@
                     <div class="p-2">
                         <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga.name}}</h5>
                     </div>
-                    <button type="button" (click)="verManga(manga)" class="btn btnPrimary mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</button>
+                    <a [href]="verMangaLink(manga.url)" class="btn btnPrimary mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</a>
                 </div>
             </div>
         </div>

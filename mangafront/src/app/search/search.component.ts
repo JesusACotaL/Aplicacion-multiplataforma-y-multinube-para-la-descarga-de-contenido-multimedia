@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class SearchComponent implements OnInit {
     }
   ];
 
-  constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService, private router: Router) { }
+  constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService) { }
 
   ngOnInit(): void {
     // Obtener nombre de manga
@@ -41,8 +41,8 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  verManga(manga : any) {
-    this.router.navigate(['/manga'], { queryParams: { manga: manga.url } });
+  verMangaLink(url: string) {
+    return '/manga?' + new URLSearchParams({manga: url}).toString()
   }
 
 }

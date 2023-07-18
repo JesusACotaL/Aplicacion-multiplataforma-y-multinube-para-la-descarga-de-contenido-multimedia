@@ -80,12 +80,12 @@ export class UserService{
     }
       
     getMangaRating(uid: string, title: string) {
-    const body = {
-        uid: uid,
-        title: title
-    }
-    const url = `${this.backend}/user/getMangaRating`;
-    return this.http.post<any>(url,body);
+        const body = {
+            uid: uid,
+            title: title
+        }
+        const url = `${this.backend}/user/getMangaRating`;
+        return this.http.post<any>(url,body);
     }
 
     updateUserEmail(uid: string, email: string){
@@ -103,6 +103,65 @@ export class UserService{
             password: password
         }
         const url = `${this.backend}/user/updatePassword`;
+        return this.http.post<any>(url,body);
+    }
+
+    getUserRecommendations(uid: string) {
+        const body = {
+            uid: uid
+        }
+        const url = `${this.backend}/user/getUserRecomendations`;
+        return this.http.post<any>(url,body);
+    }
+
+    getUserGenres(uid: string) {
+        const body = {
+            uid: uid
+        }
+        const url = `${this.backend}/user/getUserGenres`;
+        return this.http.post<any>(url,body);
+    }
+
+    getHistory(uid: string) {
+        const body = {
+            uid: uid
+        }
+        const url = `${this.backend}/user/getHistory`;
+        return this.http.post<any>(url,body);
+    }
+
+    addToHistory(uid: string, manga: string) {
+        const body = {
+            uid: uid,
+            manga: manga
+        }
+        const url = `${this.backend}/user/addToHistory`;
+        return this.http.post<any>(url,body);
+    }
+
+    getBookmarks(uid: string) {
+        const body = {
+            uid: uid
+        }
+        const url = `${this.backend}/user/getBookmarks`;
+        return this.http.post<any>(url,body);
+    }
+
+    addMangaToBookmarks(uid: string, manga: string) {
+        const body = {
+            uid: uid,
+            manga: manga
+        }
+        const url = `${this.backend}/user/addMangaToBookmarks`;
+        return this.http.post<any>(url,body);
+    }
+
+    removeMangaFromBookmarks(uid: string, manga: string) {
+        const body = {
+            uid: uid,
+            manga: manga
+        }
+        const url = `${this.backend}/user/removeMangaFromBookmarks`;
         return this.http.post<any>(url,body);
     }
 }

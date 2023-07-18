@@ -23,6 +23,7 @@
     position: relative;
     display: flex; 
     overflow-x: scroll;
+    width: 100%;
     flex-wrap: nowrap;
     gap: 2rem;
     scroll-snap-type: x mandatory;

@@ -69,7 +69,11 @@ def getImageBase64(imageURL):
     im_file = io.BytesIO(binaryImage) # File-like object
     imgPIL = Image.open(im_file) # PIL image
     buffer = io.BytesIO() # Memory for compression operations
-    imgPIL.save(buffer,quality=20,optimize=True,format='JPEG') # Temporal, reduced size image
+
+    # Save image as JPEG format, and apply image compression, number must be in %
+    # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#jpeg-saving
+    imgPIL.save(buffer,format='JPEG',optimize=True,quality=50)
+    
     imgBinaryCompressed = buffer.getvalue()
     image_string = base64.b64encode(imgBinaryCompressed) # Base64 compressed image
     return image_string

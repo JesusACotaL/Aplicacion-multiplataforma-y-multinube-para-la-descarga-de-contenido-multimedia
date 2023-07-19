@@ -35,7 +35,7 @@
                 <i class="bi bi-arrow-left"></i>
             </button>
             <div class="lista-mangas" id="listaMangas">
-                <a *ngFor="let manga of recomendados" class="card bg-dark manga" [href]="verMangaLink(manga.url)">
+                <a *ngFor="let manga of recomendados" class="card bg-dark manga" [href]="verMangaLink(manga.mangaURL)">
                     <img [src]="manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
                     <div class="card-body d-flex flex-column p-0">
                         <div class="p-2">

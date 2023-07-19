@@ -27,7 +27,7 @@ def getUserRatings(uid):
         title = doc.get('title')
         rating = float(doc.get('ratings'))
         userRatings.append({
-            'title': title,
+            'name': title,
             'rating': rating
         })
     return userRatings
@@ -97,9 +97,10 @@ def findMangaSource():
         moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
         module = import_module(moduleName)
         result = module.searchManga(manga)
-        for res in result:
-            res['source'] = source['name']
-        results = results + result
+        if( type(result) is list):
+            for res in result:
+                res['source'] = source['name']
+            results = results + result
     return results
 
 @app.post("/getMangaChapters")
@@ -115,9 +116,10 @@ def getMangaChapters():
             moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
             module = import_module(moduleName)
             result = module.getMangaChapters(url)
-            for res in result:
-                res['source'] = source['name']
-            results = result
+            if( type(result) is list):
+                for res in result:
+                    res['source'] = source['name']
+                results = result
     return results
 
 @app.post("/getChapterLinks")
@@ -133,8 +135,9 @@ def getChapterLinks():
             moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
             module = import_module(moduleName)
             result = module.getChapterURLS(url)
-            for res in result:
-                results.append({'source':source['name'],'url':res})
+            if( type(result) is list):
+                for res in result:
+                    results.append({'source':source['name'],'url':res})
     return results
 
 @app.post("/downloadChapterImage")
@@ -150,8 +153,9 @@ def downloadChapterImage():
             moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
             module = import_module(moduleName)
             image_string = module.getImageBase64(url)
-    response = make_response(image_string)
-    response.headers.set('Content-Type', 'image/jpeg')
+    if( type(image_string) is bytes):
+        response = make_response(image_string)
+        response.headers.set('Content-Type', 'image/jpeg')
     return response
 
 @app.post("/user/getUserGenres")
@@ -168,6 +172,7 @@ def getUserRecomendations():
     uid = data['uid']
     userInput = getUserRatings(uid)
     userGenres = obtener_recomendaciones(userInput)
+    print(userGenres)
     return jsonify(userGenres)
 
 @app.post("/user/getMangaRating")

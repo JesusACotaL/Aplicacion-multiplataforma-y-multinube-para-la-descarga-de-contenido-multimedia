@@ -1,102 +1,101 @@
-mangaId,title,genres
-1,Berserk,"Action, Adventure, Award Winning, Drama, Fantasy, Horror, Supernatural, Gore, Military, Mythology, Psychological"
-2,JoJo no Kimyou na Bouken Part 7: Steel Ball Run,"Action, Adventure, Mystery, Supernatural, Historical"
-3,Vagabond,"Action, Adventure, Award Winning, Historical, Samurai"
-4,One Piece,"Action, Adventure, Fantasy"
-5,Monster,"Award Winning, Drama, Mystery, Adult Cast, Psychological"
-6,Slam Dunk,"Award Winning, Sports, School, Team Sports"
-7,Fullmetal Alchemist,"Action, Adventure, Award Winning, Drama, Fantasy, Military"
-8,Vinland Saga,"Action, Adventure, Award Winning, Drama, Historical"
-9,Grand Blue,Comedy
-10,Oyasumi Punpun,"Drama, Slice of Life, Psychological"
-11,Kingdom,"Action, Award Winning, Historical, Military"
-12,Houseki no Kuni,"Action, Drama, Fantasy, Anthropomorphic"
-13,20th Century Boys,"Award Winning, Drama, Mystery, Sci-Fi, Historical, Psychological"
-14,Ashita no Joe,"Drama, Slice of Life, Sports, Combat Sports"
-15,Monogatari Series: First Season,"Action, Comedy, Mystery, Romance, Supernatural"
-16,Haikyuu!!,"Award Winning, Sports, School, Team Sports"
-17,Real,"Drama, Sports, Psychological, Team Sports"
-18,Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen,"Award Winning, Comedy, Romantic Subtext, School"
-19,GTO,"Action, Award Winning, Comedy, Drama, Ecchi, Delinquents, School, Workplace"
-20,Yotsuba to!,"Award Winning, Comedy, Slice of Life, Childcare, Iyashikei"
-21,3-gatsu no Lion,"Award Winning, Drama, Slice of Life, Childcare, Iyashikei, Strategy Game"
-22,Koe no Katachi,"Award Winning, Drama, Romantic Subtext"
-23,Umineko no Naku Koro ni Chiru - Episode 8: Twilight of the Golden Witch,"Drama, Fantasy, Mystery, Supernatural"
-24,Akatsuki no Yona,"Action, Adventure, Fantasy, Romance"
-25,Kaze no Tani no Nausicaä,"Action, Adventure, Award Winning, Fantasy, Supernatural"
-26,"Jumyou wo Kaitotte Moratta. Ichinen ni Tsuki, Ichimanen de.",Drama
-27,Nana,"Award Winning, Drama, Romance, Adult Cast, Love Polygon, Music"
-28,Uchuu Kyoudai,"Award Winning, Drama, Sci-Fi, Adult Cast, Space, Workplace"
-29,Made in Abyss,"Adventure, Drama, Fantasy, Sci-Fi"
-30,Chainsaw Man,"Action, Award Winning, Supernatural, Gore"
-31,One Punch-Man,"Action, Comedy, Parody, Super Power"
-32,Hunter x Hunter,"Action, Adventure, Fantasy"
-33,Mushishi,"Award Winning, Fantasy, Mystery, Supernatural, Adult Cast, Historical, Iyashikei"
-34,Hajime no Ippo,"Award Winning, Sports, Combat Sports"
-35,Kokou no Hito,"Drama, Sports, Psychological"
-36,Death Note,"Supernatural, Suspense, Psychological"
-37,Shoujo Shuumatsu Ryokou,"Adventure, Award Winning, Slice of Life, Iyashikei"
-38,Sayonara Eri,Drama
-39,Beck,"Award Winning, Drama, Romance, Music"
-40,Yokohama Kaidashi Kikou,"Award Winning, Drama, Sci-Fi, Slice of Life, Iyashikei"
-41,Akira,"Action, Award Winning, Sci-Fi, Gore"
-42,Dorohedoro,"Action, Comedy, Fantasy, Horror, Gore"
-43,Kono Oto Tomare!,"Drama, Performing Arts, School"
-44,"""Oshi no Ko""","Drama, Supernatural, Reincarnation, Showbiz"
-45,Yagate Kimi ni Naru,"Drama, Girls Love, School"
-46,Kozure Ookami,"Action, Historical, Samurai"
-47,Natsume Yuujinchou,"Drama, Supernatural, Iyashikei"
-48,ReLIFE,"Comedy, Drama, Romance, Slice of Life, School"
-49,Blue Period,"Award Winning, Drama, School, Visual Arts"
-50,Golden Kamuy,"Action, Adventure, Award Winning, Historical"
-51,Aria,"Adventure, Comedy, Drama, Sci-Fi, Slice of Life, Iyashikei"
-52,Gintama,"Action, Comedy, Sci-Fi, Gag Humor, Historical, Parody, Samurai"
-53,Pluto,"Action, Award Winning, Mystery, Sci-Fi, Suspense, Mecha, Psychological"
-54,Banana Fish,"Action, Adventure, Drama, Delinquents"
-55,JoJo no Kimyou na Bouken Part 9: The JoJoLands,"Action, Adventure, Supernatural"
-56,"Umarekawattemo Mata, Watashi to Kekkon shitekuremasu ka",Romance
-57,Mob Psycho 100,"Action, Award Winning, Comedy, Supernatural, Super Power"
-58,Bungou Stray Dogs: Beast,"Action, Supernatural"
-59,Sousou no Frieren,"Adventure, Award Winning, Drama, Fantasy"
-60,Kaoru Hana wa Rin to Saku,"Drama, Romance, School"
-61,Hi no Tori (1967),"Drama, Fantasy, Romance, Sci-Fi, Supernatural, Historical, Psychological, Space"
-62,Ao Ashi,"Award Winning, Sports, Team Sports"
-63,Tongari Boushi no Atelier,Fantasy
-64,Shigatsu wa Kimi no Uso,"Award Winning, Drama, Romance, Music, School"
-65,Spy x Family,"Action, Comedy, Childcare"
-66,Umineko no Naku Koro ni Chiru - Episode 7: Requiem of the Golden Witch,"Drama, Mystery, Supernatural, Suspense, Psychological"
-67,Jibaku Shounen Hanako-kun,"Supernatural, School"
-68,Neon Genesis Evangelion,"Action, Drama, Mystery, Sci-Fi, Mecha, Psychological"
-69,Skip Beat!,"Comedy, Drama, Romance, Love Polygon, Showbiz"
-70,JoJo no Kimyou na Bouken Part 4: Diamond wa Kudakenai,"Action, Supernatural"
-71,Pandora Hearts,"Adventure, Fantasy, Mystery, Supernatural"
-72,Rurouni Kenshin: Meiji Kenkaku Romantan,"Action, Drama, Historical, Samurai"
-73,One Outs,"Sports, Adult Cast, Psychological, Team Sports"
-74,Otoyomegatari,"Award Winning, Romance, Slice of Life, Historical"
-75,Chihayafuru,"Award Winning, Drama, Love Polygon, Strategy Game"
-76,Blue Lock,"Award Winning, Sports, Team Sports"
-77,Diamond no Ace Act II,"Sports, School, Team Sports"
-78,Shingeki no Kyojin,"Action, Award Winning, Drama, Gore, Military, Survival"
-79,Kimi wa Houkago Insomnia,"Romance, School"
-80,Tobaku Datenroku Kaiji: One Poker-hen,"Drama, Adult Cast, High Stakes Game, Psychological, Strategy Game"
-81,Given,"Boys Love, Drama, Music, School"
-82,Kidou Senshi Gundam: The Origin,"Action, Award Winning, Drama, Sci-Fi, Mecha, Military, Space"
-83,Kamisama Hajimemashita,"Comedy, Fantasy, Romance, Supernatural, Mythology"
-84,Kakukaku Shikajika,"Award Winning, Slice of Life, Memoir, Otaku Culture, Visual Arts"
-85,Sasaki to Miyano,"Boys Love, Otaku Culture, School"
-86,Watashitachi no Shiawase na Jikan,"Drama, Romance, Music, Psychological"
-87,Skip to Loafer,"Award Winning, Drama, School"
-88,Jujutsu Kaisen,"Action, Supernatural, School"
-89,Sakamichi no Apollon,"Award Winning, Drama, Romance, Love Polygon, Music, School"
-90,Tokyo Ghoul,"Action, Fantasy, Horror, Gore, Psychological"
-91,Fruits Basket,"Award Winning, Drama, Romance, Supernatural, Love Polygon, School"
-92,Bakemonogatari,"Action, Comedy, Drama, Mystery, Romance, Supernatural, Vampire"
-93,Bungou Stray Dogs,"Action, Supernatural"
-94,Vanitas no Karte,"Fantasy, Supernatural, Historical, Vampire"
-95,Shimanami Tasogare,"Drama, Slice of Life, Psychological"
-96,Kimi no Suizou wo Tabetai,Drama
-97,Ouran Koukou Host Club,"Comedy, Drama, Romance, Crossdressing, Reverse Harem, School"
-98,Ping Pong,"Drama, Sports"
-99,Umineko no Naku Koro ni Chiru - Episode 5: End of the Golden Witch,"Drama, Fantasy, Horror, Mystery, Supernatural, Suspense, Psychological"
-100,Spirit Circle,"Action, Adventure, Comedy, Drama, Romance, Supernatural, Reincarnation"
-101,Chikan Otoko,"Comedy, Drama, Romance, Slice of Life"
+mangaID,name,genres,authors,img,mangaURL
+2,Berserk,"Action, Adventure, Award Winning, Drama, Fantasy, Horror, Supernatural, Gore, Military, Mythology, Psychological, Seinen","Miura, Kentarou",https://cdn.myanimelist.net/images/manga/1/157897.jpg,https://myanimelist.net/manga/2/Berserk
+1706,JoJo no Kimyou na Bouken Part 7: Steel Ball Run,"Action, Adventure, Mystery, Supernatural, Historical, Seinen, Shounen","Araki, Hirohiko",https://cdn.myanimelist.net/images/manga/3/179882.jpg,https://myanimelist.net/manga/1706/JoJo_no_Kimyou_na_Bouken_Part_7__Steel_Ball_Run
+656,Vagabond,"Action, Adventure, Award Winning, Historical, Samurai, Seinen","Inoue, Takehiko",https://cdn.myanimelist.net/images/manga/1/259070.jpg,https://myanimelist.net/manga/656/Vagabond
+13,One Piece,"Action, Adventure, Fantasy, Shounen","Oda, Eiichiro",https://cdn.myanimelist.net/images/manga/2/253146.jpg,https://myanimelist.net/manga/13/One_Piece
+1,Monster,"Award Winning, Drama, Mystery, Adult Cast, Psychological, Seinen","Urasawa, Naoki",https://cdn.myanimelist.net/images/manga/3/258224.jpg,https://myanimelist.net/manga/1/Monster
+51,Slam Dunk,"Award Winning, Sports, School, Team Sports, Shounen","Inoue, Takehiko",https://cdn.myanimelist.net/images/manga/2/258749.jpg,https://myanimelist.net/manga/51/Slam_Dunk
+642,Vinland Saga,"Action, Adventure, Award Winning, Drama, Historical, Seinen","Yukimura, Makoto",https://cdn.myanimelist.net/images/manga/2/188925.jpg,https://myanimelist.net/manga/642/Vinland_Saga
+25,Fullmetal Alchemist,"Action, Adventure, Award Winning, Drama, Fantasy, Military, Shounen","Arakawa, Hiromu",https://cdn.myanimelist.net/images/manga/3/243675.jpg,https://myanimelist.net/manga/25/Fullmetal_Alchemist
+70345,Grand Blue,"Comedy, Seinen","Inoue, Kenji",https://cdn.myanimelist.net/images/manga/2/166124.jpg,https://myanimelist.net/manga/70345/Grand_Blue
+4632,Oyasumi Punpun,"Drama, Slice of Life, Psychological, Seinen","Asano, Inio",https://cdn.myanimelist.net/images/manga/3/266834.jpg,https://myanimelist.net/manga/4632/Oyasumi_Punpun
+16765,Kingdom,"Action, Award Winning, Historical, Military, Seinen","Hara, Yasuhisa",https://cdn.myanimelist.net/images/manga/2/171872.jpg,https://myanimelist.net/manga/16765/Kingdom
+44489,Houseki no Kuni,"Action, Drama, Fantasy, Anthropomorphic, Seinen","Ichikawa, Haruko",https://cdn.myanimelist.net/images/manga/1/115443.jpg,https://myanimelist.net/manga/44489/Houseki_no_Kuni
+3,20th Century Boys,"Award Winning, Drama, Mystery, Sci-Fi, Historical, Psychological, Seinen","Urasawa, Naoki",https://cdn.myanimelist.net/images/manga/5/260006.jpg,https://myanimelist.net/manga/3/20th_Century_Boys
+1303,Ashita no Joe,"Drama, Slice of Life, Sports, Combat Sports, Shounen","Kajiwara, Ikki",https://cdn.myanimelist.net/images/manga/1/268827.jpg,https://myanimelist.net/manga/1303/Ashita_no_Joe
+14893,Monogatari Series: First Season,"Action, Comedy, Mystery, Romance, Supernatural, Vampire","NISIO, ISIN",https://cdn.myanimelist.net/images/manga/2/279887.jpg,https://myanimelist.net/manga/14893/Monogatari_Series__First_Season
+657,Real,"Drama, Sports, Psychological, Team Sports, Seinen","Inoue, Takehiko",https://cdn.myanimelist.net/images/manga/2/115969.jpg,https://myanimelist.net/manga/657/Real
+90125,Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen,"Award Winning, Comedy, Romantic Subtext, School, Seinen","Akasaka, Aka",https://cdn.myanimelist.net/images/manga/3/188896.jpg,https://myanimelist.net/manga/90125/Kaguya-sama_wa_Kokurasetai__Tensai-tachi_no_Renai_Zunousen
+126479,Mikkakan no Koufuku,Drama,"Miaki, Sugaru",https://cdn.myanimelist.net/images/manga/3/248674.jpg,https://myanimelist.net/manga/126479/Mikkakan_no_Koufuku
+23751,Monogatari Series: Second Season,"Comedy, Drama, Mystery, Supernatural, Vampire","NISIO, ISIN",https://cdn.myanimelist.net/images/manga/2/181553.jpg,https://myanimelist.net/manga/23751/Monogatari_Series__Second_Season
+336,GTO,"Action, Award Winning, Comedy, Drama, Ecchi, Delinquents, School, Workplace, Shounen","Fujisawa, Tooru",https://cdn.myanimelist.net/images/manga/2/172982.jpg,https://myanimelist.net/manga/336/GTO
+104,Yotsuba to!,"Award Winning, Comedy, Slice of Life, Childcare, Iyashikei","Azuma, Kiyohiko",https://cdn.myanimelist.net/images/manga/5/259524.jpg,https://myanimelist.net/manga/104/Yotsuba_to
+1224,3-gatsu no Lion,"Award Winning, Drama, Slice of Life, Childcare, Iyashikei, Strategy Game, Seinen","Umino, Chika",https://cdn.myanimelist.net/images/manga/2/52283.jpg,https://myanimelist.net/manga/1224/3-gatsu_no_Lion
+89357,Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e,"Drama, Psychological, School","Tomose, Shunsaku",https://cdn.myanimelist.net/images/manga/2/177958.jpg,https://myanimelist.net/manga/89357/Youkoso_Jitsuryoku_Shijou_Shugi_no_Kyoushitsu_e
+123992,Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e: 2-nensei-hen,"Drama, Psychological, School","Tomose, Shunsaku",https://cdn.myanimelist.net/images/manga/3/235363.jpg,https://myanimelist.net/manga/123992/Youkoso_Jitsuryoku_Shijou_Shugi_no_Kyoushitsu_e__2-nensei-hen
+44227,Monogatari Series: Final Season,"Comedy, Mystery, Supernatural, Vampire","NISIO, ISIN",https://cdn.myanimelist.net/images/manga/1/181554.jpg,https://myanimelist.net/manga/44227/Monogatari_Series__Final_Season
+56805,Koe no Katachi,"Award Winning, Drama, Romantic Subtext, Shounen","Ooima, Yoshitoki",https://cdn.myanimelist.net/images/manga/1/120529.jpg,https://myanimelist.net/manga/56805/Koe_no_Katachi
+34053,Umineko no Naku Koro ni Chiru - Episode 8: Twilight of the Golden Witch,"Drama, Fantasy, Mystery, Supernatural, Shounen","Natsumi, Kei",https://cdn.myanimelist.net/images/manga/3/206205.jpg,https://myanimelist.net/manga/34053/Umineko_no_Naku_Koro_ni_Chiru_-_Episode_8__Twilight_of_the_Golden_Witch
+35243,Haikyuu!!,"Award Winning, Sports, School, Team Sports, Shounen","Furudate, Haruichi",https://cdn.myanimelist.net/images/manga/2/258225.jpg,https://myanimelist.net/manga/35243/Haikyuu
+9115,Ookami to Koushinryou,"Adventure, Drama, Fantasy, Romance, Supernatural, Adult Cast, Historical","Hasekura, Isuna",https://cdn.myanimelist.net/images/manga/2/153860.jpg,https://myanimelist.net/manga/9115/Ookami_to_Koushinryou
+651,Kaze no Tani no Nausicaä,"Action, Adventure, Award Winning, Fantasy, Supernatural","Miyazaki, Hayao",https://cdn.myanimelist.net/images/manga/3/259856.jpg,https://myanimelist.net/manga/651/Kaze_no_Tani_no_Nausicaä
+21525,Akatsuki no Yona,"Action, Adventure, Fantasy, Romance, Shoujo","Kusanagi, Mizuho",https://cdn.myanimelist.net/images/manga/2/269202.jpg,https://myanimelist.net/manga/21525/Akatsuki_no_Yona
+104039,86,"Action, Drama, Sci-Fi, Military",Shirabi,https://cdn.myanimelist.net/images/manga/3/194315.jpg,https://myanimelist.net/manga/104039/86
+100448,"Jumyou wo Kaitotte Moratta. Ichinen ni Tsuki, Ichimanen de.","Drama, Shounen","Taguchi, Shouichi",https://cdn.myanimelist.net/images/manga/5/260043.jpg,https://myanimelist.net/manga/100448/Jumyou_wo_Kaitotte_Moratta_Ichinen_ni_Tsuki_Ichimanen_de
+70261,Mushoku Tensei: Isekai Ittara Honki Dasu,"Fantasy, Isekai, Reincarnation",Rifujin na Magonote,https://cdn.myanimelist.net/images/manga/3/120337.jpg,https://myanimelist.net/manga/70261/Mushoku_Tensei__Isekai_Ittara_Honki_Dasu
+74697,Re:Zero kara Hajimeru Isekai Seikatsu,"Drama, Fantasy, Suspense, Isekai, Psychological, Time Travel","Nagatsuki, Tappei",https://cdn.myanimelist.net/images/manga/1/129447.jpg,https://myanimelist.net/manga/74697/Re_Zero_kara_Hajimeru_Isekai_Seikatsu
+28,Nana,"Award Winning, Drama, Romance, Adult Cast, Love Polygon, Music, Shoujo","Yazawa, Ai",https://cdn.myanimelist.net/images/manga/1/262324.jpg,https://myanimelist.net/manga/28/Nana
+14483,Uchuu Kyoudai,"Award Winning, Drama, Sci-Fi, Adult Cast, Space, Workplace, Seinen","Koyama, Chuuya",https://cdn.myanimelist.net/images/manga/3/166256.jpg,https://myanimelist.net/manga/14483/Uchuu_Kyoudai
+40171,Yahari Ore no Seishun Love Comedy wa Machigatteiru.,"Comedy, Romance, Love Polygon, School","Watari, Wataru",https://cdn.myanimelist.net/images/manga/1/122461.jpg,https://myanimelist.net/manga/40171/Yahari_Ore_no_Seishun_Love_Comedy_wa_Machigatteiru
+91941,Made in Abyss,"Adventure, Drama, Fantasy, Sci-Fi","Tsukushi, Akihito",https://cdn.myanimelist.net/images/manga/3/161645.jpg,https://myanimelist.net/manga/91941/Made_in_Abyss
+116778,Chainsaw Man,"Action, Award Winning, Supernatural, Gore, Shounen","Fujimoto, Tatsuki",https://cdn.myanimelist.net/images/manga/3/216464.jpg,https://myanimelist.net/manga/116778/Chainsaw_Man
+44347,One Punch-Man,"Action, Comedy, Parody, Super Power, Seinen","Murata, Yusuke",https://cdn.myanimelist.net/images/manga/3/80661.jpg,https://myanimelist.net/manga/44347/One_Punch-Man
+26,Hunter x Hunter,"Action, Adventure, Fantasy, Shounen","Togashi, Yoshihiro",https://cdn.myanimelist.net/images/manga/2/253119.jpg,https://myanimelist.net/manga/26/Hunter_x_Hunter
+418,Mushishi,"Award Winning, Fantasy, Mystery, Supernatural, Adult Cast, Historical, Iyashikei, Seinen","Urushibara, Yuki",https://cdn.myanimelist.net/images/manga/2/159514.jpg,https://myanimelist.net/manga/418/Mushishi
+86119,Honzuki no Gekokujou: Shisho ni Naru Tame ni wa Shudan wo Erandeiraremasen,"Fantasy, Isekai, Reincarnation","Shiina, You",https://cdn.myanimelist.net/images/manga/1/149552.jpg,https://myanimelist.net/manga/86119/Honzuki_no_Gekokujou__Shisho_ni_Naru_Tame_ni_wa_Shudan_wo_Erandeiraremasen
+55215,Utsuro no Hako to Zero no Maria,"Action, Drama, Horror, Mystery, Romance, Supernatural, Suspense, Psychological, School","Mikage, Eiji",https://cdn.myanimelist.net/images/manga/2/175662.jpg,https://myanimelist.net/manga/55215/Utsuro_no_Hako_to_Zero_no_Maria
+7,Hajime no Ippo,"Award Winning, Sports, Combat Sports, Shounen","Morikawa, George",https://cdn.myanimelist.net/images/manga/2/250313.jpg,https://myanimelist.net/manga/7/Hajime_no_Ippo
+7375,Kokou no Hito,"Drama, Sports, Psychological, Seinen","Sakamoto, Shinichi",https://cdn.myanimelist.net/images/manga/5/96223.jpg,https://myanimelist.net/manga/7375/Kokou_no_Hito
+21,Death Note,"Supernatural, Suspense, Psychological, Shounen","Obata, Takeshi",https://cdn.myanimelist.net/images/manga/1/258245.jpg,https://myanimelist.net/manga/21/Death_Note
+72467,Shoujo Shuumatsu Ryokou,"Adventure, Award Winning, Slice of Life, Iyashikei",Tsukumizu,https://cdn.myanimelist.net/images/manga/1/185918.jpg,https://myanimelist.net/manga/72467/Shoujo_Shuumatsu_Ryokou
+145863,Sayonara Eri,"Drama, Shounen","Fujimoto, Tatsuki",https://cdn.myanimelist.net/images/manga/3/263979.jpg,https://myanimelist.net/manga/145863/Sayonara_Eri
+145,Beck,"Award Winning, Drama, Romance, Music, Shounen","Sakuishi, Harold",https://cdn.myanimelist.net/images/manga/3/253274.jpg,https://myanimelist.net/manga/145/Beck
+4,Yokohama Kaidashi Kikou,"Award Winning, Drama, Sci-Fi, Slice of Life, Iyashikei, Seinen","Ashinano, Hitoshi",https://cdn.myanimelist.net/images/manga/1/171813.jpg,https://myanimelist.net/manga/4/Yokohama_Kaidashi_Kikou
+664,Akira,"Action, Award Winning, Sci-Fi, Gore, Seinen","Otomo, Katsuhiro",https://cdn.myanimelist.net/images/manga/3/271629.jpg,https://myanimelist.net/manga/664/Akira
+1133,Dorohedoro,"Action, Comedy, Fantasy, Horror, Gore, Seinen","Hayashida, Q",https://cdn.myanimelist.net/images/manga/3/258246.jpg,https://myanimelist.net/manga/1133/Dorohedoro
+45143,Kono Oto Tomare!,"Drama, Performing Arts, School, Shounen","Sakura, Amyuu",https://cdn.myanimelist.net/images/manga/3/116653.jpg,https://myanimelist.net/manga/45143/Kono_Oto_Tomare
+121496,Solo Leveling,"Action, Adventure, Fantasy",Chugong,https://cdn.myanimelist.net/images/manga/3/222295.jpg,https://myanimelist.net/manga/121496/Solo_Leveling
+126146,"""Oshi no Ko""","Drama, Supernatural, Reincarnation, Showbiz, Seinen","Akasaka, Aka",https://cdn.myanimelist.net/images/manga/3/233991.jpg,https://myanimelist.net/manga/126146/Oshi_no_Ko
+125036,The Horizon,"Adventure, Drama, Psychological","Jeong, Ji-Hoon",https://cdn.myanimelist.net/images/manga/1/229331.jpg,https://myanimelist.net/manga/125036/The_Horizon
+88660,Yagate Kimi ni Naru,"Drama, Girls Love, School","Nakatani, Nio",https://cdn.myanimelist.net/images/manga/1/232311.jpg,https://myanimelist.net/manga/88660/Yagate_Kimi_ni_Naru
+904,Kozure Ookami,"Action, Historical, Samurai, Seinen","Koike, Kazuo",https://cdn.myanimelist.net/images/manga/1/159264.jpg,https://myanimelist.net/manga/904/Kozure_Ookami
+1859,Natsume Yuujinchou,"Drama, Supernatural, Iyashikei, Shoujo","Midorikawa, Yuki",https://cdn.myanimelist.net/images/manga/3/260099.jpg,https://myanimelist.net/manga/1859/Natsume_Yuujinchou
+9726,Zaregoto Series,"Action, Drama, Mystery, Supernatural","NISIO, ISIN",https://cdn.myanimelist.net/images/manga/1/157901.jpg,https://myanimelist.net/manga/9726/Zaregoto_Series
+78523,ReLIFE,"Comedy, Drama, Romance, Slice of Life, School","Yayoi, Sou",https://cdn.myanimelist.net/images/manga/2/171573.jpg,https://myanimelist.net/manga/78523/ReLIFE
+81669,Overlord,"Action, Fantasy, Supernatural, Isekai, Video Game","Maruyama, Kugane",https://cdn.myanimelist.net/images/manga/1/160558.jpg,https://myanimelist.net/manga/81669/Overlord
+107931,Blue Period,"Award Winning, Drama, School, Visual Arts, Seinen","Yamaguchi, Tsubasa",https://cdn.myanimelist.net/images/manga/2/204827.jpg,https://myanimelist.net/manga/107931/Blue_Period
+24875,Shinyaku Toaru Majutsu no Index,"Action, Comedy, Fantasy, Sci-Fi, Supernatural, Super Power","Kamachi, Kazuma",https://cdn.myanimelist.net/images/manga/2/221675.jpg,https://myanimelist.net/manga/24875/Shinyaku_Toaru_Majutsu_no_Index
+35513,Koten-bu Series,"Adventure, Mystery, School","Yonezawa, Honobu",https://cdn.myanimelist.net/images/manga/3/80983.jpg,https://myanimelist.net/manga/35513/Koten-bu_Series
+399,Kino no Tabi: The Beautiful World,"Adventure, Drama, Fantasy, Mystery, Sci-Fi, Psychological","Sigsawa, Keiichi",https://cdn.myanimelist.net/images/manga/4/1146.jpg,https://myanimelist.net/manga/399/Kino_no_Tabi__The_Beautiful_World
+98930,Violet Evergarden,"Drama, Fantasy","Akatsuki, Kana",https://cdn.myanimelist.net/images/manga/3/279888.jpg,https://myanimelist.net/manga/98930/Violet_Evergarden
+117077,Kimi no Suizou wo Tabetai,"Drama, Romance","Sumino, Yoru",https://cdn.myanimelist.net/images/manga/2/248632.jpg,https://myanimelist.net/manga/117077/Kimi_no_Suizou_wo_Tabetai
+85968,Golden Kamuy,"Action, Adventure, Award Winning, Historical, Seinen","Noda, Satoru",https://cdn.myanimelist.net/images/manga/3/149257.jpg,https://myanimelist.net/manga/85968/Golden_Kamuy
+102875,Fata Morgana no Yakata: Anata no Genten ni Itaru Monogatari,"Drama, Horror, Mystery, Supernatural","Hanada, Keika",https://cdn.myanimelist.net/images/manga/2/193634.jpg,https://myanimelist.net/manga/102875/Fata_Morgana_no_Yakata__Anata_no_Genten_ni_Itaru_Monogatari
+81,Aria,"Adventure, Comedy, Drama, Sci-Fi, Slice of Life, Iyashikei, Shounen","Amano, Kozue",https://cdn.myanimelist.net/images/manga/2/202644.jpg,https://myanimelist.net/manga/81/Aria
+44,Gintama,"Action, Comedy, Sci-Fi, Gag Humor, Historical, Parody, Samurai, Shounen","Sorachi, Hideaki",https://cdn.myanimelist.net/images/manga/3/267795.jpg,https://myanimelist.net/manga/44/Gintama
+745,Pluto,"Action, Award Winning, Mystery, Sci-Fi, Suspense, Mecha, Psychological, Seinen","Urasawa, Naoki",https://cdn.myanimelist.net/images/manga/1/264496.jpg,https://myanimelist.net/manga/745/Pluto
+756,Banana Fish,"Action, Adventure, Drama, Delinquents, Shoujo","Yoshida, Akimi",https://cdn.myanimelist.net/images/manga/5/265185.jpg,https://myanimelist.net/manga/756/Banana_Fish
+114043,"Umarekawattemo Mata, Watashi to Kekkon shitekuremasu ka",Romance,"Morinaga, Miku",https://cdn.myanimelist.net/images/manga/1/211769.jpg,https://myanimelist.net/manga/114043/Umarekawattemo_Mata_Watashi_to_Kekkon_shitekuremasu_ka
+139629,JoJo no Kimyou na Bouken Part 9: The JoJoLands,"Action, Adventure, Supernatural, Seinen","Araki, Hirohiko",https://cdn.myanimelist.net/images/manga/1/276920.jpg,https://myanimelist.net/manga/139629/JoJo_no_Kimyou_na_Bouken_Part_9__The_JoJoLands
+60553,Kono Subarashii Sekai ni Shukufuku wo!,"Adventure, Comedy, Fantasy, Isekai, Parody, Reincarnation","Mishima, Kurone",https://cdn.myanimelist.net/images/manga/1/174932.jpg,https://myanimelist.net/manga/60553/Kono_Subarashii_Sekai_ni_Shukufuku_wo
+60783,Mob Psycho 100,"Action, Award Winning, Comedy, Supernatural, Super Power",ONE,https://cdn.myanimelist.net/images/manga/2/204842.jpg,https://myanimelist.net/manga/60783/Mob_Psycho_100
+70399,Seishun Buta Yarou Series,"Drama, Romance, Supernatural, School","Kamoshida, Hajime",https://cdn.myanimelist.net/images/manga/2/177502.jpg,https://myanimelist.net/manga/70399/Seishun_Buta_Yarou_Series
+123006,Bungou Stray Dogs: Beast,"Action, Supernatural, Shounen","Asagiri, Kafka",https://cdn.myanimelist.net/images/manga/2/234643.jpg,https://myanimelist.net/manga/123006/Bungou_Stray_Dogs__Beast
+126287,Sousou no Frieren,"Adventure, Award Winning, Drama, Fantasy, Shounen","Yamada, Kanehito",https://cdn.myanimelist.net/images/manga/3/232121.jpg,https://myanimelist.net/manga/126287/Sousou_no_Frieren
+108177,Monogatari Series: Monster Season,"Comedy, Mystery, Supernatural, Vampire","NISIO, ISIN",https://cdn.myanimelist.net/images/manga/1/198051.jpg,https://myanimelist.net/manga/108177/Monogatari_Series__Monster_Season
+102256,Ao Ashi,"Award Winning, Sports, Team Sports, Seinen","Kobayashi, Yuugo",https://cdn.myanimelist.net/images/manga/1/185325.jpg,https://myanimelist.net/manga/102256/Ao_Ashi
+1325,Hi no Tori (1967),"Drama, Fantasy, Romance, Sci-Fi, Supernatural, Historical, Psychological, Space, Shounen","Tezuka, Osamu",https://cdn.myanimelist.net/images/manga/3/159419.jpg,https://myanimelist.net/manga/1325/Hi_no_Tori_1967
+6978,Ginga Eiyuu Densetsu,"Action, Adventure, Drama, Sci-Fi, Adult Cast, Military, Space","Tanaka, Yoshiki",https://cdn.myanimelist.net/images/manga/5/155231.jpg,https://myanimelist.net/manga/6978/Ginga_Eiyuu_Densetsu
+144267,Kaoru Hana wa Rin to Saku,"Drama, Romance, School","Mikami, Saka",https://cdn.myanimelist.net/images/manga/5/256607.jpg,https://myanimelist.net/manga/144267/Kaoru_Hana_wa_Rin_to_Saku
+100035,Tongari Boushi no Atelier,"Fantasy, Seinen","Shirahama, Kamome",https://cdn.myanimelist.net/images/manga/3/190005.jpg,https://myanimelist.net/manga/100035/Tongari_Boushi_no_Atelier
+37707,Shigatsu wa Kimi no Uso,"Award Winning, Drama, Romance, Music, School, Shounen","Arakawa, Naoshi",https://cdn.myanimelist.net/images/manga/3/102691.jpg,https://myanimelist.net/manga/37707/Shigatsu_wa_Kimi_no_Uso
+23900,Umineko no Naku Koro ni Chiru - Episode 7: Requiem of the Golden Witch,"Drama, Mystery, Supernatural, Suspense, Psychological, Shounen","Mizuno, Eita",https://cdn.myanimelist.net/images/manga/1/273943.jpg,https://myanimelist.net/manga/23900/Umineko_no_Naku_Koro_ni_Chiru_-_Episode_7__Requiem_of_the_Golden_Witch
+103237,Wind Breaker,"Action, Drama, Sports","Jo, Yongseok",https://cdn.myanimelist.net/images/manga/1/189563.jpg,https://myanimelist.net/manga/103237/Wind_Breaker
+105084,Jibaku Shounen Hanako-kun,"Supernatural, School, Shounen","Aida, Iro",https://cdn.myanimelist.net/images/manga/3/192551.jpg,https://myanimelist.net/manga/105084/Jibaku_Shounen_Hanako-kun
+140765,Tian Guan Ci Fu,"Action, Adventure, Boys Love, Drama, Supernatural, Historical",Mo Xiang Tong Xiu,https://cdn.myanimelist.net/images/manga/2/258222.jpg,https://myanimelist.net/manga/140765/Tian_Guan_Ci_Fu
+698,Neon Genesis Evangelion,"Action, Drama, Mystery, Sci-Fi, Mecha, Psychological, Seinen, Shounen","Sadamoto, Yoshiyuki",https://cdn.myanimelist.net/images/manga/1/145061.jpg,https://myanimelist.net/manga/698/Neon_Genesis_Evangelion
+119161,Spy x Family,"Action, Comedy, Childcare, Shounen","Endou, Tatsuya",https://cdn.myanimelist.net/images/manga/3/219741.jpg,https://myanimelist.net/manga/119161/Spy_x_Family
+610,Skip Beat!,"Comedy, Drama, Romance, Love Polygon, Showbiz, Shoujo","Nakamura, Yoshiki",https://cdn.myanimelist.net/images/manga/2/255389.jpg,https://myanimelist.net/manga/610/Skip_Beat
+3006,JoJo no Kimyou na Bouken Part 4: Diamond wa Kudakenai,"Action, Supernatural, Shounen","Araki, Hirohiko",https://cdn.myanimelist.net/images/manga/3/269910.jpg,https://myanimelist.net/manga/3006/JoJo_no_Kimyou_na_Bouken_Part_4__Diamond_wa_Kudakenai
+3031,Pandora Hearts,"Adventure, Fantasy, Mystery, Supernatural, Shounen","Mochizuki, Jun",https://cdn.myanimelist.net/images/manga/2/169004.jpg,https://myanimelist.net/manga/3031/Pandora_Hearts
+3083,Suzumiya Haruhi Series,"Comedy, Drama, Sci-Fi, Supernatural, School","Tanigawa, Nagaru",https://cdn.myanimelist.net/images/manga/1/186142.jpg,https://myanimelist.net/manga/3083/Suzumiya_Haruhi_Series

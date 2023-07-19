@@ -19,7 +19,7 @@ def generar_ratings(uid):
 
         # Agregar los datos a la lista
         data.append({
-            'title': title,
+            'name': title,
             'rating': rating
         })
     return data

@@ -118,6 +118,15 @@
 
 .character {
     width: 100px;
+    padding: .5rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.character:hover {
+    border: 1px solid black;
 }
 
 /* Rating CSS */

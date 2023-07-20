@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Manga } from '../interfaces/manga.interface';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
 import { UserService } from '../services/user.service';
 import { User } from 'firebase/auth'; // Importar User de firebase/auth
@@ -37,7 +37,7 @@ export class MangaComponent implements OnInit {
 
   inBookmarks = false;
 
-  constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
+  constructor(private router: Router,private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
      private firestore: AngularFirestore) {}
 
   ngOnInit(): void {
@@ -48,13 +48,6 @@ export class MangaComponent implements OnInit {
       this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga) => {
         this.manga = manga;
         this.obtenerFuentes();
-        // Reabrir capitulo si se accede con URL
-        if(parametros['title'] && parametros['chap']) {
-          const titulo = parametros['title'];
-          const fuente = parametros['chap'];
-          const fuenteNombre = parametros['chapSrcName'];
-          this.mostrarEpisodio(titulo, fuente, fuenteNombre);
-        }
         this.userService.getAuth().onAuthStateChanged((user) => {
           if (user) {
             // User is signed in, see docs for a list of available properties
@@ -121,11 +114,11 @@ export class MangaComponent implements OnInit {
   }
 
   mostrarEpisodio(titulo: string, episodioURL: string, fuenteNombre: string) {
-    // Agregar a historial de vista del usuario
+    const queryParams: Params = { chap: episodioURL, title: titulo, chapSrcName: fuenteNombre };
     if(this.user) {
       this.userService.addToHistory(this.user.uid, this.manga).subscribe( () => {});
     }
-    this.mangaModal.mostrar(titulo,fuenteNombre,episodioURL);
+    this.mangaModal.mostrar(titulo, fuenteNombre, episodioURL);
   }
 
   verPagina(pagina: number) {

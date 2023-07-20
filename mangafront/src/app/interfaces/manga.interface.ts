@@ -1,4 +1,5 @@
 export interface Manga {
+    mangaID: string,
     name: string,
     name_english: string,
     authors: string,
@@ -15,5 +16,6 @@ export interface Manga {
         scoreUsers: string
     },
     status: string,
-    synopsis: string
+    synopsis: string,
+    mangaURL: string
 }

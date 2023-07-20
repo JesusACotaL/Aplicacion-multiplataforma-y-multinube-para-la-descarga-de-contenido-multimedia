@@ -71,34 +71,20 @@ export class AccountComponent implements OnInit {
   }
 
   obtenerRecomendados() {
-    this.userService.getUserRecommendations(this.user!.uid).subscribe( async (recommendations: Array<any>) => {
+    this.userService.getUserRecommendations(this.user!.uid).subscribe( (recommendations: Array<any>) => {
       this.recomendados = recommendations;
     });
   }
 
   obtenerHistorial() {
-    this.userService.getHistory(this.user!.uid).subscribe( async (history: Array<any>) => {
-      for (const manga of history) {
-        await new Promise<void>(resolve => {
-          this.mangaAPI.buscarManga(manga['manga']).subscribe( ( mangas ) => {
-            this.historial.push(mangas[0]);
-            resolve();
-          });
-        });
-      }
+    this.userService.getHistory(this.user!.uid).subscribe( (history: Array<any>) => {
+      this.historial = history;
     });
   }
   
   obtenerFavoritos() {
-    this.userService.getBookmarks(this.user!.uid).subscribe( async (bookmarks: Array<any>) => {
-      for (const manga of bookmarks) {
-        await new Promise<void>(resolve => {
-          this.mangaAPI.buscarManga(manga).subscribe( ( mangas ) => {
-            this.favoritos.push(mangas[0]);
-            resolve();
-          });
-        });
-      }
+    this.userService.getBookmarks(this.user!.uid).subscribe( (bookmarks: Array<any>) => {
+      this.favoritos = bookmarks;
     });
   }
   
@@ -107,6 +93,7 @@ export class AccountComponent implements OnInit {
       for (const genre of genres) {
         await new Promise<void>(resolve => {
           // Implementar busqueda por genero para continuar aqui
+          resolve();
         });
       }
     });

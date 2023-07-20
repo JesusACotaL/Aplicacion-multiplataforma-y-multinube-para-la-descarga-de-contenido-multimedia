@@ -1,4 +1,12 @@
 .manga {
   background: var(--primary-color);
   color: white;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: all .2s ease-in-out;
+}
+
+.manga:hover {
+  transform: scale(1.1);
 }

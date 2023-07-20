@@ -1,15 +1,15 @@
 
 <app-navbar></app-navbar>
-<div *ngIf="user" class="fondo-perfil">
+<div *ngIf="user" class="perfil">
     <div> 
         <div class="imagen-perfil">
             <div style="font-size: 2em;">Welcome, {{user.email}}!</div>
             <img src="assets\bills.jpg" class="img-fluid mx-auto" width="300"> 
         </div>
     </div>
-    <div class="p-1" *ngIf="historial.length > 0">
+    <div class="listaMangasDiv" *ngIf="historial.length > 0">
         <h4>Continue reading</h4>
-        <div style="position: relative; display: flex;">
+        <div class="listaMangasContainer">
             <button class="arrow arrowLeft" (click)="desplazarLista(true)" style="border: none; color: white;">
                 <i class="bi bi-arrow-left"></i>
             </button>
@@ -28,9 +28,9 @@
             </button>
         </div>
     </div>
-    <div class="p-1" *ngIf="recomendados.length > 0">
+    <div class="listaMangasDiv" *ngIf="recomendados.length > 0">
         <h4>Recommended for you</h4>
-        <div style="position: relative; display: flex;">
+        <div class="listaMangasContainer">
             <button class="arrow arrowLeft" (click)="desplazarLista(true)" style="border: none; color: white;">
                 <i class="bi bi-arrow-left"></i>
             </button>
@@ -49,9 +49,9 @@
             </button>
         </div>
     </div>
-    <div class="p-1" *ngIf="favoritos.length > 0">
+    <div class="listaMangasDiv" *ngIf="favoritos.length > 0">
         <h4>Favorites</h4>
-        <div style="position: relative; display: flex;">
+        <div class="listaMangasContainer">
             <button class="arrow arrowLeft" (click)="desplazarLista(true)" style="border: none; color: white;">
                 <i class="bi bi-arrow-left"></i>
             </button>

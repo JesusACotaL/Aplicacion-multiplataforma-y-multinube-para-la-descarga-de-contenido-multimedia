@@ -9,41 +9,23 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
   templateUrl: './manga-modal.component.html',
   styleUrls: ['./manga-modal.component.css']
 })
-export class MangaModalComponent implements OnInit, OnChanges {
-  fuenteManga: string; 
+export class MangaModalComponent implements OnInit { 
   mangaModal!: bootstrap.Modal;
   div!: HTMLElement | null;
   titulo!: string;
-  @Input() pFuenteMangaNombre: string;
-  @Input() pFuenteManga: string;
-  @Input() pTitulo: string;
-  @Input() pMostrar: boolean;
   cargadas = 0;
   total = 0;
+  mostrando = false;
   
-  constructor(private mangaAPI: MangaApiService, private router: Router, private route: ActivatedRoute) {
-    this.pFuenteMangaNombre = '';
-    this.pFuenteManga = '';
-    this.pTitulo = '';
-    this.pMostrar=false;
-    this.fuenteManga = '';
-  }
-
-  ngOnChanges() {
-    this.fuenteManga = this.pFuenteManga;   
-    this.titulo = this.pTitulo
-    if(this.pMostrar) {
-      this.mostrar();
-    }
-  } 
+  constructor(private mangaAPI: MangaApiService, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.mangaModal = new bootstrap.Modal('#exampleModal', {keyboard: false});
     this.div = document.getElementById('ImagenesCapitulo');
   }
   
-  mostrar() {
-    const queryParams: Params = { chap: this.fuenteManga, title: this.titulo, chapSrcName: this.pFuenteMangaNombre };
+  mostrar(nombreEpisodio: string, fuenteNombre: string, fuente:string) {
+    const queryParams: Params = { chap: fuente, title: nombreEpisodio, chapSrcName: fuenteNombre };
     this.router.navigate(
       [], 
       {
@@ -51,17 +33,17 @@ export class MangaModalComponent implements OnInit, OnChanges {
         queryParams: queryParams, 
         queryParamsHandling: 'merge', // remove to replace all query params by provided
     });
-    this.mangaModal.show();
-    if(this.div) {
+    if(fuente != '' && this.div) {
+      this.mangaModal.show();
       this.div.innerHTML = '';
+      this.cargarImagenes(fuenteNombre, fuente);
     }
-    if(this.fuenteManga != '') {
-      this.cargarImagenes(this.pFuenteMangaNombre, this.fuenteManga);
-    }
+    this.titulo = nombreEpisodio;
+    this.mostrando = true;
   }
 
   closeModal() {
-    const queryParams: Params = { chap: null, title: null };
+    const queryParams: Params = { chap: null, title: null, chapSrcName: null };
     this.router.navigate(
       [], 
       {
@@ -69,8 +51,7 @@ export class MangaModalComponent implements OnInit, OnChanges {
         queryParams: queryParams, 
         queryParamsHandling: 'merge', // remove to replace all query params by provided
     });
-    this.titulo = '';
-    this.fuenteManga = '';
+    this.mostrando = false;
   }
 
   cargarImagenes(fuente_nombre: string, url: string) { 
@@ -78,7 +59,7 @@ export class MangaModalComponent implements OnInit, OnChanges {
       this.cargadas = 0;
       this.total = imagenes.length;
       for (const imagen of imagenes) {
-        if(this.fuenteManga != '') { // Cancel if user closed modal
+        if(this.mostrando) { // Cancel if user closed modal
           await new Promise<void>(resolve => {
             this.mangaAPI.descargarImagenCapitulo(imagen['source'], imagen['url']).subscribe( ( imagenBase64 ) => {
               let htmlimg = new Image();

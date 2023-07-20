@@ -23,7 +23,7 @@
             <button class="btn btn-outline-secondary" type="button" (click)="register();">Sign up</button>    
         </div>
         <div *ngIf="user" class="d-flex align-items-center gap-2">
-            <span>Logged in as: {{ user.email }}</span>
+            <a href="/account">Logged in as: {{ user.email }}</a>
             <button class="btn btn-outline-secondary" type="button" (click)="logOut();">Log out</button>   
         </div>
         <div class="ms-auto">

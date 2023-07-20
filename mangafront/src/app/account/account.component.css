@@ -1,7 +1,9 @@
-.fondo-perfil{
-    background: none;/*url('/assets/fondo.jpg');*/
-    background-size: cover;
-    background-repeat: no-repeat;
+.perfil{
+  display: flex;
+  flex-direction: column;
+  background: url('/assets/fondo.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .imagen-perfil {
@@ -19,14 +21,30 @@
     border-radius: 50%;
 }
 
+.listaMangasDiv {
+  position: relative; 
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.listaMangasDiv .listaMangasContainer{
+  position: relative; 
+  display: flex;
+  background: var(--primary-color);
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
 .lista-mangas {
-    position: relative;
-    display: flex; 
-    overflow-x: scroll;
-    width: 100%;
-    flex-wrap: nowrap;
-    gap: 2rem;
-    scroll-snap-type: x mandatory;
+  position: relative;
+  display: flex; 
+  overflow-x: scroll;
+  width: 100%;
+  flex-wrap: nowrap;
+  gap: 2rem;
+  scroll-snap-type: x mandatory;
+  margin: .5rem;
 }
 
 .lista-mangas::-webkit-scrollbar {

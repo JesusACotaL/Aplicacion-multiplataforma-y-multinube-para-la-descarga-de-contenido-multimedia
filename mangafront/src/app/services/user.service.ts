@@ -6,6 +6,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Manga } from "../interfaces/manga.interface";
 
 @Injectable({
     providedIn:'root'
@@ -130,10 +131,10 @@ export class UserService{
         return this.http.post<any>(url,body);
     }
 
-    addToHistory(uid: string, manga: string) {
+    addToHistory(uid: string, manga: Manga) {
         const body = {
             uid: uid,
-            manga: manga
+            ... manga
         }
         const url = `${this.backend}/user/addToHistory`;
         return this.http.post<any>(url,body);
@@ -147,19 +148,19 @@ export class UserService{
         return this.http.post<any>(url,body);
     }
 
-    addMangaToBookmarks(uid: string, manga: string) {
+    addMangaToBookmarks(uid: string, manga: Manga) {
         const body = {
             uid: uid,
-            manga: manga
+            ... manga
         }
         const url = `${this.backend}/user/addMangaToBookmarks`;
         return this.http.post<any>(url,body);
     }
 
-    removeMangaFromBookmarks(uid: string, manga: string) {
+    removeMangaFromBookmarks(uid: string, manga: Manga) {
         const body = {
             uid: uid,
-            manga: manga
+            ... manga
         }
         const url = `${this.backend}/user/removeMangaFromBookmarks`;
         return this.http.post<any>(url,body);

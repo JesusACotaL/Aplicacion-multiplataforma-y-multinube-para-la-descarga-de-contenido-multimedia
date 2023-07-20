@@ -100,7 +100,7 @@
                 </li>
             </ul>
             <ul *ngIf="chapQuery != ''" class="list-group list-group-flush" style="border-radius: .5rem;">
-                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'], capitulo['source'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados">
+                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'], capitulo['source'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
                     <span>{{ capitulo['name'] }}</span>
                     <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
                 </li>

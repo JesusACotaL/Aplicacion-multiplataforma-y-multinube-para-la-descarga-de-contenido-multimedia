@@ -71,9 +71,14 @@
 }
 
 .manga {
-    flex: 0 0 12rem;
-    scroll-snap-align: start;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
+  flex: 0 0 12rem;
+  scroll-snap-align: start;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: all .2s ease-in-out;
+}
+
+.manga:hover {
+  transform: scale(1.1);
 }

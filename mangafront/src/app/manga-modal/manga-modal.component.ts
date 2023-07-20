@@ -33,11 +33,9 @@ export class MangaModalComponent implements OnInit {
         queryParams: queryParams, 
         queryParamsHandling: 'merge', // remove to replace all query params by provided
     });
-    this.mangaModal.show();
-    if(this.div) {
+    if(fuente != '' && this.div) {
+      this.mangaModal.show();
       this.div.innerHTML = '';
-    }
-    if(fuente != '') {
       this.cargarImagenes(fuenteNombre, fuente);
     }
     this.titulo = nombreEpisodio;

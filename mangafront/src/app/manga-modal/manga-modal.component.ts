@@ -25,14 +25,6 @@ export class MangaModalComponent implements OnInit {
   }
   
   mostrar(nombreEpisodio: string, fuenteNombre: string, fuente:string) {
-    const queryParams: Params = { chap: fuente, title: nombreEpisodio, chapSrcName: fuenteNombre };
-    this.router.navigate(
-      [], 
-      {
-        relativeTo: this.route,
-        queryParams: queryParams, 
-        queryParamsHandling: 'merge', // remove to replace all query params by provided
-    });
     if(fuente != '' && this.div) {
       this.mangaModal.show();
       this.div.innerHTML = '';

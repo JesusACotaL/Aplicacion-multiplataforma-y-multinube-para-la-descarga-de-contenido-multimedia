@@ -304,7 +304,7 @@ def addToHistory():
         db.collection('history').add(newhistory)
     else:
         # Update view date
-        db.collection('bookmarks').document(query[0].id).set(newhistory)
+        db.collection('history').document(query[0].id).set(newhistory)
     return jsonify({'result': str(data['mangaID']) + ' added to user history correctly'})
 
 @app.post("/user/getHistory")

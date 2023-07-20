@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Manga } from '../interfaces/manga.interface';
 import { ActivatedRoute } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
@@ -7,6 +7,7 @@ import { User } from 'firebase/auth'; // Importar User de firebase/auth
 import { AngularFirestore, AngularFirestoreCollection, QuerySnapshot } from '@angular/fire/compat/firestore';
 import firebase from "firebase/compat/app";
 import FieldValue = firebase.firestore.FieldValue;
+import { MangaModalComponent } from '../manga-modal/manga-modal.component';
 
 
 @Component({
@@ -29,11 +30,8 @@ export class MangaComponent implements OnInit {
 
   fuentes: any[] = []
   myanimelisturl = '';
-  // Para el modal
-  mostrarModal = false;
-  fuenteActual = '';
-  fuenteActualNombre = '';
-  tituloActual = '';
+
+  @ViewChild('mangaModal', { static: false }) mangaModal!: MangaModalComponent;
 
   userRating = 'Not rated yet';
 
@@ -123,15 +121,11 @@ export class MangaComponent implements OnInit {
   }
 
   mostrarEpisodio(titulo: string, episodioURL: string, fuenteNombre: string) {
-    this.tituloActual = titulo;
-    this.fuenteActual = episodioURL;
-    this.fuenteActualNombre = fuenteNombre;
-    this.mostrarModal = true;
-
     // Agregar a historial de vista del usuario
     if(this.user) {
       this.userService.addToHistory(this.user.uid, this.manga).subscribe( () => {});
     }
+    this.mangaModal.mostrar(titulo,fuenteNombre,episodioURL);
   }
 
   verPagina(pagina: number) {

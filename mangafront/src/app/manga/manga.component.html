@@ -124,22 +124,22 @@
         <div *ngIf="getMainPlot().length > 0">
             <h4>Main Plot</h4>
             <div class="characters">
-                <div class="character" *ngFor="let character of getMainPlot()">
+                <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getMainPlot()">
                     <img [src]="character.image" alt="" class="img-fluid">
-                    <a target="_blank" [href]="character.url">{{character.name}}</a>
-                </div>
+                    <span>{{character.name}}</span>
+                </a>
             </div>
         </div>
         <div *ngIf="getAdditionalCharacters().length > 0">
             <h4>Adittional characters</h4>
             <div class="characters">
-                <div class="character" *ngFor="let character of getAdditionalCharacters()">
+                <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getAdditionalCharacters()">
                     <img [src]="character.image" alt="" class="img-fluid">
-                    <a target="_blank" [href]="character.url">{{character.name}}</a>
-                </div>
+                    <span>{{character.name}}</span>
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<app-manga-modal [pFuenteMangaNombre]="fuenteActualNombre" [pFuenteManga]="fuenteActual" [pMostrar]="mostrarModal" [pTitulo]="tituloActual"></app-manga-modal>
+<app-manga-modal #mangaModal></app-manga-modal>

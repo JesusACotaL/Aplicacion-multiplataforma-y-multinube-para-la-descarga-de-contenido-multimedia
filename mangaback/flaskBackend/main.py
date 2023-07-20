@@ -239,32 +239,33 @@ def updateUserPassword():
 @app.post("/user/addMangaToBookmarks")
 def addMangaToBookmarks():
     data = request.json
-    uid = data['uid']
-    manga = data['manga']
     # Verify existance
-    bookmarks = db.collection('bookmarks').where('uid', '==', uid)
-    query = bookmarks.where('manga', '==', manga).get()
+    bookmarks = db.collection('bookmarks').where('uid', '==', data['uid'])
+    query = bookmarks.where('mangaID', '==', data['mangaID']).get()
     if len(query) == 0:
         # Add
         newbookmark = {
-            'uid': uid,
-            'manga': manga
+            'uid': data['uid'],
+            'mangaID': data['mangaID'],
+            'name': data['name'],
+            'img': data['img'],
+            'mangaURL': data['mangaURL']
         }
         db.collection('bookmarks').add(newbookmark)
-    return jsonify({'result': manga + 'added to bookmarks correctly'})
+    return jsonify({'result': str(data['mangaID']) + ' added to bookmarks correctly'})
 
 @app.post("/user/removeMangaFromBookmarks")
 def removeMangaFromBookmarks():
     data = request.json
     uid = data['uid']
-    manga = data['manga']
+    mangaID = data['mangaID']
     # Verify existance
     bookmarks = db.collection('bookmarks').where('uid', '==', uid)
-    query = bookmarks.where('manga', '==', manga).get()
+    query = bookmarks.where('mangaID', '==', mangaID).get()
     if len(query) > 0:
         # Remove
         db.collection('bookmarks').document(query[0].id).delete()
-    return jsonify({'result': manga + 'removed from bookmarks correctly'})
+    return jsonify({'result': str(data['mangaID']) + ' removed from bookmarks correctly'})
 
 @app.post("/user/getBookmarks")
 def getBookmarks():
@@ -273,23 +274,29 @@ def getBookmarks():
     bookmarks = db.collection('bookmarks').where('uid', '==', uid).get()
     mangas = []
     for bookmark in bookmarks:
-        manga = str(bookmark.get('manga'))
+        manga = {
+            'mangaID': str(bookmark.get('mangaID')),
+            'name': str(bookmark.get('name')),
+            'img': str(bookmark.get('img')),
+            'mangaURL': str(bookmark.get('mangaURL'))
+        }
         mangas.append(manga)
     return jsonify(mangas)
 
 @app.post("/user/addToHistory")
 def addToHistory():
     data = request.json
-    uid = data['uid']
-    manga = data['manga']
     import datetime
     now = datetime.datetime.now()
     # Verify existance
-    history = db.collection('history').where('uid', '==', uid)
-    query = history.where('manga', '==', manga).get()
+    history = db.collection('history').where('uid', '==', data['uid'])
+    query = history.where('mangaID', '==', data['mangaID']).get()
     newhistory = {
-        'uid': uid,
-        'manga': manga,
+        'uid': data['uid'],
+        'mangaID': data['mangaID'],
+        'name': data['name'],
+        'img': data['img'],
+        'mangaURL': data['mangaURL'],
         'datetime': now
     }
     if len(query) == 0:
@@ -298,7 +305,7 @@ def addToHistory():
     else:
         # Update view date
         db.collection('bookmarks').document(query[0].id).set(newhistory)
-    return jsonify({'result': manga + 'added to user history correctly'})
+    return jsonify({'result': str(data['mangaID']) + ' added to user history correctly'})
 
 @app.post("/user/getHistory")
 def getHistory():
@@ -309,7 +316,10 @@ def getHistory():
     mangas = []
     for item in query:
         mangas.append({
-            'manga': str(item.get('manga')),
+            'mangaID': str(item.get('mangaID')),
+            'name': str(item.get('name')),
+            'img': str(item.get('img')),
+            'mangaURL': str(item.get('mangaURL')),
             'datetime': str(item.get('datetime'))
         })
     # Order by view date
@@ -317,5 +327,7 @@ def getHistory():
     from dateutil.parser import parser
     p = parser()
     mangas.sort(key=lambda x:p.parse(x['datetime']))
+    for item in mangas:
+        del item['datetime']
     mangas.reverse()
     return jsonify(mangas)

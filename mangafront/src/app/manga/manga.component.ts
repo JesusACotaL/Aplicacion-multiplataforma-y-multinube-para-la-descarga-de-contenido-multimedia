@@ -130,7 +130,7 @@ export class MangaComponent implements OnInit {
 
     // Agregar a historial de vista del usuario
     if(this.user) {
-      this.userService.addToHistory(this.user.uid, this.manga.name).subscribe( () => {});
+      this.userService.addToHistory(this.user.uid, this.manga).subscribe( () => {});
     }
   }
 
@@ -194,16 +194,17 @@ export class MangaComponent implements OnInit {
 
   checkIfInBookmarks() {
     if(this.user && this.manga.name) {
-      this.userService.getBookmarks(this.user.uid).subscribe((bookmarks: Array<string>) => {
-        if (bookmarks.indexOf(this.manga.name) > -1)
-          this.inBookmarks = true;
+      this.userService.getBookmarks(this.user.uid).subscribe((bookmarks: Array<Manga>) => {
+        for (const manga of bookmarks) {
+          if(this.manga.mangaID == manga.mangaID) this.inBookmarks = true;
+        }
       });
     }
   }
 
   addToBookmarks() {
     if(this.user && this.manga.name) {
-      this.userService.addMangaToBookmarks(this.user.uid,this.manga.name).subscribe(() => {
+      this.userService.addMangaToBookmarks(this.user.uid,this.manga).subscribe(() => {
         this.inBookmarks = true;
       });
     }
@@ -211,7 +212,7 @@ export class MangaComponent implements OnInit {
 
   removeFromBookmarks() {
     if(this.user && this.manga.name) {
-      this.userService.removeMangaFromBookmarks(this.user.uid,this.manga.name).subscribe(() => {
+      this.userService.removeMangaFromBookmarks(this.user.uid,this.manga).subscribe(() => {
         this.inBookmarks = false;
       });
     }

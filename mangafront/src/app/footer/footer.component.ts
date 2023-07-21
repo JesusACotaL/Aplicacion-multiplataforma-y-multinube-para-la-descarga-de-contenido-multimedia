@@ -39,8 +39,10 @@ export class FooterComponent implements OnInit {
     this.userService.logout()
     .then(()=>{
       this.user = null;
+      this.router.navigate(['/home']).then(() => {
+        window.location.reload();
+      });
     })
     .catch(error => console.log(error));
-    this.router.navigate(['/'])
   }
 }

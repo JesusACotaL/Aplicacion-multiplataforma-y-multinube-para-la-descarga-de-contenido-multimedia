@@ -18,7 +18,7 @@
                     <img class="img-fluid" src="assets\bills.jpg" alt="user">
                     <ul class="dropdown-menu dropdown-menu-end text-end">
                       <li><a class="dropdown-item" (click)="verPerfil()">Go to my homepage</a></li>
-                      <li><a class="dropdown-item">Modify user info</a></li>
+                      <li><a class="dropdown-item" (click)="this.userInfoModal.mostrar()">Modify user info</a></li>
                       <li><a class="dropdown-item" (click)="logOut()">Log out <i class="bi bi-box-arrow-right"></i></a></li>
                     </ul>
                 </button>
@@ -26,3 +26,6 @@
         </div>
     </div>
 </nav>
+
+
+<app-modify-user-info-modal #userInfoModal *ngIf="user"></app-modify-user-info-modal>

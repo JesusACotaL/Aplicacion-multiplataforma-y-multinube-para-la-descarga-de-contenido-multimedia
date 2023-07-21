@@ -60,4 +60,8 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/'])
   }
 
+  verMangaLink(url: string) {
+    return '/manga?' + new URLSearchParams({manga: url}).toString()
+  }
+
 }

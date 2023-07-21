@@ -45,8 +45,11 @@ export class MangaComponent implements OnInit {
     this.route.queryParams.subscribe( (parametros) => {
       const url = parametros['manga'];
       this.myanimelisturl = url;
-      this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga) => {
+      this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga: Manga) => {
         this.manga = manga;
+        // Agregar vista a TopMangas
+        this.mangaAPI.agregarBusquedaPopular(manga).subscribe(() => {});
+
         this.obtenerFuentes();
         this.userService.getAuth().onAuthStateChanged((user) => {
           if (user) {

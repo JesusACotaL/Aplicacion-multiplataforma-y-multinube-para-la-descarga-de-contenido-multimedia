@@ -11,9 +11,9 @@
             <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
         </form>
         <div class="busquedas mt-2">
-            <span class="text-decoration-underline">Top search:</span>
+            <span class="text-decoration-underline">Top mangas:</span>
             <ul>
-                <a *ngFor="let busqueda of busquedasPopulares" [href]="'/search/'+busqueda.name">{{busqueda.name}}</a>
+                <a *ngFor="let manga of busquedasPopulares" [href]="verMangaLink(manga.mangaURL)">{{manga.name}}</a>
             </ul>
         </div>
     </div>

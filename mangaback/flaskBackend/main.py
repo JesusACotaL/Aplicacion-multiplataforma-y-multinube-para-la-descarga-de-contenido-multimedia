@@ -147,6 +147,7 @@ def downloadChapterImage():
     sourceName = data['source']
     sources = readSourcesFile()
     image_string = ''
+    response = {'result':'Failed to download image.'}
     for source in sources:
         if(source['name'] == sourceName):
             sourceFile = source['file']
@@ -157,6 +158,39 @@ def downloadChapterImage():
         response = make_response(image_string)
         response.headers.set('Content-Type', 'image/jpeg')
     return response
+
+@app.post("/addToTopManga")
+def addToTopManga():
+    data = request.json
+    import datetime
+    now = datetime.datetime.now()
+    # Verify existance
+    manga = db.collection('topmanga').where('mangaID', '==', data['mangaID']).get()
+    newtopmanga = {
+        'mangaID': data['mangaID'],
+        'name': data['name'],
+        'img': data['img'],
+        'mangaURL': data['mangaURL'],
+        'viewcount': 1
+    }
+    if len(manga) == 0:
+        # Add with 1 view count
+        db.collection('topmanga').add(newtopmanga)
+    else:
+        # Update view count
+        olddata = manga[0].to_dict()
+        newtopmanga['viewcount'] = olddata['viewcount'] + 1
+        db.collection('topmanga').document(manga[0].id).set(newtopmanga)
+    return jsonify({'result': str(data['mangaID']) + ' added to topmanga correctly'})
+
+@app.get("/getTopManga")
+def getTopManga():
+    query = db.collection('topmanga').order_by("viewcount", direction=firestore.Query.DESCENDING).limit(10).get()
+    topmanga = []
+    for doc in query:
+        manga = doc.to_dict()
+        topmanga.append(manga)
+    return topmanga
 
 @app.post("/user/getUserGenres")
 def getUserGenres():
@@ -270,17 +304,10 @@ def removeMangaFromBookmarks():
 @app.post("/user/getBookmarks")
 def getBookmarks():
     data = request.json
-    uid = data['uid']
-    bookmarks = db.collection('bookmarks').where('uid', '==', uid).get()
+    bookmarks = db.collection('bookmarks').where('uid', '==', data['uid']).get()
     mangas = []
     for bookmark in bookmarks:
-        manga = {
-            'mangaID': str(bookmark.get('mangaID')),
-            'name': str(bookmark.get('name')),
-            'img': str(bookmark.get('img')),
-            'mangaURL': str(bookmark.get('mangaURL'))
-        }
-        mangas.append(manga)
+        mangas.append(bookmark.to_dict())
     return jsonify(mangas)
 
 @app.post("/user/addToHistory")
@@ -310,24 +337,10 @@ def addToHistory():
 @app.post("/user/getHistory")
 def getHistory():
     data = request.json
-    uid = data['uid']
-    history = db.collection('history')
-    query = history.where('uid', '==', uid).get()
+    # Remember that firebase requires an index if you want to manage complex queries beyond a single field
+    collection = db.collection('history').where('uid', '==', data['uid'])
+    query = collection.order_by("datetime", direction=firestore.Query.DESCENDING).limit(20).get()
     mangas = []
-    for item in query:
-        mangas.append({
-            'mangaID': str(item.get('mangaID')),
-            'name': str(item.get('name')),
-            'img': str(item.get('img')),
-            'mangaURL': str(item.get('mangaURL')),
-            'datetime': str(item.get('datetime'))
-        })
-    # Order by view date
-    import time
-    from dateutil.parser import parser
-    p = parser()
-    mangas.sort(key=lambda x:p.parse(x['datetime']))
-    for item in mangas:
-        del item['datetime']
-    mangas.reverse()
+    for manga in query:
+        mangas.append(manga.to_dict())
     return jsonify(mangas)

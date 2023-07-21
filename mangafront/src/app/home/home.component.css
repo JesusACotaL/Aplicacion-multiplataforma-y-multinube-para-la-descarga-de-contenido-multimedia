@@ -20,7 +20,14 @@ a:hover {
 
 .busquedas ul {
     display: grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, auto);
+    gap: 1rem;
     padding: 0;
     margin: 0;
+}
+
+.busquedas ul a {
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
+    overflow: hidden;
 }

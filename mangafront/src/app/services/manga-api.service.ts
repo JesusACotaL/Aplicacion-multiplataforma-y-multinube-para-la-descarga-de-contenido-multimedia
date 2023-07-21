@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Manga } from '../interfaces/manga.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +70,15 @@ export class MangaApiService {
   }
 
   obtenerBusquedasPopulares() {
-    return this.http.get('assets/datosPrueba/get-popular-search.json');
+    const url = `${this.backend}/getTopManga`;
+    return this.http.get(url);
+  }
+
+  agregarBusquedaPopular(manga: Manga) {
+    const body = {
+      ... manga
+    }
+    const url = `${this.backend}/addToTopManga`;
+    return this.http.post<any>(url,body);
   }
 }

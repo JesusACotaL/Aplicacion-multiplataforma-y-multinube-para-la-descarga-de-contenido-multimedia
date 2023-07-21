@@ -1,5 +1,6 @@
 .siteFooter {
     display: flex;
     flex-direction: column;
-    background: var(--background);
+    background: var(--primary-color); 
+    color: var(--text-color);
 }

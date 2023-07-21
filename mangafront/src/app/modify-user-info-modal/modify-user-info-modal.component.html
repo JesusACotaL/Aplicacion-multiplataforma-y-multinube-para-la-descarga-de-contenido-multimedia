@@ -1,0 +1,19 @@
+<!-- Modal -->
+<div class="modal fade" id="accountModal">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content bg-dark">
+            <div class="modal-header" style="background: var(--primary-color); color: var(--text-color);">
+                <h5 class="modal-title">Modify account information</h5>
+            </div>
+            <div class="modal-body" style="background: #fff; color: #000;">
+                <div class="datos" *ngIf="user">
+                    <img src="assets\bills.jpg" class="img-fluid mx-auto" width="150">
+                    <span>Email: <span>{{user.email}}</span></span>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: var(--primary-color); color: var(--text-color);">
+                <button type="button" class="btn btn-danger ms-auto" data-bs-dismiss="modal">Save changes & close</button>
+            </div>
+        </div>
+    </div>
+</div>

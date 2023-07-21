@@ -38,7 +38,7 @@ app-root {
 }
 
 app-home {
-    height: 100%;
+    margin-top: auto;
 }
 
 app-footer {

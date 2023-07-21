@@ -1,4 +1,4 @@
-<div class="h-100 d-flex flex-column p-4">
+<div *ngIf="!user; else userHomePage" class="h-100 d-flex flex-column p-4">
     <div class="buscador d-flex flex-column gap-2 w-100 my-auto">
         <div class="logo">
             <img src="/assets/personaje.png" alt="Bootstrap" width="70">
@@ -17,17 +17,7 @@
             </ul>
         </div>
     </div>
-    <div class="d-flex align-items-center gap-2">
-        <div *ngIf="!user" class="d-flex align-items-center gap-2">
-            <button class="btn btn-outline-secondary" type="button" (click)="login();">Log in</button>
-            <button class="btn btn-outline-secondary" type="button" (click)="register();">Sign up</button>    
-        </div>
-        <div *ngIf="user" class="d-flex align-items-center gap-2">
-            <a href="/account">Logged in as: {{ user.email }}</a>
-            <button class="btn btn-outline-secondary" type="button" (click)="logOut();">Log out</button>   
-        </div>
-        <div class="ms-auto">
-            <a href="">Terms of usage ©2023</a>
-        </div>
-    </div>
 </div>
+<ng-template #userHomePage>
+    <app-account></app-account>
+</ng-template>

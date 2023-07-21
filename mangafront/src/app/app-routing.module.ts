@@ -7,7 +7,6 @@ import { canActivate,redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { HomeComponent } from './home/home.component';
 import { SearchComponent } from './search/search.component';
 import { MangaComponent } from './manga/manga.component';
-import { AccountComponent } from './account/account.component';
 import { MangaModalComponent } from './manga-modal/manga-modal.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
@@ -19,7 +18,6 @@ const routes: Routes = [
   {path:'manga-modal',component:MangaModalComponent},
   {path:'login',component: LoginComponent},
   {path:'register',component: RegisterComponent},
-  {path:'account',component:AccountComponent},
   {path:'navbar',component:NavbarComponent}
 ];
 

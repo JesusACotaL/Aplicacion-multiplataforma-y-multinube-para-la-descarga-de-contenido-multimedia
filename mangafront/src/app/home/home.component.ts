@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
 
+import { UserService } from '../services/user.service';
+import { User } from 'firebase/auth'; // Importar User de firebase/auth
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -12,13 +15,24 @@ export class HomeComponent implements OnInit {
   manga = '';
   flag: boolean = false;
   busquedasPopulares = [] as any
+  user: User | null = null;
 
-  constructor(private router: Router, private mangaAPI: MangaApiService) { }
+  constructor(private router: Router, private mangaAPI: MangaApiService, private userService: UserService) { }
 
   ngOnInit(): void {
     // Obtener busquedas mas frecuentes
     this.mangaAPI.obtenerBusquedasPopulares().subscribe((busquedas) => {
       this.busquedasPopulares = busquedas;
+    });
+    // Recuperar usuario
+    this.userService.getAuth().onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        this.user = user;
+      } else {
+        // User is signed out
+      }
     });
   }
 

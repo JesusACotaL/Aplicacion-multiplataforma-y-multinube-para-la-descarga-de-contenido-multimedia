@@ -28,6 +28,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { MangaModalComponent } from './manga-modal/manga-modal.component';
 import { UserLicenseComponent } from './user-license/user-license.component';
 import { FooterComponent } from './footer/footer.component';
+import { ModifyUserInfoModalComponent } from './modify-user-info-modal/modify-user-info-modal.component';
 
 @NgModule({
   declarations: [ 
@@ -41,7 +42,8 @@ import { FooterComponent } from './footer/footer.component';
     NavbarComponent,
     MangaModalComponent,
     UserLicenseComponent,
-    FooterComponent
+    FooterComponent,
+    ModifyUserInfoModalComponent
   ],
   imports: [
     BrowserModule,

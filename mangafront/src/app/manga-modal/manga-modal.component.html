@@ -10,9 +10,14 @@
                 <span>{{cargadas}} / {{total}} pages loaded</span>
                 <span class="ms-auto">{{titulo}}</span>
                 <button class="btn btn-danger" style="display: flex; gap: 1rem;" (click)="descargarEpisodio()" [ngClass]="{'disabled':loadingImages()}">
-                    <span *ngIf="loadingImages()">(Loading pages...)</span> 
-                    <span *ngIf="!loadingImages()">Download (.pdf)</span> 
-                    <i class="bi bi-download"></i>
+                    <div *ngIf="loadingImages()" style="display: flex; align-items: center; gap: 1rem;">
+                        <span>Loading pages...</span> 
+                        <div class="spinner-border spinner-border-sm text-light"></div>
+                    </div>
+                    <div *ngIf="!loadingImages()" style="display: flex; align-items: center; gap: 1rem;">
+                        <span>Download (.pdf)</span> 
+                        <i class="bi bi-download"></i>
+                    </div>
                 </button>
             </div>
             <div class="modal-body">

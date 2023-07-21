@@ -13,6 +13,10 @@ export class AppComponent {
 
   constructor(private router: Router) { }
 
+  getCurrentRoute(): string {
+    return this.router.url
+  }
+
 }
 
 

@@ -26,6 +26,8 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { MangaModalComponent } from './manga-modal/manga-modal.component';
+import { UserLicenseComponent } from './user-license/user-license.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [ 
@@ -37,7 +39,9 @@ import { MangaModalComponent } from './manga-modal/manga-modal.component';
     MangaComponent,
     AccountComponent,
     NavbarComponent,
-    MangaModalComponent
+    MangaModalComponent,
+    UserLicenseComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

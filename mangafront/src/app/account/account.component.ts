@@ -16,6 +16,7 @@ export class AccountComponent implements OnInit {
   recomendados: Array<any> = []
   historial: Array<any> = []
   favoritos: Array<any> = []
+  topmangas = [] as any
 
   constructor( private _location: Location, private userService: UserService, private mangaAPI: MangaApiService) { }
 
@@ -46,6 +47,10 @@ export class AccountComponent implements OnInit {
       this.obtenerFavoritos();
       resolve();
     });
+    await new Promise<void>(resolve => {
+      this.obtenerTopMangas();
+      resolve();
+    });
   }
 
   verMangaLink(url: string) {
@@ -56,8 +61,8 @@ export class AccountComponent implements OnInit {
     this._location.back();
   }
 
-  desplazarLista(direccion: boolean) {
-    const lista = document.getElementById("listaMangas");
+  desplazarLista(idElemento: string,direccion: boolean) {
+    const lista = document.getElementById(idElemento);
     if(!direccion)
       lista?.scrollBy({
         left: 100,
@@ -96,6 +101,12 @@ export class AccountComponent implements OnInit {
           resolve();
         });
       }
+    });
+  }
+
+  obtenerTopMangas() {
+    this.mangaAPI.obtenerBusquedasPopulares().subscribe((topmangas) => {
+      this.topmangas = topmangas;
     });
   }
 

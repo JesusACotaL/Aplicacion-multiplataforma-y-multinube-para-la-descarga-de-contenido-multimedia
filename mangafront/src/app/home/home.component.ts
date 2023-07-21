@@ -5,7 +5,6 @@ import { MangaApiService } from '../services/manga-api.service';
 import { UserService } from '../services/user.service';
 import { User } from 'firebase/auth'; // Importar User de firebase/auth
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -15,13 +14,16 @@ export class HomeComponent implements OnInit {
   // Como funcionan los template-driven forms: https://angular.io/guide/forms#summary
   manga = '';
   flag: boolean = false;
+  busquedasPopulares = [] as any
   user: User | null = null;
 
-  busquedasPopulares = [] as any
-
-  constructor(private router: Router, private userService: UserService, private mangaAPI: MangaApiService) { }
+  constructor(private router: Router, private mangaAPI: MangaApiService, private userService: UserService) { }
 
   ngOnInit(): void {
+    // Obtener busquedas mas frecuentes
+    this.mangaAPI.obtenerBusquedasPopulares().subscribe((busquedas) => {
+      this.busquedasPopulares = busquedas;
+    });
     // Recuperar usuario
     this.userService.getAuth().onAuthStateChanged((user) => {
       if (user) {
@@ -32,36 +34,13 @@ export class HomeComponent implements OnInit {
         // User is signed out
       }
     });
-
-    // Obtener busquedas mas frecuentes
-    this.mangaAPI.obtenerBusquedasPopulares().subscribe((busquedas) => {
-      this.busquedasPopulares = busquedas;
-    });
   }
 
   buscar() {
     this.router.navigate(['/search',this.manga]);
   }
 
-  login(){
-    this.router.navigate(['/login'])
-  }
-
-  register(){
-    this.router.navigate(['/register'])
-  }
-
-  logOut(): void{
-    this.userService.logout()
-    .then(()=>{
-      this.user = null;
-    })
-    .catch(error => console.log(error));
-    this.router.navigate(['/'])
-  }
-
   verMangaLink(url: string) {
     return '/manga?' + new URLSearchParams({manga: url}).toString()
   }
-
 }

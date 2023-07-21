@@ -1,20 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { MangaApiService } from '../services/manga-api.service';
-import { Router, ActivatedRoute } from '@angular/router';
 
 import { UserService } from '../services/user.service';
 import { User } from 'firebase/auth'; // Importar User de firebase/auth
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  selector: 'app-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.css']
 })
-export class NavbarComponent implements OnInit {
-  manga = '';
+export class FooterComponent implements OnInit {
   user: User | null = null;
 
-  constructor(private mangaAPI: MangaApiService, private router: Router, private route: ActivatedRoute, private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
     // Recuperar usuario
@@ -29,14 +27,14 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  buscarManga() {
-    this.router.navigate(['/search',this.manga]);
-  }
-
   login(){
     this.router.navigate(['/login'])
   }
-  
+
+  register(){
+    this.router.navigate(['/register'])
+  }
+
   logOut(): void{
     this.userService.logout()
     .then(()=>{
@@ -46,9 +44,5 @@ export class NavbarComponent implements OnInit {
       });
     })
     .catch(error => console.log(error));
-  }
-  
-  verPerfil() {
-    this.router.navigate(['/home'])
   }
 }

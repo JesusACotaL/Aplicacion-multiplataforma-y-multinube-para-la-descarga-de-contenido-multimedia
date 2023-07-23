@@ -7,7 +7,8 @@
                     <i class="bi bi-arrow-return-left"></i>
                     <span>Volver</span>
                 </button>
-                <span>{{cargadas}} / {{total}} pages loaded</span>
+                <span *ngIf="obteniendoLinks">Getting links, please wait...</span>
+                <span *ngIf="!obteniendoLinks">{{cargadas}} / {{total}} pages loaded</span>
                 <span class="ms-auto">{{titulo}}</span>
                 <button class="btn btn-danger" style="display: flex; gap: 1rem;" (click)="descargarEpisodio()" [ngClass]="{'disabled':loadingImages()}">
                     <div *ngIf="loadingImages()" style="display: flex; align-items: center; gap: 1rem;">

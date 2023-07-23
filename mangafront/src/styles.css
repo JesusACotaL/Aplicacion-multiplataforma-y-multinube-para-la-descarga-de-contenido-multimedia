@@ -30,6 +30,21 @@ html, body {
     background-color: var(--background);
     color: var(--text-color);
 }
+
+app-root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+app-home {
+    margin-top: auto;
+}
+
+app-footer {
+    margin-top: auto;
+}
+
 body { 
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;

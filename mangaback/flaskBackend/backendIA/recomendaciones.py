@@ -2,7 +2,7 @@ import pandas as pd
 import itertools
 import os
 
-def obtener_recomendaciones(userInput, debug=False):
+def obtener_recomendaciones(userInput, amount=20, debug=False):
     # Reading manga information into a pandas dataframe
     mangas_df = pd.read_csv('mangas.csv')
     mangas_df['genres'] = mangas_df.genres.str.split(', ')
@@ -51,7 +51,7 @@ def obtener_recomendaciones(userInput, debug=False):
     # Sort our recommendations in descending order
     recommendationTable_df = recommendationTable_df.sort_values(ascending=False)
     
-    recomendaciones = recommendationTable_df.head()
+    recomendaciones = recommendationTable_df.head(amount)
     mangaIds = recomendaciones.index.tolist()
     titulos_recomendaciones = []
     for mangaID in mangaIds:
@@ -105,7 +105,7 @@ if __name__ == '__main__':
         ]
     # userInput = generar_ratings('mwF5DVD0KXN7tVwygzjQRtQvNtj2')
     # print(userInput)
-    reco = obtener_recomendaciones(userInput)
-    print(reco)
+    reco = obtener_recomendaciones(userInput, debug=True)
+    print(len(reco))
     generos = obtener_generos(userInput)
-    print(generos)
+    #print(generos)

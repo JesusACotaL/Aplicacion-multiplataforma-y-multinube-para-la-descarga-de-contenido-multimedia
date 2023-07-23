@@ -29,6 +29,8 @@ export class MangaComponent implements OnInit {
   filtrados: any[] = [];
 
   fuentes: any[] = []
+  fuentesFiltradas: any[] = []
+  fuentesNombres: any[] = []
   myanimelisturl = '';
 
   @ViewChild('mangaModal', { static: false }) mangaModal!: MangaModalComponent;
@@ -82,18 +84,43 @@ export class MangaComponent implements OnInit {
   }
 
   obtenerFuentes() {
-    this.mangaAPI.encontrarFuentes(this.manga.name).subscribe( (mangas) => {
+    this.mangaAPI.encontrarFuentes(this.manga.name).subscribe( (sources: any[]) => {
+      // Order by string length (so we mix by similar results to query provided)
+      // ASC  -> a.length - b.length
+      // DESC -> b.length - a.length
+      sources.sort((a, b) => a['name'].length - b['name'].length);
+      // Get list of sources retrieved
+      let fuentesNombres: any[] = [];
+      for (const manga of sources) {
+        if(fuentesNombres.indexOf(manga['source']) == -1)
+        fuentesNombres.push(manga['source']);
+      }
+      this.fuentes = sources;
+      this.fuentesNombres = fuentesNombres;
+      this.fuentesFiltradas = this.fuentes
       this.cargando = false;
       this.seleccionandoManga = true;
-      this.fuentes = mangas
     });
+  }
+
+  filtrarFuentesPorNombre(fuenteNombre: string) {
+    if(fuenteNombre == '') {
+      this.fuentesFiltradas = this.fuentes;
+    } else {
+      let nuevaLista = []
+      for (const fuente of this.fuentes) {
+        if(fuente['source'] == fuenteNombre)
+          nuevaLista.push(fuente)
+      }
+      this.fuentesFiltradas = nuevaLista;
+    }
   }
 
   obtenerCapitulos(fuente_nombre:string, fuente_url: string) {
     this.seleccionandoManga = false;
     this.cargando = true;
     this.mangaAPI.obtenerCapitulos(fuente_nombre,fuente_url).subscribe( (capitulos) => {
-      this.capitulos = capitulos.reverse();
+      this.capitulos = capitulos;
       this.filtrados = this.capitulos;
       this.cargando = false;
       const cantPaginas = this.capitulos.length / this.capitulosPorPagina;

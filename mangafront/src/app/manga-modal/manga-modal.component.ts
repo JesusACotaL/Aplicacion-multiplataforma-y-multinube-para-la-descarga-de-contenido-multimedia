@@ -16,6 +16,7 @@ export class MangaModalComponent implements OnInit {
   cargadas = 0;
   total = 0;
   mostrando = false;
+  obteniendoLinks = true;
   
   constructor(private mangaAPI: MangaApiService, private router: Router, private route: ActivatedRoute) {}
 
@@ -47,9 +48,11 @@ export class MangaModalComponent implements OnInit {
   }
 
   cargarImagenes(fuente_nombre: string, url: string) { 
+    this.obteniendoLinks = true;
     this.mangaAPI.obtenerLinksCapitulo(fuente_nombre, url).subscribe( async (imagenes: Array<any>) => {
       this.cargadas = 0;
       this.total = imagenes.length;
+      this.obteniendoLinks = false;
       for (const imagen of imagenes) {
         if(this.mostrando) { // Cancel if user closed modal
           await new Promise<void>(resolve => {
@@ -68,7 +71,7 @@ export class MangaModalComponent implements OnInit {
   }
 
   loadingImages() {
-    if(this.total > this.cargadas) return true;
+    if(this.obteniendoLinks || this.total > this.cargadas) return true;
     else return false;
   }
 

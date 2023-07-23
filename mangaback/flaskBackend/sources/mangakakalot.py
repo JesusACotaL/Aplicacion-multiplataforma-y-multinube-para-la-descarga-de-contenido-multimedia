@@ -3,7 +3,6 @@ import json
 import io
 
 import requests
-from PIL import Image
 from bs4 import BeautifulSoup
 
 import urllib
@@ -105,18 +104,8 @@ def getImageBlob(imageURL):
     url = imageURL
     res = requests.get(url, headers={'referer': siteURL})
     res.raise_for_status()
-    # Compress image
-    binaryImage = res.content
-    im_file = io.BytesIO(binaryImage) # File-like object
-    imgPIL = Image.open(im_file) # PIL image
-    buffer = io.BytesIO() # Memory for compression operations
-
-    # Save image as JPEG format, and apply image compression, number must be in %
-    # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#jpeg-saving
-    imgPIL.save(buffer,format='JPEG',optimize=True,quality=50)
-    
-    imgBinaryCompressed = buffer.getvalue()
-    return imgBinaryCompressed
+    imgBlob = res.content
+    return imgBlob
 
 if __name__ == '__main__':
     #res = searchManga('pokemon')

@@ -17,6 +17,10 @@ export class MangaModalComponent implements OnInit {
   total = 0;
   mostrando = false;
   obteniendoLinks = true;
+  calidad = "75";
+
+  fuenteActualNombre = ""
+  fuenteActualURL = ""
   
   constructor(private mangaAPI: MangaApiService, private router: Router, private route: ActivatedRoute) {}
 
@@ -29,7 +33,9 @@ export class MangaModalComponent implements OnInit {
     if(fuente != '' && this.div) {
       this.mangaModal.show();
       this.div.innerHTML = '';
-      this.cargarImagenes(fuenteNombre, fuente);
+      this.fuenteActualNombre = fuenteNombre;
+      this.fuenteActualURL = fuente;
+      this.cargarImagenes();
     }
     this.titulo = nombreEpisodio;
     this.mostrando = true;
@@ -47,7 +53,15 @@ export class MangaModalComponent implements OnInit {
     this.mostrando = false;
   }
 
-  cargarImagenes(fuente_nombre: string, url: string) { 
+  cambiarCalidad(valor: string) {
+    this.calidad = valor;
+    this.div!.innerHTML = '';
+    this.cargarImagenes();
+  }
+
+  cargarImagenes() {
+    const fuente_nombre = this.fuenteActualNombre; 
+    const url = this.fuenteActualURL;
     this.obteniendoLinks = true;
     this.mangaAPI.obtenerLinksCapitulo(fuente_nombre, url).subscribe( async (imagenes: Array<any>) => {
       this.cargadas = 0;
@@ -56,7 +70,7 @@ export class MangaModalComponent implements OnInit {
       for (const imagen of imagenes) {
         if(this.mostrando) { // Cancel if user closed modal
           await new Promise<void>(resolve => {
-            this.mangaAPI.descargarImagenCapitulo(imagen['source'], imagen['url']).subscribe( ( imagenBlob ) => {
+            this.mangaAPI.descargarImagenCapitulo(imagen['source'], imagen['url'], parseInt(this.calidad)).subscribe( ( imagenBlob ) => {
               let htmlimg = new Image();
               htmlimg.className = "img-fluid";
               const url = window.URL.createObjectURL(imagenBlob);

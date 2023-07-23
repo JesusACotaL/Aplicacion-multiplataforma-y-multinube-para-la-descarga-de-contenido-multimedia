@@ -5,6 +5,8 @@ from myanimelistScrapper import scrapManga, searchMangaOnline
 from firebase_admin import credentials, firestore, initialize_app, auth
 from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones
 
+from PIL import Image
+
 from importlib import import_module
 import json
 import io
@@ -116,6 +118,9 @@ def getChapterLinks():
 def downloadChapterImage():
     data = request.json
     url = data['url']
+    quality = int(data['quality'])
+    if(quality > 100 or quality < 1 ):
+        quality = 50
     sourceName = data['source']
     image_string = ''
     response = {'result':'Failed to download image.'}
@@ -123,8 +128,14 @@ def downloadChapterImage():
         if(source['name'] == sourceName):
             image = source['reference'].getImageBlob(url)
             if( type(image) is bytes):
+                # Save image as JPEG format, and apply image compression, number must be in %
+                # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#jpeg-saving
                 buffer = io.BytesIO(image)
-                response = send_file(buffer, mimetype='image/jpeg')
+                imgPIL = Image.open(buffer)
+                buffer2 = io.BytesIO()
+                imgPIL.save(buffer2,format='JPEG',optimize=True,quality=quality)
+                buffer3 = io.BytesIO(buffer2.getvalue())
+                response = send_file(buffer3, mimetype='image/jpeg')
     return response
 
 @app.post("/addToTopManga")

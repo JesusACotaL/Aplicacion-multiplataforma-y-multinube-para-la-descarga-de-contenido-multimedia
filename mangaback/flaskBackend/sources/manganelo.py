@@ -3,7 +3,6 @@ import json
 import io
 
 import requests
-from PIL import Image
 
 scrapperManganeloAPI = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/si"
 
@@ -61,16 +60,6 @@ def getImageBlob(imageURL):
     """
     url = imageURL
     res = requests.get(url, headers={'referer': 'https://chapmanganelo.com/'})
-    res.raise_for_status()
-    # Compress image
-    binaryImage = res.content
-    im_file = io.BytesIO(binaryImage) # File-like object
-    imgPIL = Image.open(im_file) # PIL image
-    buffer = io.BytesIO() # Memory for compression operations
-
-    # Save image as JPEG format, and apply image compression, number must be in %
-    # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#jpeg-saving
-    imgPIL.save(buffer,format='JPEG',optimize=True,quality=50)
-    
-    imgBinaryCompressed = buffer.getvalue()
-    return imgBinaryCompressed
+    res.raise_for_status()    
+    imgBlob = res.content
+    return imgBlob

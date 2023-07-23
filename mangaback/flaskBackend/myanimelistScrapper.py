@@ -219,15 +219,15 @@ def getImageBase64(imageURL):
     image_string = base64.b64encode(binaryImage) # Base64 compressed image
     return image_string
 
-def createCSV():
+def createCSV(filename='mangas.csv'):
     """ Creates and erases csv for mangas"""
     fieldnames = ['mangaID', 'name', 'genres', 'authors', 'img', 'mangaURL']
-    with open('mangas.csv', 'w', encoding="utf-8", newline='') as csv_file:
+    with open(filename, 'w', encoding="utf-8", newline='') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         csv_file.close()
 
-def csvWriter(manga):
+def csvWriter(manga, filename='mangas.csv'):
     """ Writes the most important data of a manga dictionary in a CSV file """
     fieldnames = ['mangaID', 'name', 'genres', 'authors', 'img', 'mangaURL']
     del manga['synopsis']
@@ -238,13 +238,13 @@ def csvWriter(manga):
     del manga['characters']
     del manga['status']
     del manga['date']
-    with open('mangas.csv', 'a', encoding="utf-8", newline='') as csv_file:
+    with open(filename, 'a', encoding="utf-8", newline='') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writerow(manga)
         time.sleep(1)
         csv_file.close()
 
-def getTopMangas(limit, delay=1):
+def getTopMangas(limit, delay=1, filename='mangas.csv'):
     """ Fetches 50 top mangas, starting on number <LIMIT> and then writes the most important data in a CSV file """
     url = 'https://myanimelist.net/topmanga.php'
     res = requests.get(url, params=[('limit',limit)])
@@ -262,7 +262,7 @@ def getTopMangas(limit, delay=1):
             mangasInfo.append(mangaInfo)
         time.sleep(delay)
     for manga in mangasInfo:
-        csvWriter(manga)
+        csvWriter(manga, filename=filename)
     print(mangasInfo)
 
 def getMangasByID(amount, delay=1):
@@ -284,5 +284,5 @@ def getMangasByID(amount, delay=1):
 
 if __name__ == '__main__':
     #testlocal()
-    #createCSV()
-    getTopMangas(50)
+    createCSV(filename='mangas2.csv')
+    getTopMangas(50,filename='mangas2.csv')

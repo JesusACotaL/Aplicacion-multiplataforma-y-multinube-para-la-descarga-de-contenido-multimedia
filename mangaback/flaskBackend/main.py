@@ -21,8 +21,8 @@ def reloadSources():
         tempSources = json.load(f)['mangaSources']
         for source in tempSources:
             moduleName = 'sources.'+source['file'][:-3] # Remove .py extension
-            source['reference'] = import_module(moduleName)
             if source['enabled'] == True:
+                source['reference'] = import_module(moduleName)
                 sources.append(source)
     f.close()
 reloadSources()

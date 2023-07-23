@@ -1,6 +1,5 @@
 import re
 import json
-import base64
 import io
 
 import requests
@@ -56,9 +55,9 @@ def getChapterURLS(chapterURL):
     res.raise_for_status()
     return json.loads(res.content)
 
-def getImageBase64(imageURL):
+def getImageBlob(imageURL):
     """
-    Returns a single binary image encoded in base64 format
+    Returns a single binary image
     """
     url = imageURL
     res = requests.get(url, headers={'referer': 'https://chapmanganelo.com/'})
@@ -74,5 +73,4 @@ def getImageBase64(imageURL):
     imgPIL.save(buffer,format='JPEG',optimize=True,quality=50)
     
     imgBinaryCompressed = buffer.getvalue()
-    image_string = base64.b64encode(imgBinaryCompressed) # Base64 compressed image
-    return image_string
+    return imgBinaryCompressed

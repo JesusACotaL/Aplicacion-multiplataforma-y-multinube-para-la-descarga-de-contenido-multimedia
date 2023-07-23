@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, send_file
 from flask_cors import CORS
 
 from myanimelistScrapper import scrapManga, searchMangaOnline
@@ -7,11 +7,25 @@ from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones
 
 from importlib import import_module
 import json
+import io
 
 # Create connection to firebase and keep it alive
 cred = credentials.Certificate('firebase-credentials.json')
 initialize_app(cred)
 db = firestore.client()
+
+# Initialize all sources as modules
+sources = []
+def reloadSources():
+    with open('mangaSources.json', 'r', encoding='utf-8') as f:
+        tempSources = json.load(f)['mangaSources']
+        for source in tempSources:
+            moduleName = 'sources.'+source['file'][:-3] # Remove .py extension
+            source['reference'] = import_module(moduleName)
+            if source['enabled'] == True:
+                sources.append(source)
+    f.close()
+reloadSources()
 
 # Initialize API
 app = Flask(__name__)
@@ -31,14 +45,6 @@ def getUserRatings(uid):
             'rating': rating
         })
     return userRatings
-
-def readSourcesFile():
-    sources = []
-    with open('mangaSources.json', 'r', encoding='utf-8') as f:
-        sources = json.load(f)['mangaSources']
-        sources = [s for s in sources if s['enabled'] == True]
-    f.close()
-    return sources
 
 @app.route("/")
 def hello_world():
@@ -60,43 +66,17 @@ def getMangaInfoAnimelist():
 
 @app.post("/getMangaSources")
 def getMangaSources():
-    sources = readSourcesFile()
-    return jsonify(sources)
-
-@app.post("/addMangaSource")
-def addMangaSource():
-    data = request.json
-    name = data['name']
-    file = data['file']
-    sources = readSourcesFile()
-    sources.append({"name":name,"file":file})
-    with open('mangaSources.json', 'w', encoding='utf-8') as f:
-        sources = json.dump({"mangaSources": sources}, f)
-    f.close()
-    return jsonify({'result': 'Source added succesfully'})
-
-@app.post("/removeMangaSource")
-def removeMangaSource():
-    data = request.json
-    name = data['name']
-    sources = readSourcesFile()
-    sources = [s for s in sources if s['name'] != name]
-    with open('mangaSources.json', 'w', encoding='utf-8') as f:
-        sources = json.dump({"mangaSources": sources}, f)
-    f.close()
-    return jsonify({'result': 'Source removed succesfully'})
+    tempJSON = sources.copy()
+    del tempJSON['reference']
+    return jsonify(tempJSON)
 
 @app.post("/findMangaSource")
 def findMangaSource():
     data = request.json
     manga = data['manga']
-    sources = readSourcesFile()
     results = []
     for source in sources:
-        sourceFile = source['file']
-        moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
-        module = import_module(moduleName)
-        result = module.searchManga(manga)
+        result = source['reference'].searchManga(manga)
         if( type(result) is list):
             for res in result:
                 res['source'] = source['name']
@@ -108,14 +88,10 @@ def getMangaChapters():
     data = request.json
     url = data['url']
     sourceName = data['source']
-    sources = readSourcesFile()
     results = []
     for source in sources:
         if(source['name'] == sourceName):
-            sourceFile = source['file']
-            moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
-            module = import_module(moduleName)
-            result = module.getMangaChapters(url)
+            result = source['reference'].getMangaChapters(url)
             if( type(result) is list):
                 for res in result:
                     res['source'] = source['name']
@@ -127,14 +103,10 @@ def getChapterLinks():
     data = request.json
     url = data['url']
     sourceName = data['source']
-    sources = readSourcesFile()
     results = []
     for source in sources:
         if(source['name'] == sourceName):
-            sourceFile = source['file']
-            moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
-            module = import_module(moduleName)
-            result = module.getChapterURLS(url)
+            result = source['reference'].getChapterURLS(url)
             if( type(result) is list):
                 for res in result:
                     results.append({'source':source['name'],'url':res})
@@ -145,18 +117,14 @@ def downloadChapterImage():
     data = request.json
     url = data['url']
     sourceName = data['source']
-    sources = readSourcesFile()
     image_string = ''
     response = {'result':'Failed to download image.'}
     for source in sources:
         if(source['name'] == sourceName):
-            sourceFile = source['file']
-            moduleName = 'sources.'+sourceFile[:-3] # Remove .py extension
-            module = import_module(moduleName)
-            image_string = module.getImageBase64(url)
-    if( type(image_string) is bytes):
-        response = make_response(image_string)
-        response.headers.set('Content-Type', 'image/jpeg')
+            image = source['reference'].getImageBlob(url)
+            if( type(image) is bytes):
+                buffer = io.BytesIO(image)
+                response = send_file(buffer, mimetype='image/jpeg')
     return response
 
 @app.post("/addToTopManga")

@@ -7,7 +7,6 @@ import logging
 import re
 import time
 import csv
-import base64
 from urllib.error import HTTPError
 
 def parseMangaSoup(soup, debug=False):
@@ -208,16 +207,15 @@ def testlocal():
     # print(short_desc)
     pass
 
-def getImageBase64(imageURL):
+def getImageBlob(imageURL):
     """
-    Returns a single binary image encoded in base64 format
+    Returns a single binary image
     """
     url = imageURL
     res = requests.get(url)
     res.raise_for_status()
     binaryImage = res.content
-    image_string = base64.b64encode(binaryImage) # Base64 compressed image
-    return image_string
+    return binaryImage
 
 def createCSV(filename='mangas.csv'):
     """ Creates and erases csv for mangas"""

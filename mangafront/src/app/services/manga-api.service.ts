@@ -63,8 +63,8 @@ export class MangaApiService {
       headers: new HttpHeaders({
          'Accept':'image/jpeg'
       }),
-      'responseType': 'text' as 'json'
-    } 
+      responseType: 'blob' as 'json'
+    }
     const url = `${this.backend}/downloadChapterImage`;
     return this.http.post<any>(url,body,options);
   }

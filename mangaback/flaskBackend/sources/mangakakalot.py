@@ -1,26 +1,26 @@
 import re
 import json
-import base64
 import io
 
 import requests
 from PIL import Image
 from bs4 import BeautifulSoup
 
-from selenium import webdriver # Javascript support
-from selenium.webdriver.firefox.options import Options # Browser headless option
 import urllib
 
 siteURL = "https://ww5.mangakakalot.tv"
 
+# Initialize browser so we dont delay requests
+from selenium import webdriver # Javascript support
+from selenium.webdriver.firefox.options import Options # Browser headless option
+browserConfig = Options()
+browserConfig.add_argument('-headless')
+browser = webdriver.Firefox(options=browserConfig)
+browser.get('https://www.google.com')
+
 def renderWithJavascript(url):
-    # Headless configuration
-    browserConfig = Options()
-    browserConfig.add_argument('-headless')
-    browser = webdriver.Firefox(options=browserConfig)
     browser.get(url)
     html = browser.page_source
-    browser.close()
     return html
 
 def searchManga(searchQuery):
@@ -98,9 +98,9 @@ def getChapterURLS(chapterURL):
     links.reverse() # Reverse because site goes lastest-first
     return links
 
-def getImageBase64(imageURL):
+def getImageBlob(imageURL):
     """
-    Returns a single binary image encoded in base64 format
+    Returns a single binary image
     """
     url = imageURL
     res = requests.get(url, headers={'referer': siteURL})
@@ -116,8 +116,7 @@ def getImageBase64(imageURL):
     imgPIL.save(buffer,format='JPEG',optimize=True,quality=50)
     
     imgBinaryCompressed = buffer.getvalue()
-    image_string = base64.b64encode(imgBinaryCompressed) # Base64 compressed image
-    return image_string
+    return imgBinaryCompressed
 
 if __name__ == '__main__':
     #res = searchManga('pokemon')
@@ -126,4 +125,4 @@ if __name__ == '__main__':
     print(res[0])
     #res = getChapterURLS('https://ww5.mangakakalot.tv/chapter/manga-ok991667/chapter-1')
     #print(res)
-    #res = getImageBase64('https://cm.blazefast.co/62/1b/621b3c68e968efd37d2cb5c37d61060d.jpg')
+    #res = getImageBlob('https://cm.blazefast.co/62/1b/621b3c68e968efd37d2cb5c37d61060d.jpg')

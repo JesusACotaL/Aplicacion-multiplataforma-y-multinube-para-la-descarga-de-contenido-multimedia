@@ -56,10 +56,14 @@ export class MangaModalComponent implements OnInit {
       for (const imagen of imagenes) {
         if(this.mostrando) { // Cancel if user closed modal
           await new Promise<void>(resolve => {
-            this.mangaAPI.descargarImagenCapitulo(imagen['source'], imagen['url']).subscribe( ( imagenBase64 ) => {
+            this.mangaAPI.descargarImagenCapitulo(imagen['source'], imagen['url']).subscribe( ( imagenBlob ) => {
               let htmlimg = new Image();
               htmlimg.className = "img-fluid";
-              htmlimg.src = 'data:image/jpeg;base64,'+imagenBase64;
+              const url = window.URL.createObjectURL(imagenBlob);
+              htmlimg.src = url
+              htmlimg.onload = (evt) => {
+                window.URL.revokeObjectURL(url);
+              }
               this.div?.append(htmlimg);
               this.cargadas = this.cargadas + 1;
               resolve();

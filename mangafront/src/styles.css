@@ -37,14 +37,6 @@ app-root {
     height: 100%;
 }
 
-app-home {
-    margin-top: auto;
-}
-
-app-footer {
-    margin-top: auto;
-}
-
 body { 
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;

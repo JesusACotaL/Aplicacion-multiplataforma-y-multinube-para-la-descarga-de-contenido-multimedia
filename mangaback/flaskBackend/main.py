@@ -76,6 +76,7 @@ def getMangaSources():
 def findMangaSource():
     data = request.json
     manga = data['manga']
+    manga = manga.encode('utf-8', errors='ignore').decode('utf-8')
     results = []
     for source in sources:
         result = source['reference'].searchManga(manga)
@@ -185,7 +186,6 @@ def getUserRecomendations():
     uid = data['uid']
     userInput = getUserRatings(uid)
     userGenres = obtener_recomendaciones(userInput)
-    print(userGenres)
     return jsonify(userGenres)
 
 @app.post("/user/getMangaRating")

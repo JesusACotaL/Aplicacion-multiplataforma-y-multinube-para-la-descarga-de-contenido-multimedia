@@ -18,7 +18,6 @@ def searchManga(searchQuery):
     ]
     """
     searchQuery = re.sub(r'\ ','_',searchQuery) # replace whitespaces with underscores
-    searchQuery = ''.join(e for e in searchQuery if e.isalnum() or e == '/' or e == '_' or e == ':') # remove weird characters
     searchQuery = searchQuery.lower() # uncapitalize
     body = {"url": "https://m.manganelo.com/search/story/"+searchQuery}
     res = requests.post(scrapperManganeloAPI+"/get-manga-info", json=body)

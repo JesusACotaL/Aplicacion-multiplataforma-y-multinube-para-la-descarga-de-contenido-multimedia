@@ -10,12 +10,12 @@
                 <span *ngIf="obteniendoLinks">Getting links, please wait...</span>
                 <span *ngIf="!obteniendoLinks">{{cargadas}} / {{total}} pages loaded</span>
                 <div style="display: flex; align-items: center; gap: 1rem; align-items: center; margin-left: auto;">
-                    <button type="button" class="btn btn-danger" (click)="cambiarCalidad(resolution.value)"><i class="bi bi-arrow-clockwise"></i></button>
+                    <button type="button" class="btn btn-danger" (click)="recargar()"><i class="bi bi-arrow-clockwise"></i></button>
                     <span>Image resolution:</span>
-                    <select #resolution class="form-select" style="margin-left: auto; width: inherit;" (change)="calidad = resolution.value">
+                    <select #resolution class="form-select" style="margin-left: auto; width: inherit;" [(ngModel)]="calidad" (change)="cambiarCalidad(resolution.value)">
                         <option value="25">Low</option>
                         <option value="50">Medium</option>
-                        <option selected value="75">High</option>
+                        <option value="75">High</option>
                         <option value="100">Native</option>
                     </select>
                 </div>

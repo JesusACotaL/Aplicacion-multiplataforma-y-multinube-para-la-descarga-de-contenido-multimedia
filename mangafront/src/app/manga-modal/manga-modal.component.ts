@@ -27,6 +27,7 @@ export class MangaModalComponent implements OnInit {
   ngOnInit(): void {
     this.mangaModal = new bootstrap.Modal('#exampleModal', {keyboard: false});
     this.div = document.getElementById('ImagenesCapitulo');
+    this.obtenerParametroCalidad();
   }
   
   mostrar(nombreEpisodio: string, fuenteNombre: string, fuente:string) {
@@ -53,8 +54,21 @@ export class MangaModalComponent implements OnInit {
     this.mostrando = false;
   }
 
+  obtenerParametroCalidad() {
+    let valor = window.localStorage.getItem("calidad");
+    if(!valor) {
+      valor = "75";
+      window.localStorage.setItem("calidad",valor);
+    }
+    this.calidad = valor;
+  }
+
   cambiarCalidad(valor: string) {
     this.calidad = valor;
+    window.localStorage.setItem("calidad",valor);
+  }
+
+  recargar() {
     this.div!.innerHTML = '';
     this.cargarImagenes();
   }

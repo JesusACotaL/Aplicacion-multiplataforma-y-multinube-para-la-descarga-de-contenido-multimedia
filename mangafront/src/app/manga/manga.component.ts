@@ -93,7 +93,7 @@ export class MangaComponent implements OnInit {
     this.seleccionandoManga = false;
     this.cargando = true;
     this.mangaAPI.obtenerCapitulos(fuente_nombre,fuente_url).subscribe( (capitulos) => {
-      this.capitulos = capitulos.reverse();
+      this.capitulos = capitulos;
       this.filtrados = this.capitulos;
       this.cargando = false;
       const cantPaginas = this.capitulos.length / this.capitulosPorPagina;

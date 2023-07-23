@@ -84,18 +84,22 @@ export class MangaComponent implements OnInit {
   }
 
   obtenerFuentes() {
-    this.mangaAPI.encontrarFuentes(this.manga.name).subscribe( (mangas) => {
-      this.cargando = false;
-      this.seleccionandoManga = true;
+    this.mangaAPI.encontrarFuentes(this.manga.name).subscribe( (sources: any[]) => {
+      // Order by string length (so we mix by similar results to query provided)
+      // ASC  -> a.length - b.length
+      // DESC -> b.length - a.length
+      sources.sort((a, b) => a['name'].length - b['name'].length);
       // Get list of sources retrieved
       let fuentesNombres: any[] = [];
-      for (const manga of mangas) {
+      for (const manga of sources) {
         if(fuentesNombres.indexOf(manga['source']) == -1)
-          fuentesNombres.push(manga['source'])
+        fuentesNombres.push(manga['source']);
       }
-      this.fuentes = mangas
+      this.fuentes = sources;
       this.fuentesNombres = fuentesNombres;
-      this.fuentesFiltradas = mangas
+      this.fuentesFiltradas = this.fuentes
+      this.cargando = false;
+      this.seleccionandoManga = true;
     });
   }
 

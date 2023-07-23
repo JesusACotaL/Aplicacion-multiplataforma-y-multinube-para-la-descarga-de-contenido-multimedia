@@ -101,8 +101,6 @@ def findMangaSource():
             for res in result:
                 res['source'] = source['name']
             results = results + result[:5] # Only retrieve 5 results per source
-    # Order by string length (so we mix by similar results to query provided)
-    results.sort(key=lambda s: len(s['name']))
     return results
 
 @app.post("/getMangaChapters")

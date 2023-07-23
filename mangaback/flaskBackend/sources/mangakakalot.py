@@ -8,16 +8,16 @@ from PIL import Image
 from bs4 import BeautifulSoup
 
 from selenium import webdriver # Javascript support
-from selenium.webdriver.firefox.options import Options # Browser headless option
+from selenium.webdriver.chrome.options import Options # Browser headless option
 import urllib
 
 siteURL = "https://ww5.mangakakalot.tv"
 
 def renderWithJavascript(url):
+    # Headless configuration
     browserConfig = Options()
     browserConfig.add_argument('-headless')
-    # Render w/ javascript
-    browser = webdriver.Firefox(options=browserConfig)
+    browser = webdriver.Chrome(options=browserConfig)
     browser.get(url)
     html = browser.page_source
     browser.close()

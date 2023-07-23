@@ -49,9 +49,15 @@
         </div>
         <div *ngIf="seleccionandoManga">
             <div *ngIf="fuentes.length > 0">
-                <h4>Choose a source to read this manga: </h4>
+                <div style="display: flex;">
+                    <h4>Choose a source to read this manga: </h4>
+                    <select #fuenteFiltro class="form-select" style="margin-left: auto; width: inherit;" (change)="filtrarFuentesPorNombre(fuenteFiltro.value)">
+                        <option selected value="">All sources</option>
+                        <option *ngFor="let fuente of fuentesNombres" [value]="fuente">{{fuente}}</option>
+                    </select>
+                </div>
                 <div class="fuentes">
-                    <div class="fuenteManga" *ngFor="let fuente of fuentes" (click)="obtenerCapitulos(fuente.source, fuente.chapters_url)">
+                    <div class="fuenteManga" *ngFor="let fuente of fuentesFiltradas" (click)="obtenerCapitulos(fuente.source, fuente.chapters_url)">
                         <img [src]="fuente.image_url" alt="" width="50">
                         <div style="display: flex; flex-direction: column; justify-content: center;">
                             <span>{{fuente.name}}</span>

@@ -41,15 +41,14 @@ def getMangaChapters(mangaURL):
     res = requests.post(scrapperManganeloAPI+"/get-manga-chapters", json=body)
     res.raise_for_status()
     results = json.loads(res.content)['search_items']
+    results.reverse() # Reverse because site goes lastest-first
     return results
 
 def getChapterURLS(chapterURL):
     """
     Returns an array[] like:
     [
-        {
-            "url": ""
-        }
+        "url": ""
     ]
     """
     body = {"url": chapterURL}

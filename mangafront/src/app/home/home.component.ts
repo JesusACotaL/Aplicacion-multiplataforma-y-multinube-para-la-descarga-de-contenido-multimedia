@@ -16,14 +16,11 @@ export class HomeComponent implements OnInit {
   flag: boolean = false;
   busquedasPopulares = [] as any
   user: User | null = null;
+  cargando = true;
 
   constructor(private router: Router, private mangaAPI: MangaApiService, private userService: UserService) { }
 
   ngOnInit(): void {
-    // Obtener busquedas mas frecuentes
-    this.mangaAPI.obtenerBusquedasPopulares().subscribe((busquedas) => {
-      this.busquedasPopulares = busquedas;
-    });
     // Recuperar usuario
     this.userService.getAuth().onAuthStateChanged((user) => {
       if (user) {
@@ -32,7 +29,12 @@ export class HomeComponent implements OnInit {
         this.user = user;
       } else {
         // User is signed out
+        // Obtener busquedas mas frecuentes
+        this.mangaAPI.obtenerBusquedasPopulares().subscribe((busquedas) => {
+          this.busquedasPopulares = busquedas;
+        });
       }
+      this.cargando = false;
     });
   }
 

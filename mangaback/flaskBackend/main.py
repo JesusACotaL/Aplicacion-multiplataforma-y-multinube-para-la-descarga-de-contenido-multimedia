@@ -100,7 +100,7 @@ def findMangaSource():
         if( type(result) is list):
             for res in result:
                 res['source'] = source['name']
-            results = results + result
+            results = results + result[:5] # Only retrieve 5 results per source
     return results
 
 @app.post("/getMangaChapters")

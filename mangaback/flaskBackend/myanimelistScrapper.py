@@ -7,23 +7,21 @@ import logging
 import re
 import time
 import csv
-from urllib.error import HTTPError
+import urllib
 
-def parseMangaSoup(soup, debug=False):
+def parseMangaSoup(soup):
     """ Parses a full manga page soup into a dictionary """
     output_dict = {}
 
     # Original name
     name = soup.find('span', itemprop='name').find(string=True)
     output_dict['name'] = name
-    if debug: print(name)
 
     # Original url
     mangaURL = soup.find('div', attrs={'class': 'breadcrumb','itemtype':'http://schema.org/BreadcrumbList'})
     mangaURL = mangaURL.find('meta', attrs={'content':'3'}).find_previous_sibling()
     mangaURL = mangaURL['href']
     output_dict['mangaURL'] = mangaURL
-    if debug: print(mangaURL)
 
     # English name
     name_english = soup.find('span', string='English:')
@@ -32,28 +30,23 @@ def parseMangaSoup(soup, debug=False):
     else:
         name_english=''
     output_dict['name_english'] = name_english
-    if debug: print(name_english)
 
     # Authors
     authors = soup.find('span', string='Authors:').find_next_sibling('a').string
     output_dict['authors'] = authors
-    if debug: print(authors)
 
     # Date
     date = soup.find('span', string='Published:').next_sibling.strip()
     output_dict['date'] = date
-    if debug: print(date)
 
     # Status
     status = soup.find('span', string='Status:').next_sibling.strip()
     output_dict['status'] = status
-    if debug: print(status)
 
     # Genres
     genresDiv = soup.find_all('span', itemprop='genre')
     genres = ', '.join([g.string for g in genresDiv])
     output_dict['genres'] = genres
-    if debug: print(genres)
 
     # Characters
     charactersDiv = soup.find(lambda tag:tag.name=="h2" and "Characters" in tag.text).next_sibling
@@ -64,19 +57,19 @@ def parseMangaSoup(soup, debug=False):
             character = {}
             # Name
             character['name']=c.string
-            if debug: print(c.string)
+    
             # Role
             character['role']=c.next_sibling.next_sibling.find('small').string
-            if debug: print(c.next_sibling.next_sibling.find('small').string)
+    
             # Image
             cImgSrc=c.parent.find_previous_sibling().a.img['data-src']
             cImgSrc = re.sub(r'r/\d+x\d+/', '', cImgSrc)
             character['image'] = cImgSrc
-            if debug: print(c.parent.find_previous_sibling().a.img['data-src'])
+    
             charactersList.append(character)
             # URL
             character['url']=c['href']
-            if debug: print(c['href'])    
+    
     output_dict['characters'] = charactersList
     
     # Statistics
@@ -89,24 +82,19 @@ def parseMangaSoup(soup, debug=False):
         scoreUsers = soup.find('span', string='Score:').find_next_sibling('span').find(itemprop='ratingCount').string
     statistics['score'] = score
     statistics['scoreUsers'] = scoreUsers
-    if debug: print(score, 'by', score)
-    if debug: print(score, 'by', scoreUsers)
 
     
     ranked = soup.find('span', string='Ranked:').next_sibling.strip()
     statistics['ranked'] = ranked
-    if debug: print(ranked)
     
     popularity = soup.find('span', string='Popularity:').next_sibling.strip()
     statistics['popularity'] = popularity
-    if debug: print(popularity)
     output_dict['statistics'] = statistics
 
     # Oficial site (if exists)
     site = soup.find(lambda tag:tag.name=="h2" and "Available At" in tag.text)
     if(site):
         site = site.next_sibling.a['href']
-    if debug: print(site)
     output_dict['site'] = site
 
     # Synopsis
@@ -115,14 +103,12 @@ def parseMangaSoup(soup, debug=False):
     if(synopsisDiv):
         synopsis = synopsisDiv.text
     output_dict['synopsis'] = synopsis
-    if debug: print(synopsis)
 
     # Background
     background = ''
     backgroundDiv = soup.find(lambda tag:tag.name=="h2" and "Background" in tag.text).next_siblings
     if(backgroundDiv):
         background = ' '.join([item.text for item in backgroundDiv])
-    if debug: print(background)
     output_dict['background'] = background
 
     # Image
@@ -132,22 +118,46 @@ def parseMangaSoup(soup, debug=False):
     return output_dict
 
 def scrapManga(manga_url):
+    manga = {}
     try:
         res = requests.get(manga_url)
         res.raise_for_status()
         manga_soup = BeautifulSoup(res.content, 'html.parser')
-        result = parseMangaSoup(manga_soup)
+        manga = parseMangaSoup(manga_soup)
         # Original myanimelist ID
         mangaID = re.findall("\/[0-9]+\/",manga_url)[0][1:-1]
-        result['mangaID'] = mangaID
-        return result
-    except HTTPError:
+        manga['mangaID'] = mangaID
+    except requests.exceptions.HTTPError:
         print('Couldnt scrap manga: '+str(manga_url))
-        return None
+    return manga
 
-def searchMangaOnline(text, debug=False):
-    search_url = 'https://myanimelist.net/manga.php?cat=manga'
-    res = requests.get(search_url, params=[('q',text)])
+def searchMangaOnline(text, safeSearch=False):
+    siteUrl = "https://myanimelist.net/manga.php"
+    # Type=a, Chapters=c, Score=g, ,Total members=f
+    columns = ['a', 'g', 'c', 'f'] 
+    excluded_genres = []
+    if(safeSearch):
+        excluded_genres = [9, 49, 12] # Exclue Ecchi, Erotica and Hentai
+    parameters = {
+        'cat': 'manga',
+        'q' : text,
+        'type' : 0,
+        'score' : 0,
+        'status' : 0,
+        'mid' : 0,
+        'sm' : 0,
+        'sd' : 0,
+        'sy' : 0,
+        'em' : 0,
+        'ed' : 0,
+        'ey' : 0,
+        'c[]' : columns,
+        'genre_ex[]' : excluded_genres
+    }
+    encodedParams = urllib.parse.urlencode(parameters, doseq=True)
+    search_url = 'https://myanimelist.net/manga.php?%s' % encodedParams
+
+    res = requests.get(search_url)
     res.raise_for_status()
     manga_soup = BeautifulSoup(res.content, 'html.parser')
     
@@ -158,54 +168,44 @@ def searchMangaOnline(text, debug=False):
     mangasFound = []
     for mangaDiv in html:
         manga = {}
-        name = mangaDiv.select('td:nth-child(2) > a.hoverinfo_trigger.fw-b')[0].find('strong').text
+
+        img = ''
+        img = mangaDiv.select('td:nth-child(1)')[0].find('img')['data-src']
+        img = re.sub(r'r/\d+x\d+/', '', img) # Instead of that tiny thumbnail, we must remove any resolution parameters
+        manga['img'] = img
+
+        name = ''
+        name = mangaDiv.select('td:nth-child(2) > a.hoverinfo_trigger.fw-b')[0].find('strong').string
+        name = name.strip('\r\n').lstrip(' \r\n').rstrip(' \r\n')
         manga['name'] = name
         
-        url = mangaDiv.select('td:nth-child(2) > a.hoverinfo_trigger.fw-b')[0]['href']
-        manga['url'] = url
-        
-        score = mangaDiv.select('td:nth-child(5)')[0].text
-        score = ''.join(e for e in score if e.isalnum() or e == '.') # Delete special char
-        manga['score'] = score
-
-        # Instead of that tiny thumbnail, we must remove any resolution parameters
-        img = mangaDiv.select('td:nth-child(1)')[0].find('img')['data-src']
-        img = re.sub(r'r/\d+x\d+/', '', img)
-        manga['img'] = img
-        
+        short_desc = ''
         short_desc = mangaDiv.select('td:nth-child(2)')[0].select(':nth-child(4)')[0].text
+        short_desc = short_desc.strip('\r\n').lstrip(' \r\n').rstrip(' \r\n')
         manga['short_desc'] = short_desc
 
-        if debug: print(title)
-        if debug: print(url)
-        if debug: print(score)
-        if debug: print(img)
-        if debug: print(short_desc)
+        url = ''
+        url = mangaDiv.select('td:nth-child(2) > a.hoverinfo_trigger.fw-b')[0]['href']
+        manga['url'] = url
+
+        mangaType = ''
+        mangaType = mangaDiv.select('td:nth-child(3)')[0].string
+        mangaType = mangaType.strip('\r\n').lstrip(' \r\n').rstrip(' \r\n')
+        manga['mangaType'] = mangaType
+        
+        chapAmount = ''
+        chapAmount = mangaDiv.select('td:nth-child(4)')[0].string
+        chapAmount = chapAmount.strip('\r\n').lstrip(' \r\n').rstrip(' \r\n')
+        chapAmount = '' if chapAmount == '-' else chapAmount
+        manga['chapAmount'] = chapAmount
+        
+        score = ''
+        score = mangaDiv.select('td:nth-child(5)')[0].string
+        score = score.strip('\r\n').lstrip(' \r\n').rstrip(' \r\n')
+        manga['score'] = score
+
         mangasFound.append(manga)
     return mangasFound
-
-def testlocal():
-    # Test de scrap
-    manga_soup = BeautifulSoup(open('onepiece.html', encoding="utf8"), 'html.parser')
-    print(parseMangaSoup(manga_soup))
-    
-    # Test de busqueda
-    # manga_soup = BeautifulSoup(open('testBusqueda.html', encoding="utf8"), 'html.parser')
-    # html = manga_soup.select('#content > div.js-categories-seasonal.js-block-list.list > table > tr')
-    # html = html[1:] # Delete tr title
-    # # Data
-    # title = html[0].select('td:nth-child(2) > a.hoverinfo_trigger.fw-b')[0].find('strong').text
-    # url = html[0].select('td:nth-child(2) > a.hoverinfo_trigger.fw-b')[0]['href']
-    # score = html[0].select('td:nth-child(5)')[0].text
-    # score = ''.join(e for e in score if e.isalnum() or e == '.') # Delete special char
-    # img = html[0].select('td:nth-child(1)')[0].find('img')['data-src']
-    # short_desc = html[0].select('td:nth-child(2)')[0].select(':nth-child(4)')[0].text
-    # print(title)
-    # print(url)
-    # print(score)
-    # print(img)
-    # print(short_desc)
-    pass
 
 def getImageBlob(imageURL):
     """
@@ -218,7 +218,7 @@ def getImageBlob(imageURL):
     return binaryImage
 
 def createCSV(filename='mangas.csv'):
-    """ Creates and erases csv for mangas"""
+    """ Creates / Cleans CSV with headers for mangas"""
     fieldnames = ['mangaID', 'name', 'genres', 'authors', 'img', 'mangaURL']
     with open(filename, 'w', encoding="utf-8", newline='') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
@@ -239,48 +239,35 @@ def csvWriter(manga, filename='mangas.csv'):
     with open(filename, 'a', encoding="utf-8", newline='') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writerow(manga)
-        time.sleep(1)
         csv_file.close()
 
-def getTopMangas(limit, delay=1, filename='mangas.csv'):
-    """ Fetches 50 top mangas, starting on number <LIMIT> and then writes the most important data in a CSV file """
-    url = 'https://myanimelist.net/topmanga.php'
-    res = requests.get(url, params=[('limit',limit)])
-    res.raise_for_status()
-    topmanga_soup = BeautifulSoup(res.content, 'html.parser')
-    topmanga_soupTable = topmanga_soup.find('table', attrs={'class':'top-ranking-table'})
-    mangaList = topmanga_soupTable.find_all('tr', attrs={'class':'ranking-list'})
-    mangasInfo = []
-    for manga in mangaList:
-        mangaURL = manga.find('td', attrs={'class':'title al va-t clearfix word-break'}).findChildren('a')
-        mangaURL = mangaURL[0]['href']
-        print(mangaURL)
-        mangaInfo = scrapManga(mangaURL)
-        if(mangaInfo):
-            mangasInfo.append(mangaInfo)
-        time.sleep(delay)
-    for manga in mangasInfo:
-        csvWriter(manga, filename=filename)
-    print(mangasInfo)
-
-def getMangasByID(amount, delay=1):
-    """ Fetches a bunch of manga based on IDs, and then writes the most important data in a CSV file """
-    mangaURL = 'https://myanimelist.net/manga/'
-    mangaID = 1
-    mangasInfo = []
-    while mangaID < amount:
-        url = mangaURL+str(mangaID)
-        print(url)
-        mangaInfo = scrapManga(url)
-        if(mangaInfo):
-            mangasInfo.append(mangaInfo)
-        mangaID = mangaID + 1
-        time.sleep(delay)
-    for manga in mangasInfo:
-        csvWriter(manga)
-    print(mangasInfo)
+def getTopMangasToCSV(limit, delay=1, filename='mangas.csv'):
+    """ Fetches 50 top mangas and then writes the most important data in a CSV file """
+    currentMangaID = 1
+    createCSV(filename=filename)
+    currentPage = 1
+    pageAmount = limit / 50
+    while(currentPage < pageAmount):
+        # Request search
+        url = 'https://myanimelist.net/topmanga.php'
+        res = requests.get(url, params=[('limit',(currentPage*50) - 50)])
+        res.raise_for_status()
+        html = res.content
+        # Parse results
+        topmanga_soup = BeautifulSoup(html, 'html.parser')
+        topmanga_soupTable = topmanga_soup.find('table', attrs={'class':'top-ranking-table'})
+        mangaList = topmanga_soupTable.find_all('tr', attrs={'class':'ranking-list'})
+        for manga in mangaList:
+            mangaURL = manga.find('td', attrs={'class':'title al va-t clearfix word-break'}).findChildren('a')
+            mangaURL = mangaURL[0]['href']
+            mangaInfo = scrapManga(mangaURL)
+            mangaInfo['mangaID'] = currentMangaID
+            csvWriter(mangaInfo, filename=filename)
+            print('Scrapped: '+mangaURL)
+            currentMangaID = currentMangaID + 1
+            time.sleep(delay)
+        currentPage = currentPage + 1
 
 if __name__ == '__main__':
-    #testlocal()
-    createCSV(filename='mangas2.csv')
-    getTopMangas(50,filename='mangas2.csv')
+    #print(searchMangaOnline('boku no pico')[0])
+    getTopMangasToCSV(200, delay=1,filename='test.csv')

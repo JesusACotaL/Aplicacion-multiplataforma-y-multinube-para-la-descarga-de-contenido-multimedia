@@ -12,9 +12,10 @@ export class MangaApiService {
   backend = 'http://127.0.0.1:5000'
   constructor(private http: HttpClient) {}
 
-  buscarManga(nombre: string): Observable<any>{
+  buscarManga(nombre: string, filtroAdulto: boolean): Observable<any>{
     const body = {
-      manga: nombre
+      manga: nombre,
+      safeSearch: filtroAdulto
     }
     const url = `${this.backend}/searchManga`;
     return this.http.post<any>(url,body);

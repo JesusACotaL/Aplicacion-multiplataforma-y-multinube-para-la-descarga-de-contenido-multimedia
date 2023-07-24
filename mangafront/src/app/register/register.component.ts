@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup,FormControl } from '@angular/forms';
+import { FormGroup,FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 
@@ -17,9 +17,13 @@ export class RegisterComponent implements OnInit {
     private router: Router
   ) { 
     this.formReg = new FormGroup({
+      username: new FormControl(),
       email: new FormControl(),
-      password: new FormControl()
-    })
+      password: new FormControl(),
+      confirmPassword: new FormControl()
+    }, 
+      this.checkPasswords
+    )
   }
 
   ngOnInit(): void {
@@ -28,11 +32,15 @@ export class RegisterComponent implements OnInit {
   onSubmit(){
     this.userService.register(this.formReg.value)
     .then(response => {
-      console.log(response);
-      this.router.navigate(["/login/"]);
+      this.router.navigate(["/home"]);
     })
     .catch(error =>console.log(error));
-
   }
 
+  checkPasswords: ValidatorFn = (group: AbstractControl):  ValidationErrors | null => { 
+    let pass = group.get('password')!.value;
+    let confirmPass = group.get('confirmPassword')!.value
+    return pass === confirmPass ? null : { notSame: true }
+  }
 }
+

@@ -39,8 +39,12 @@ export class NavbarComponent implements OnInit {
     this.userService.openLoginWindow();
   }
   
-  logOut(): void{
+  logOut(){
     this.userService.logout();
+  }
+
+  openSignupModal() {
+    this.userService.openSignUpWindow();
   }
   
   verPerfil() {

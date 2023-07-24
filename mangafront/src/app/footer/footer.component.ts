@@ -28,11 +28,11 @@ export class FooterComponent implements OnInit {
   }
 
   login(){
-    this.userService.openLoginWindow()
+    this.userService.openLoginWindow();
   }
 
   register(){
-    this.router.navigate(['/register'])
+    this.userService.openSignUpWindow();
   }
 
   logOut(): void{

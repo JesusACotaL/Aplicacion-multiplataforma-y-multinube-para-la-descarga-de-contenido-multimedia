@@ -22,7 +22,7 @@ export class UserService{
         setPersistence(this.auth, browserSessionPersistence);
     }
 
-    register({email, password}: any){
+    register({username, email, password, password2}: any){
         return createUserWithEmailAndPassword(this.auth, email, password)
           .then(response => {
             this.saveUserToFirestore(response.user);
@@ -33,6 +33,11 @@ export class UserService{
     openLoginWindow() {
         const loginModal: bootstrap.Modal = new bootstrap.Modal('#loginModal', {keyboard: false});
         loginModal.show();
+    }
+    
+    openSignUpWindow() {
+        const signUpModal: bootstrap.Modal = new bootstrap.Modal('#signUpModal', {keyboard: false});
+        signUpModal.show();
     }
 
     login({email,password}: any){

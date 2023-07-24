@@ -20,21 +20,28 @@ export class SearchComponent implements OnInit {
       url: ''
     }
   ];
+  filtroAdulto = false;
 
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService) { }
 
   ngOnInit(): void {
+    this.filtroAdulto = true ? (localStorage.getItem("filtroAdulto") == 'true') : false;
     // Obtener nombre de manga
     this.route.params.subscribe( (parametros) => {
       this.manga = parametros['name'];
       this.buscarAPI();  
     });
   }
+
+  cambiarFiltroAdultos(valor: boolean) {
+    localStorage.setItem("filtroAdulto",String(valor));
+    this.filtroAdulto = valor;
+  }
   
   buscarAPI() {
     this.cargando = true;
     // Buscar manga en API
-    this.mangaAPI.buscarManga(this.manga).subscribe( (mangas) => {
+    this.mangaAPI.buscarManga(this.manga, this.filtroAdulto).subscribe( (mangas) => {
       this.mangasEncontrados = mangas;
       this.mangaBuscado = this.manga
       this.cargando= false;

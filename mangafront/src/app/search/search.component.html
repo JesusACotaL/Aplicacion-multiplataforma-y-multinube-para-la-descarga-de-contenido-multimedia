@@ -1,6 +1,15 @@
 <app-navbar></app-navbar>
 <div class="p-4">
-    <span>Showing search results for: <span style="font-weight: bold;"> {{ mangaBuscado }} </span></span>
+    <div style="display: flex; align-items: center;">
+        <span>Showing search results for: <span style="font-weight: bold;"> {{ mangaBuscado }} </span></span>
+        <div style="margin-left: auto;">
+            <span>
+                Safe search: 
+                <button type="button" class="btn btn-danger btn-sm" *ngIf="filtroAdulto" (click)="cambiarFiltroAdultos(false)">Yes</button>
+                <button type="button" class="btn btn-danger btn-sm" *ngIf="!filtroAdulto" (click)="cambiarFiltroAdultos(true)">No</button>
+            </span>
+        </div>
+    </div>
     <hr>
     <div>
         <div *ngIf="cargando">

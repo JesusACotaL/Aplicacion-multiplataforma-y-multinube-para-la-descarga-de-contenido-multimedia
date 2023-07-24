@@ -4,15 +4,12 @@ import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
-
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
   formLogin: FormGroup;
 
   constructor(
@@ -33,7 +30,7 @@ export class LoginComponent implements OnInit {
       .then(response => {
         console.log(response);
         this.router.navigate(['/home']);
-        window.location.reload();
+  
       })
       .catch(error => console.log(error));
   }
@@ -43,7 +40,6 @@ export class LoginComponent implements OnInit {
       .then(response => {
         console.log(response);
         this.router.navigate(['/home']).then(() => {
-          window.location.reload();
         });
       })
       .catch(error => console.log(error))

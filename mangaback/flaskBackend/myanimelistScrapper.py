@@ -137,7 +137,7 @@ def searchMangaOnline(text, safeSearch=False):
     columns = ['a', 'g', 'c', 'f'] 
     excluded_genres = []
     if(safeSearch):
-        excluded_genres = [9, 49, 12] # Exclue Ecchi, Erotica and Hentai
+        excluded_genres = [49, 12] # Exclue Erotica and Hentai
     parameters = {
         'cat': 'manga',
         'q' : text,

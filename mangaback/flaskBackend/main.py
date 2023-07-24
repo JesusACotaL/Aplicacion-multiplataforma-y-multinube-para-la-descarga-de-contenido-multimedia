@@ -1,20 +1,22 @@
+"""
+Flask API for Aplicacion multiplataforma y multinube para la descarga de contenido multimedia API v1.0
+
+Remember to:
+pip install -r requirements.txt
+
+To dump current modules to file:
+pip freeze > requirements.txt
+"""
 from flask import Flask, request, jsonify, make_response, send_file
 from flask_cors import CORS
+from PIL import Image
+from firebase_admin import credentials, firestore, initialize_app, auth
 
 from myanimelistScrapper import scrapManga, searchMangaOnline
-from firebase_admin import credentials, firestore, initialize_app, auth
 from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones
-
-from PIL import Image
-
 from importlib import import_module
 import json
 import io
-
-# Create connection to firebase and keep it alive
-cred = credentials.Certificate('firebase-credentials.json')
-initialize_app(cred)
-db = firestore.client()
 
 # Initialize all sources as modules
 sources = []
@@ -28,6 +30,11 @@ def reloadSources():
                 sources.append(source)
     f.close()
 reloadSources()
+
+# Create connection to firebase and keep it alive
+cred = credentials.Certificate('firebase-credentials.json')
+initialize_app(cred)
+db = firestore.client()
 
 # Initialize API
 app = Flask(__name__)
@@ -49,14 +56,18 @@ def getUserRatings(uid):
     return userRatings
 
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def info():
+    return "<p>Aplicacion multiplataforma y multinube para la descarga de contenido multimedia API v1.0</p>"
 
 @app.post("/searchManga")
 def searchMangaAnimelist():
     data = request.json
     query = data['manga']
-    mangas = searchMangaOnline(query)
+    safeSearch = data['safeSearch']
+    if(safeSearch):
+        mangas = searchMangaOnline(query, safeSearch=True)
+    else:
+        mangas = searchMangaOnline(query)
     return jsonify(mangas)
 
 @app.post("/getMangaInfo")
@@ -323,3 +334,6 @@ def getHistory():
     for manga in query:
         mangas.append(manga.to_dict())
     return jsonify(mangas)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)

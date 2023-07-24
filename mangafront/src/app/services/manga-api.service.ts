@@ -54,17 +54,18 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
 
-  descargarImagenCapitulo(fuenteNombre: string, imagenURL: string): Observable<any>{
+  descargarImagenCapitulo(fuenteNombre: string, imagenURL: string, calidad: number): Observable<any>{
     const body = {
       source: fuenteNombre,
-      url: imagenURL
+      url: imagenURL,
+      quality: calidad
     }
     let options = {
       headers: new HttpHeaders({
          'Accept':'image/jpeg'
       }),
-      'responseType': 'text' as 'json'
-    } 
+      responseType: 'blob' as 'json'
+    }
     const url = `${this.backend}/downloadChapterImage`;
     return this.http.post<any>(url,body,options);
   }

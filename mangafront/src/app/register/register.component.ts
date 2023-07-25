@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup,FormControl, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormGroup,FormControl, ValidatorFn, AbstractControl, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 
@@ -17,10 +17,9 @@ export class RegisterComponent implements OnInit {
     private router: Router
   ) { 
     this.formReg = new FormGroup({
-      username: new FormControl(),
-      email: new FormControl(),
-      password: new FormControl(),
-      confirmPassword: new FormControl()
+      email: new FormControl("", Validators.email),
+      password: new FormControl("",Validators.minLength(8)),
+      confirmPassword: new FormControl("")
     }, 
       this.checkPasswords
     )

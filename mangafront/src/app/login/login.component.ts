@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -17,8 +17,8 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     this.formLogin = new FormGroup({
-      email: new FormControl(),
-      password: new FormControl()
+      email: new FormControl("",Validators.email),
+      password: new FormControl("")
     })
   }
 

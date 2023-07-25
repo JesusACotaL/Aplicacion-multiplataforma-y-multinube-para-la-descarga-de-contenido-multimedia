@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-
-
 
 @Component({
   selector: 'app-login',
@@ -12,7 +10,6 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
   formLogin: FormGroup;
 
   constructor(
@@ -20,8 +17,8 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     this.formLogin = new FormGroup({
-      email: new FormControl(),
-      password: new FormControl()
+      email: new FormControl("",Validators.email),
+      password: new FormControl("")
     })
   }
 
@@ -33,7 +30,7 @@ export class LoginComponent implements OnInit {
       .then(response => {
         console.log(response);
         this.router.navigate(['/home']);
-        window.location.reload();
+  
       })
       .catch(error => console.log(error));
   }
@@ -43,10 +40,13 @@ export class LoginComponent implements OnInit {
       .then(response => {
         console.log(response);
         this.router.navigate(['/home']).then(() => {
-          window.location.reload();
         });
       })
       .catch(error => console.log(error))
+  }
+
+  openSignupModal() {
+    this.userService.openSignUpWindow();
   }
 
 }

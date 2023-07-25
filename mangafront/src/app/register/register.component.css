@@ -1,0 +1,29 @@
+.signupForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+    height: 100%;
+    border-radius: 1rem;
+    background-color: var(--background);
+    color: var(--text-color);
+}
+
+.signupForm .signUp{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.signupForm .signUp form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}

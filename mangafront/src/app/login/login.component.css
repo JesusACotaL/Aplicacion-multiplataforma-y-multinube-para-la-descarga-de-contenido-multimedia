@@ -1,18 +1,28 @@
-.login {
+.loginForm {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1em;
+    gap: 1rem;
+    padding: 2rem;
     height: 100%;
+    border-radius: 1rem;
+    background-color: var(--background);
+    color: var(--text-color);
 }
 
-.loginForm {
-    border: 1px solid gray;
-    border-radius: 1em;
-    padding: 2em;
+.loginForm .login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }
 
-.loginForm form {
-    margin-bottom: 1em;    
+.loginForm .login form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
 }

@@ -7,12 +7,13 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="d-flex w-100" style="align-items: center;">
+            <div class="d-flex w-100" style="align-items: center; gap: .5rem;">
                 <form #formularioBusqueda="ngForm" (ngSubmit)="formularioBusqueda.valid && buscarManga()" class="d-flex" role="search">
                     <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control me-2" type="search" placeholder="Search a manga...">
                     <button class="btn btnPrimary" type="submit">Search</button>
                 </form>
                 <button *ngIf="!user" class="btn btnPrimary ms-auto" type="button" (click)="login()">Log in</button>
+                <!-- <button *ngIf="!user" class="btn btnPrimary" type="button" (click)="openSignupModal()">Sign up</button> -->
                 <button *ngIf="user" class="btn btnPrimary userProfileBtn dropdown text-white" data-bs-toggle="dropdown" aria-expanded="false">
                     <span>{{user.email}}</span>
                     <img class="img-fluid" src="assets\bills.jpg" alt="user">

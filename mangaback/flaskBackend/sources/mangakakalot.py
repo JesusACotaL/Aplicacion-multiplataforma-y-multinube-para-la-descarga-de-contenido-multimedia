@@ -94,7 +94,6 @@ def getChapterURLS(chapterURL):
     for link in resultHTML:
         newlink = link['data-src']
         links.append(newlink)
-    links.reverse() # Reverse because site goes lastest-first
     return links
 
 def getImageBlob(imageURL):

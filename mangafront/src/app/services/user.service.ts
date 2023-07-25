@@ -7,6 +7,8 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Manga } from "../interfaces/manga.interface";
+import * as bootstrap from 'bootstrap';
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn:'root'
@@ -16,11 +18,11 @@ export class UserService{
     backend = 'http://127.0.0.1:5000'
     currentUser = this.auth.currentUser;   
 
-    constructor(private auth:Auth,private firestore: AngularFirestore,private http: HttpClient){
+    constructor(private auth:Auth,private firestore: AngularFirestore,private http: HttpClient, private router: Router){
         setPersistence(this.auth, browserSessionPersistence);
     }
 
-    register({email, password}: any){
+    register({username, email, password, password2}: any){
         return createUserWithEmailAndPassword(this.auth, email, password)
           .then(response => {
             this.saveUserToFirestore(response.user);
@@ -28,21 +30,35 @@ export class UserService{
           });
     }
 
+    openLoginWindow() {
+        const loginModal: bootstrap.Modal = new bootstrap.Modal('#loginModal', {keyboard: false});
+        loginModal.show();
+    }
+    
+    openSignUpWindow() {
+        const signUpModal: bootstrap.Modal = new bootstrap.Modal('#signUpModal', {keyboard: false});
+        signUpModal.show();
+    }
+
     login({email,password}: any){
         return signInWithEmailAndPassword(this.auth,email,password);
     }
 
     logout(){
-        return signOut(this.auth);
+        signOut(this.auth).then(()=>{
+          this.router.navigate(['/home']).then(() => {
+            window.location.reload();
+          });
+        }).catch(error => console.log(error));
     }
 
     loginWithGoogle() {
         return signInWithPopup(this.auth, new GoogleAuthProvider())
-          .then(response => {
+            .then(response => {
             this.saveUserToFirestore(response.user);
             return response;
-          });
-      }
+            });
+    }
     
     userAuthState(){
         let flag: boolean = false;

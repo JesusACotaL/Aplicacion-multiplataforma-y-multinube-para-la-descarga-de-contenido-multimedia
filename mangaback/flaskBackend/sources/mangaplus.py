@@ -1,13 +1,3 @@
-"""
-Turns out mangadex is not actually a site to watch manga, but rather a front end for 
-the real site called https://mangaplus.shueisha.co.jp/
-So, this scrapper is useless
-But it contains several useful functions so im leaving it here.
-
-1. It contains code to set and retrieve localStorage on the browser.
-2. It contains code to force the browser to wait until javascript is loaded.
-3. It contains code that examples why using window.URL can make images unscrappable, because they are deleted after usage
-"""
 import re
 import json
 import io
@@ -17,40 +7,16 @@ import requests
 from bs4 import BeautifulSoup
 import urllib
 
-siteURL = "https://mangadex.org"
-dataConfig = {"metadata":{"version":0,"modified":1690095946467},"readingHistory":{"_readingHistory":[["2a70572c-e0ab-4930-bf68-fdd5b87ffdfb","2023-06-20T23:23:55.307Z"],["ddffda9a-c15c-4e42-ac09-adaefb97965b","2023-02-12T01:53:23.601Z"]]},"userPreferences":{"filteredLanguages":["en"],"originLanguages":[],"paginationCount":100,"listMultiplier":3,"showSafe":True,"showErotic":True,"showSuggestive":True,"showHentai":False,"theme":"system","mdahPort443":False,"dataSaver":False,"groupBlacklist":[],"userBlacklist":[],"locale":"en","interfaceLocale":"en"}}
+siteURL = "https://mangaplus.shueisha.co.jp"
 
 # Initialize browser so we dont delay requests
 from selenium import webdriver # Javascript support
-from selenium.webdriver.chrome.options import Options # Browser headless option
+from selenium.webdriver.edge.options import Options # Browser headless option
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 browserConfig = Options()
 browserConfig.add_argument('-headless')
-browser = webdriver.Chrome(options=browserConfig)
-browser.get('https://www.google.com')
-
-def renderWithJavascript(url, classToBeFound=None):
-    # Prepare site with configurations
-    browser.get(siteURL)
-    # Set preferences for mangadex browser
-    value = json.dumps(dataConfig)
-    browser.execute_script('window.localStorage.setItem("md",arguments[0])',value)
-
-    # Load requested page
-    browser.get(url)
-    # Wait for element to be rendered, or just wait
-    # More info https://www.selenium.dev/documentation/webdriver/waits/
-    try:
-        WebDriverWait(browser, timeout=2).until(lambda d: d.find_element(By.CLASS_NAME,classToBeFound))
-    except:
-        pass
-
-    localStorage = browser.execute_script('return window.localStorage.getItem("md")')
-    #print(localStorage)
-    
-    html = browser.page_source
-    return html
+browser = webdriver.Edge(options=browserConfig)
 
 def searchManga(searchQuery):
     """
@@ -65,17 +31,22 @@ def searchManga(searchQuery):
     """
     # Purify search query
     searchQuery = urllib.parse.quote(searchQuery)
-    url = siteURL+"/search?q="+searchQuery
+    url = siteURL+"/search_result?keyword="+searchQuery
     # Render w/ javascript
-    html = renderWithJavascript(url, classToBeFound='manga-card-dense')
+    browser.get(url)
+    try:
+        WebDriverWait(browser, timeout=10).until(lambda d: d.find_element(By.CSS_SELECTOR,"#app > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(3)"))
+    except:
+        pass
+    html = browser.page_source
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
-    resultHTML = manga_soup.find_all('a',attrs={'class':'manga-card-dense'})
+    resultHTML = manga_soup.select("#app > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(3) > a")
     mangas = []
     for manga in resultHTML:
         newmanga = {}
-        newmanga['name'] = manga.find('a',attrs={'class':'font-bold title'}).find('span').string
-        newmanga['chapters_url'] = siteURL + manga['href'] + '?order=asc'
+        newmanga['name'] = manga.find_all('p')[0].string
+        newmanga['chapters_url'] = siteURL + manga['href']
         newmanga['image_url'] = manga.find('img')['src']
         mangas.append(newmanga)
     return mangas
@@ -91,18 +62,24 @@ def getMangaChapters(mangaURL):
     ]
     """
     # Render w/ javascript
-    html = renderWithJavascript(mangaURL, classToBeFound='chapter-grid flex-grow')
+    browser.get(mangaURL)
+    cssSelector = "#app > div:nth-child(2) > div > div:nth-child(2) > div > div > div:nth-child(2) > main > div > div:nth-child(3)"
+    try:
+        WebDriverWait(browser, timeout=10).until(lambda d: d.find_element(By.CSS_SELECTOR,cssSelector))
+    except:
+        pass
+    html = browser.page_source
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
-    resultHTML = manga_soup.find_all('div',attrs={'class':'chapter-grid flex-grow'})
+    resultHTML = manga_soup.select("#app > div:nth-child(2) > div > div:nth-child(2) > div > div > div:nth-child(2) > main > div > div.ChapterListItem-module_chapterListItem_ykICp")
     chapters = []
     for chapter in resultHTML:
         newchapter = {}
-        newchapter['name'] = chapter.find_all('a')[0]['title']
-        newchapter['url'] = chapter.find_all('a')[0]['href']
-        print(newchapter)
+        newchapter['name'] = chapter.find_all('p')[1].string
+        cUrl = chapter.find_all('a')[0]['href']
+        idViewer = ''.join(e for e in cUrl if e.isnumeric())
+        newchapter['url'] = siteURL + "/viewer/" + idViewer
         chapters.append(newchapter)
-    chapters.reverse() # Reverse because site goes lastest-first
     return chapters
 
 def getChapterURLS(chapterURL):
@@ -114,11 +91,12 @@ def getChapterURLS(chapterURL):
     """
     browser.get(chapterURL)
     try:
-        WebDriverWait(browser, timeout=2).until(lambda d: d.find_element(By.CLASS_NAME,'zao-image'))
+        WebDriverWait(browser, timeout=2).until(lambda d: d.find_element(By.CSS_SELECTOR,
+        "#app > div:nth-child(2) > div > div:nth-child(2) > div > div > div:nth-child(2) > main > div > div:nth-child(3)"))
     except:
         pass
     html = browser.page_source
-
+    
     # Parse HTML into dictionary to obtain links
     manga_soup = BeautifulSoup(html, 'html.parser')
     resultHTML = manga_soup.find_all('img',attrs={'class':'zao-image'})
@@ -188,9 +166,7 @@ def testSource():
     print("...success!")
 
 if __name__ == '__main__':
-    #res = searchManga('pokemon')
+    #res = searchManga('my hero')
     #print(res[0])
-    #res = getMangaChapters('https://mangadex.org/title/a1c7c817-4e59-43b7-9365-09675a149a6f/one-piece?order=asc')
-    #print(res[0])
-    res = getChapterURLS('https://mangaplus.shueisha.co.jp/viewer/1000486')
-    print(res)
+    res = getMangaChapters("https://mangaplus.shueisha.co.jp/titles/200019")
+    print(res[0])

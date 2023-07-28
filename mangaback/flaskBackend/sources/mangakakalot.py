@@ -1,6 +1,7 @@
 import re
 import json
 import io
+import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -105,6 +106,23 @@ def getImageBlob(imageURL):
     res.raise_for_status()
     imgBlob = res.content
     return imgBlob
+
+def testSource():
+    # Test to see if source works correctly
+    print("Testing source, please wait...")
+    print("Testing: searchManga")
+    res = searchManga('boku')
+    time.sleep(1)
+    print("Testing: getMangaChapters")
+    res = getMangaChapters(res[0]['chapters_url'])
+    time.sleep(1)
+    print("Testing: getChapterURLS")
+    res = getChapterURLS(res[0]['url'])
+    time.sleep(1)
+    print("Testing: getImageBlob")
+    getImageBlob(res[0])
+    time.sleep(1)
+    print("...success!")
 
 if __name__ == '__main__':
     #res = searchManga('pokemon')

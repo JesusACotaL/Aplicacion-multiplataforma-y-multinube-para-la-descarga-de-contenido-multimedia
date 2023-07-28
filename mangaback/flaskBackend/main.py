@@ -10,7 +10,7 @@ pip freeze > requirements.txt
 from flask import Flask, request, jsonify, make_response, send_file
 from flask_cors import CORS
 from PIL import Image
-from firebase_admin import credentials, firestore, initialize_app, auth
+from firebase_admin import credentials, firestore,  initialize_app, auth
 
 from myanimelistScrapper import scrapManga, searchMangaOnline
 from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones
@@ -18,6 +18,7 @@ from importlib import import_module
 import json
 import io
 
+print("=== STARTING BACKEND ===")
 # Initialize all sources as modules
 sources = []
 def reloadSources():
@@ -26,15 +27,22 @@ def reloadSources():
         for source in tempSources:
             moduleName = 'sources.'+source['file'][:-3] # Remove .py extension
             if source['enabled'] == True:
-                source['reference'] = import_module(moduleName)
-                sources.append(source)
+                try:
+                    print("Loading source: "+source['name']+"... ",end="")
+                    source['reference'] = import_module(moduleName)
+                    sources.append(source)
+                    print("success")
+                except:
+                    print("error")
     f.close()
 reloadSources()
 
 # Create connection to firebase and keep it alive
+print("Connecting to database... ",end="")
 cred = credentials.Certificate('firebase-credentials.json')
 initialize_app(cred)
 db = firestore.client()
+print("success")
 
 # Initialize API
 app = Flask(__name__)

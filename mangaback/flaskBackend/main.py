@@ -18,6 +18,22 @@ from importlib import import_module
 import json
 import io
 
+def testSource(sourceReference):
+    print("Testing source, please wait...")
+    print("Testing: searchManga")
+    res = sourceReference.searchManga('boku')
+    time.sleep(1)
+    print("Testing: getMangaChapters")
+    res = sourceReference.getMangaChapters(res[0]['chapters_url'])
+    time.sleep(1)
+    print("Testing: getChapterURLS")
+    res = sourceReference.getChapterURLS(res[0]['url'])
+    time.sleep(1)
+    print("Testing: getImageBlob")
+    sourceReference.getImageBlob(res[0])
+    time.sleep(1)
+    print("...success!")
+
 print("=== STARTING BACKEND ===")
 # Initialize all sources as modules
 sources = []
@@ -98,11 +114,14 @@ def findMangaSource():
     manga = manga.encode('utf-8', errors='ignore').decode('utf-8')
     results = []
     for source in sources:
-        result = source['reference'].searchManga(manga)
-        if( type(result) is list):
-            for res in result:
-                res['source'] = source['name']
-            results = results + result[:5] # Only retrieve 5 results per source
+        try:
+            result = source['reference'].searchManga(manga)
+            if( type(result) is list):
+                for res in result:
+                    res['source'] = source['name']
+                results = results + result[:5] # Only retrieve 5 results per source
+        except:
+            print("An error ocurred in source: "+source['name'])
     return results
 
 @app.post("/getMangaChapters")
@@ -113,11 +132,14 @@ def getMangaChapters():
     results = []
     for source in sources:
         if(source['name'] == sourceName):
-            result = source['reference'].getMangaChapters(url)
-            if( type(result) is list):
-                for res in result:
-                    res['source'] = source['name']
-                results = result
+            try:
+                result = source['reference'].getMangaChapters(url)
+                if( type(result) is list):
+                    for res in result:
+                        res['source'] = source['name']
+                    results = result
+            except:
+                print("An error ocurred in source: "+source['name'])
     return results
 
 @app.post("/getChapterLinks")
@@ -146,17 +168,20 @@ def downloadChapterImage():
     response = {'result':'Failed to download image.'}
     for source in sources:
         if(source['name'] == sourceName):
-            image = source['reference'].getImageBlob(url)
-            if( type(image) is bytes):
-                # Save image as JPEG format, and apply image compression, number must be in %
-                # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#jpeg-saving
-                buffer = io.BytesIO(image)
-                imgPIL = Image.open(buffer)
-                imgPIL = imgPIL.convert('RGB')
-                buffer2 = io.BytesIO()
-                imgPIL.save(buffer2,format='JPEG',optimize=True,quality=quality)
-                buffer3 = io.BytesIO(buffer2.getvalue())
-                response = send_file(buffer3, mimetype='image/jpeg')
+            try:
+                image = source['reference'].getImageBlob(url)
+                if( type(image) is bytes):
+                    # Save image as JPEG format, and apply image compression, number must be in %
+                    # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#jpeg-saving
+                    buffer = io.BytesIO(image)
+                    imgPIL = Image.open(buffer)
+                    imgPIL = imgPIL.convert('RGB')
+                    buffer2 = io.BytesIO()
+                    imgPIL.save(buffer2,format='JPEG',optimize=True,quality=quality)
+                    buffer3 = io.BytesIO(buffer2.getvalue())
+                    response = send_file(buffer3, mimetype='image/jpeg')
+            except:
+                print("An error ocurred in source: "+source['name'])
     return response
 
 @app.post("/addToTopManga")

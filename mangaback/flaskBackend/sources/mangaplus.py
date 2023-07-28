@@ -124,25 +124,15 @@ def getImageBlob(imageURL):
     f.close()
     return image
 
-def testSource():
-    # Test to see if source works correctly
-    print("Testing source, please wait...")
-    print("Testing: searchManga")
-    res = searchManga('boku')
-    time.sleep(1)
-    print("Testing: getMangaChapters")
-    res = getMangaChapters(res[0]['chapters_url'])
-    time.sleep(1)
-    print("Testing: getChapterURLS")
-    res = getChapterURLS(res[0]['url'])
-    time.sleep(1)
-    print("Testing: getImageBlob")
-    getImageBlob(res[0])
-    time.sleep(1)
-    print("...success!")
-
 if __name__ == '__main__':
-    #res = searchManga('my hero')
-    #res = getMangaChapters("https://mangaplus.shueisha.co.jp/titles/200019")
-    res = getChapterURLS('https://mangaplus.shueisha.co.jp/viewer/2000817')
+    res = searchManga('boku')
+    print(res)
+    time.sleep(1)
+    res = getMangaChapters(res[0]['chapters_url'])
+    print(res)
+    time.sleep(1)
+    res = getChapterURLS(res[0]['url'])
+    print(res)
+    time.sleep(1)
+    getImageBlob(res[0])
     print(res)

@@ -12,16 +12,10 @@ siteURL = "https://ww5.mangakakalot.tv"
 
 # Initialize browser so we dont delay requests
 from selenium import webdriver # Javascript support
-from selenium.webdriver.firefox.options import Options # Browser headless option
+from selenium.webdriver.chrome.options import Options # Browser headless option
 browserConfig = Options()
 browserConfig.add_argument('-headless')
-browser = webdriver.Firefox(options=browserConfig)
-browser.get('https://www.google.com')
-
-def renderWithJavascript(url):
-    browser.get(url)
-    html = browser.page_source
-    return html
+browser = webdriver.Chrome(options=browserConfig)
 
 def searchManga(searchQuery):
     """
@@ -38,7 +32,8 @@ def searchManga(searchQuery):
     searchQuery = urllib.parse.quote(searchQuery)
     url = siteURL+"/search/"+searchQuery
     # Render w/ javascript
-    html = renderWithJavascript(url)
+    browser.get(url)
+    html = browser.page_source
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
     resultHTML = manga_soup.find('div',attrs={'class':'panel_story_list'}).find_all('div',attrs={'class':'story_item'})
@@ -62,7 +57,8 @@ def getMangaChapters(mangaURL):
     ]
     """
     # Render w/ javascript
-    html = renderWithJavascript(mangaURL)
+    browser.get(mangaURL)
+    html = browser.page_source
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
     resultHTML = manga_soup.find('div',attrs={'class':'chapter-list'}).find_all('div',attrs={'class':'row'})
@@ -87,7 +83,8 @@ def getChapterURLS(chapterURL):
     ]
     """
     # Render w/ javascript
-    html = renderWithJavascript(chapterURL)
+    browser.get(chapterURL)
+    html = browser.page_source
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
     resultHTML = manga_soup.find('div',attrs={'id':'vungdoc'}).find_all('img',attrs={'class':'img-loading', 'data-src':True})
@@ -107,28 +104,15 @@ def getImageBlob(imageURL):
     imgBlob = res.content
     return imgBlob
 
-def testSource():
-    # Test to see if source works correctly
-    print("Testing source, please wait...")
-    print("Testing: searchManga")
-    res = searchManga('boku')
-    time.sleep(1)
-    print("Testing: getMangaChapters")
-    res = getMangaChapters(res[0]['chapters_url'])
-    time.sleep(1)
-    print("Testing: getChapterURLS")
-    res = getChapterURLS(res[0]['url'])
-    time.sleep(1)
-    print("Testing: getImageBlob")
-    getImageBlob(res[0])
-    time.sleep(1)
-    print("...success!")
-
 if __name__ == '__main__':
-    #res = searchManga('pokemon')
-    #print(res[0])
-    res = getMangaChapters('https://ww5.mangakakalot.tv/manga/manga-ok991667')
-    print(res[0])
-    #res = getChapterURLS('https://ww5.mangakakalot.tv/chapter/manga-ok991667/chapter-1')
-    #print(res)
-    #res = getImageBlob('https://cm.blazefast.co/62/1b/621b3c68e968efd37d2cb5c37d61060d.jpg')
+    res = searchManga('boku')
+    print(res)
+    time.sleep(1)
+    res = getMangaChapters(res[0]['chapters_url'])
+    print(res)
+    time.sleep(1)
+    res = getChapterURLS(res[0]['url'])
+    print(res)
+    time.sleep(1)
+    getImageBlob(res[0])
+    print(res)

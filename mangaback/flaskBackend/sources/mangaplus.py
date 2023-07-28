@@ -18,7 +18,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 browserConfig = Options()
 browserConfig.add_argument('-headless')
-browserConfig.add_argument("--log-level=3")
+browserConfig.add_argument("--log-level=3") # Hide debug info that we dont care about
 browserConfig.add_argument('--window-size=800x1200') # Set image resolution to capture
 browser = webdriver.Chrome(options=browserConfig)
 

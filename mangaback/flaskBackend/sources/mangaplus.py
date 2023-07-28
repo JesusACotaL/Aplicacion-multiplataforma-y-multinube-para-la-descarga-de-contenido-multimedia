@@ -89,6 +89,7 @@ def getMangaChapters(mangaURL):
     return chapters
 
 def getChapterURLS(chapterURL):
+    imagesCache = []
     """
     Returns an array[] like:
     [

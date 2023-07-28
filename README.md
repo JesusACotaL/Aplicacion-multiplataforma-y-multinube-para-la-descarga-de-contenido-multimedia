@@ -5,12 +5,11 @@ Descargador y convertidor de manga desde página web a formato EPUB Y MOBI para 
 # Manga Scrapper
 ![image](https://github.com/zaulilloxone2/Analizador_Lexico/blob/280971c8b4e514785cf26e6cecf40f1f4175a0ed/udg%20logo.jpg) 
 #### Alumnos: 
-#### *Diego Servin Hamden 220286865
+#### *Mendoza Morelos Martin Mathier 214798285
 #### *Jesús Ángel Cota López 220790768
 #### *Saul Ezequiel García Ramos 215465492
 #### Fecha: 09/05/2022
 #### Materia: Programación para Internet
-#### Profesor: Michel Emanuel Lopez Franco
 #### Sección: D02
 #### Carrera: INCO
 #### CENTRO UNIVERSITARIO DE CIENCIAS EXACTAS EN INGENIERÍAS CUCEI

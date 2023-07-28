@@ -58,6 +58,7 @@ def searchManga(searchQuery):
     return mangas
 
 def getMangaChapters(mangaURL):
+    imagesCache = []
     """
     Returns an array[] like:
     [
@@ -89,7 +90,6 @@ def getMangaChapters(mangaURL):
     return chapters
 
 def getChapterURLS(chapterURL):
-    imagesCache = []
     """
     Returns an array[] like:
     [

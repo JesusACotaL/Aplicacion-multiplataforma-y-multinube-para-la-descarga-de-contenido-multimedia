@@ -1,1 +1,1 @@
-{"mangaSources": [{"name": "manganelo", "file": "manganelo.py", "enabled": true},{"name": "mangakakalot", "file": "mangakakalot.py", "enabled": true}]}
+{"mangaSources": [{"name": "manganelo", "file": "manganelo.py", "enabled": true},{"name": "mangakakalot", "file": "mangakakalot.py", "enabled": false}]}

@@ -152,6 +152,7 @@ def downloadChapterImage():
                 # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#jpeg-saving
                 buffer = io.BytesIO(image)
                 imgPIL = Image.open(buffer)
+                imgPIL = imgPIL.convert('RGB')
                 buffer2 = io.BytesIO()
                 imgPIL.save(buffer2,format='JPEG',optimize=True,quality=quality)
                 buffer3 = io.BytesIO(buffer2.getvalue())

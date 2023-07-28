@@ -11,12 +11,13 @@ siteURL = "https://mangaplus.shueisha.co.jp"
 
 # Initialize browser so we dont delay requests
 from selenium import webdriver # Javascript support
-from selenium.webdriver.edge.options import Options # Browser headless option
+from selenium.webdriver.chrome.options import Options # Browser headless option
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 browserConfig = Options()
 browserConfig.add_argument('-headless')
-browser = webdriver.Edge(options=browserConfig)
+browserConfig.add_argument('--window-size=800x1200') # Set image resolution to capture
+browser = webdriver.Chrome(options=browserConfig)
 
 def searchManga(searchQuery):
     """
@@ -89,64 +90,39 @@ def getChapterURLS(chapterURL):
         "url"
     ]
     """
+    # Render w/ javascript
     browser.get(chapterURL)
     try:
-        WebDriverWait(browser, timeout=2).until(lambda d: d.find_element(By.CSS_SELECTOR,
-        "#app > div:nth-child(2) > div > div:nth-child(2) > div > div > div:nth-child(2) > main > div > div:nth-child(3)"))
+        # Accept cookies if prompted
+        WebDriverWait(browser, timeout=10).until(lambda d: d.find_element(By.ID,"onetrust-accept-btn-handler"))
+        browser.find_element(By.ID,"onetrust-accept-btn-handler").click()
     except:
         pass
-    html = browser.page_source
-    
-    # Parse HTML into dictionary to obtain links
-    manga_soup = BeautifulSoup(html, 'html.parser')
-    resultHTML = manga_soup.find_all('img',attrs={'class':'zao-image'})
+    try:
+        # Wait for prompt to dissapear
+        WebDriverWait(browser, timeout=10).until_not(lambda d: d.find_element(By.ID,"onetrust-accept-btn-handler"))
+    except:
+        pass
+    # Retrieve capture of every single manga image and store it
     links = []
-    for link in resultHTML:
-        newlink = link['src']
-        links.append(newlink)
-    links.reverse() # Reverse because site goes lastest-first
-
-    def get_file_content_chrome(driver, uri):
-        # result = driver.execute_async_script("""
-        #     var uri = arguments[0];
-        #     var callback = arguments[1];
-        #     var toBase64 = function(buffer){for(var r,n=new Uint8Array(buffer),t=n.length,a=new Uint8Array(4*Math.ceil(t/3)),i=new Uint8Array(64),o=0,c=0;64>c;++c)i[c]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charCodeAt(c);for(c=0;t-t%3>c;c+=3,o+=4)r=n[c]<<16|n[c+1]<<8|n[c+2],a[o]=i[r>>18],a[o+1]=i[r>>12&63],a[o+2]=i[r>>6&63],a[o+3]=i[63&r];return t%3===1?(r=n[t-1],a[o]=i[r>>2],a[o+1]=i[r<<4&63],a[o+2]=61,a[o+3]=61):t%3===2&&(r=(n[t-2]<<8)+n[t-1],a[o]=i[r>>10],a[o+1]=i[r>>4&63],a[o+2]=i[r<<2&63],a[o+3]=61),new TextDecoder("ascii").decode(a)};
-        #     var xhr = new XMLHttpRequest();
-        #     xhr.responseType = 'arraybuffer';
-        #     xhr.onload = function(){ callback(toBase64(xhr.response)) };
-        #     xhr.onerror = function(){ callback(xhr.status) };
-        #     xhr.open('GET', uri);
-        #     xhr.send();
-        #     """, uri)
-        # print(uri)
-        # print(result)
-        result = driver.execute_script("""
-        var reader = new FileReader();
-        reader.readAsArrayBuffer(blob);
-        """)
-        if type(result) == int :
-            raise Exception("Request failed with status %s" % result)
-        return result
-    blob64Array = []
-    for link in links:
-        browser.get(link)
-        try:
-            WebDriverWait(browser, timeout=2).until(lambda d: False)
-        except:
-            pass
-        blob64 = get_file_content_chrome(browser, link)
-        blob64Array.append(blob64)
-    return blob64Array
+    images = browser.find_elements(By.CSS_SELECTOR, "img.zao-image")
+    imgID = 0
+    for image in images:
+        filename = 'manga'+str(imgID)+'.png'
+        image.screenshot('temp/'+filename)
+        links.append(filename)
+        imgID = imgID + 1
+    return links
 
 def getImageBlob(imageURL):
     """
     Returns a single binary image
     """
-    url = imageURL
-    res = requests.get(url)
-    res.raise_for_status()
-    imgBlob = res.content
-    return imgBlob
+    image = None
+    with open('temp/'+imageURL, 'rb')  as f:
+        image = f.read()
+    f.close()
+    return image
 
 def testSource():
     # Test to see if source works correctly
@@ -167,6 +143,6 @@ def testSource():
 
 if __name__ == '__main__':
     #res = searchManga('my hero')
-    #print(res[0])
-    res = getMangaChapters("https://mangaplus.shueisha.co.jp/titles/200019")
-    print(res[0])
+    #res = getMangaChapters("https://mangaplus.shueisha.co.jp/titles/200019")
+    res = getChapterURLS('https://mangaplus.shueisha.co.jp/viewer/2000817')
+    print(res)

@@ -7,6 +7,8 @@ import requests
 from bs4 import BeautifulSoup
 import urllib
 
+import base64
+
 siteURL = "https://mangaplus.shueisha.co.jp"
 
 # Initialize browser so we dont delay requests
@@ -16,8 +18,11 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 browserConfig = Options()
 browserConfig.add_argument('-headless')
+browserConfig.add_argument("--log-level=3")
 browserConfig.add_argument('--window-size=800x1200') # Set image resolution to capture
 browser = webdriver.Chrome(options=browserConfig)
+
+imagesCache = []
 
 def searchManga(searchQuery):
     """
@@ -109,7 +114,9 @@ def getChapterURLS(chapterURL):
     imgID = 0
     for image in images:
         filename = 'manga'+str(imgID)+'.png'
-        image.screenshot('temp/'+filename)
+        img = image.screenshot_as_base64
+        img = base64.b64decode(img)
+        imagesCache.append({'filename':filename,'blob':img})
         links.append(filename)
         imgID = imgID + 1
     return links
@@ -119,13 +126,14 @@ def getImageBlob(imageURL):
     Returns a single binary image
     """
     image = None
-    with open('temp/'+imageURL, 'rb')  as f:
-        image = f.read()
-    f.close()
-    return image
+    for img in imagesCache:
+        if img['filename'] == imageURL:
+            image = img
+    imagesCache.remove(image)
+    return image['blob']
 
 if __name__ == '__main__':
-    res = searchManga('boku')
+    res = searchManga('one piece')
     print(res)
     time.sleep(1)
     res = getMangaChapters(res[0]['chapters_url'])
@@ -134,5 +142,5 @@ if __name__ == '__main__':
     res = getChapterURLS(res[0]['url'])
     print(res)
     time.sleep(1)
-    getImageBlob(res[0])
+    res = getImageBlob(res[0])
     print(res)

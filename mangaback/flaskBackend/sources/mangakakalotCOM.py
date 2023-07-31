@@ -14,7 +14,8 @@ siteURL = "https://mangakakalot.com/"
 from selenium import webdriver # Javascript support
 from selenium.webdriver.chrome.options import Options # Browser headless option
 browserConfig = Options()
-browserConfig.add_argument('-headless')
+browserConfig.add_argument('--headless')
+browserConfig.add_argument('--no-sandbox')
 browserConfig.add_argument("--log-level=3") # Hide debug info that we dont care about
 browser = webdriver.Chrome(options=browserConfig)
 

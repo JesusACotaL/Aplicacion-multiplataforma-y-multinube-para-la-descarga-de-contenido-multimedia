@@ -33,7 +33,7 @@ export class MangaApiService {
     const body = {
       manga: manga
     }
-    const url = `${this.backend}/findMangaSource`;
+    const url = `${this.backend}/findMangaInEndpoints`;
     return this.http.post<any>(url,body);
   }
   
@@ -51,7 +51,7 @@ export class MangaApiService {
       source: fuenteNombre,
       url: capituloURL
     }
-    const url = `${this.backend}/getChapterLinks`;
+    const url = `${this.backend}/getChapterURLS`;
     return this.http.post<any>(url,body);
   }
 
@@ -67,7 +67,7 @@ export class MangaApiService {
       }),
       responseType: 'blob' as 'json'
     }
-    const url = `${this.backend}/downloadChapterImage`;
+    const url = `${this.backend}/getImageBlob`;
     return this.http.post<any>(url,body,options);
   }
 

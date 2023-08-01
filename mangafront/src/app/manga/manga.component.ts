@@ -92,8 +92,8 @@ export class MangaComponent implements OnInit {
       // Get list of sources retrieved
       let fuentesNombres: any[] = [];
       for (const manga of sources) {
-        if(fuentesNombres.indexOf(manga['source']) == -1)
-        fuentesNombres.push(manga['source']);
+        if(fuentesNombres.indexOf(manga['srcName']) == -1)
+        fuentesNombres.push(manga['srcName']);
       }
       this.fuentes = sources;
       this.fuentesNombres = fuentesNombres;
@@ -109,7 +109,7 @@ export class MangaComponent implements OnInit {
     } else {
       let nuevaLista = []
       for (const fuente of this.fuentes) {
-        if(fuente['source'] == fuenteNombre)
+        if(fuente['srcName'] == fuenteNombre)
           nuevaLista.push(fuente)
       }
       this.fuentesFiltradas = nuevaLista;

@@ -1,29 +1,35 @@
 import re
 import json
 import io
-
+import time
+import urllib
 import requests
 from bs4 import BeautifulSoup
 
-import urllib
+from flask import Flask, request, jsonify, make_response, send_file
+from flask_cors import CORS
+app = Flask(__name__)
+CORS(app)
 
-siteURL = "https://ww5.mangakakalot.tv"
+siteURL = "https://mangakakalot.com/"
 
 # Initialize browser so we dont delay requests
 from selenium import webdriver # Javascript support
-from selenium.webdriver.firefox.options import Options # Browser headless option
+from selenium.webdriver.chrome.options import Options # Browser headless option
 browserConfig = Options()
-browserConfig.add_argument('-headless')
-browser = webdriver.Firefox(options=browserConfig)
-browser.get('https://www.google.com')
+browserConfig.add_argument('--headless')
+browserConfig.add_argument('--no-sandbox')
+browserConfig.add_argument("--log-level=3") # Hide debug info that we dont care about
+browser = webdriver.Chrome(options=browserConfig)
 
-def renderWithJavascript(url):
-    browser.get(url)
-    html = browser.page_source
-    return html
+@app.route("/")
+def info():
+    return "<p>mangakakalot.com Scrapper v1</p>"
 
-def searchManga(searchQuery):
+@app.post("/searchManga")
+def searchManga():
     """
+    Parameters: manga
     Returns an array[] like:
     [
         {
@@ -33,11 +39,16 @@ def searchManga(searchQuery):
         }
     ]
     """
+    data = request.json
+    searchQuery = data['manga']
     # Purify search query
+    searchQuery = re.sub(r'\ ','_',searchQuery) # replace whitespaces with underscores
+    searchQuery = searchQuery.lower() # uncapitalize
     searchQuery = urllib.parse.quote(searchQuery)
-    url = siteURL+"/search/"+searchQuery
+    url = siteURL+"/search/story/"+searchQuery
     # Render w/ javascript
-    html = renderWithJavascript(url)
+    browser.get(url)
+    html = browser.page_source
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
     resultHTML = manga_soup.find('div',attrs={'class':'panel_story_list'}).find_all('div',attrs={'class':'story_item'})
@@ -45,13 +56,15 @@ def searchManga(searchQuery):
     for manga in resultHTML:
         newmanga = {}
         newmanga['name'] = manga.find('h3',attrs={'class':'story_name'}).find('a').string
-        newmanga['chapters_url'] = siteURL + manga.find('h3',attrs={'class':'story_name'}).find('a')['href']
+        newmanga['chapters_url'] = manga.find('h3',attrs={'class':'story_name'}).find('a')['href']
         newmanga['image_url'] = manga.find('img')['src']
         mangas.append(newmanga)
     return mangas
 
-def getMangaChapters(mangaURL):
+@app.post("/getMangaChapters")
+def getMangaChapters():
     """
+    Parameters: url
     Returns an array[] like:
     [
         {
@@ -60,11 +73,14 @@ def getMangaChapters(mangaURL):
         }
     ]
     """
+    data = request.json
+    mangaURL = data['url']
     # Render w/ javascript
-    html = renderWithJavascript(mangaURL)
+    browser.get(mangaURL)
+    html = browser.page_source
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
-    resultHTML = manga_soup.find('div',attrs={'class':'chapter-list'}).find_all('div',attrs={'class':'row'})
+    resultHTML = manga_soup.find('div',attrs={'class':'panel-story-chapter-list'}).find_all('li',attrs={'class':'a-h'})
     chapters = []
     for chapter in resultHTML:
         newchapter = {}
@@ -73,44 +89,48 @@ def getMangaChapters(mangaURL):
         name = ''.join(e for e in name if e.isalnum() or e == '/' or e == '_' or e == ':' or e == ' ')
         name = name.lstrip(' ')
         newchapter['name'] = name
-        newchapter['url'] = siteURL + chapter.find('a')['href']
+        newchapter['url'] = chapter.find('a')['href']
         chapters.append(newchapter)
     chapters.reverse() # Reverse because site goes lastest-first
     return chapters
 
-def getChapterURLS(chapterURL):
+@app.post("/getChapterURLS")
+def getChapterURLS():
     """
+    Parameters: url
     Returns an array[] like:
     [
         "url": ""
     ]
     """
+    data = request.json
+    chapterURL = data['url']
     # Render w/ javascript
-    html = renderWithJavascript(chapterURL)
+    browser.get(chapterURL)
+    html = browser.page_source
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
-    resultHTML = manga_soup.find('div',attrs={'id':'vungdoc'}).find_all('img',attrs={'class':'img-loading', 'data-src':True})
+    resultHTML = manga_soup.find('div', attrs={'class':'container-chapter-reader'}).findChildren('img',attrs={'style':'margin-top: 5px;','src':True,'title':True})
     links = []
     for link in resultHTML:
-        newlink = link['data-src']
+        newlink = link['src']
         links.append(newlink)
     return links
 
-def getImageBlob(imageURL):
+@app.post("/getImageBlob")
+def getImageBlob():
     """
+    Parameters: url
     Returns a single binary image
     """
-    url = imageURL
+    data = request.json
+    url = data['url']
     res = requests.get(url, headers={'referer': siteURL})
     res.raise_for_status()
     imgBlob = res.content
-    return imgBlob
+    buffer = io.BytesIO(imgBlob)
+    response = send_file(buffer, mimetype='image/jpeg')
+    return response
 
 if __name__ == '__main__':
-    #res = searchManga('pokemon')
-    #print(res[0])
-    res = getMangaChapters('https://ww5.mangakakalot.tv/manga/manga-ok991667')
-    print(res[0])
-    #res = getChapterURLS('https://ww5.mangakakalot.tv/chapter/manga-ok991667/chapter-1')
-    #print(res)
-    #res = getImageBlob('https://cm.blazefast.co/62/1b/621b3c68e968efd37d2cb5c37d61060d.jpg')
+    app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1,188 +1,185 @@
 """
-Flask API for Aplicacion multiplataforma y multinube para la descarga de contenido multimedia API v1.0
-
-Remember to:
-pip install -r requirements.txt
-
-To dump current modules to file:
-pip freeze > requirements.txt
+MAIN API ENDPOINT for Aplicacion multiplataforma y multinube para la descarga de contenido multimedia API v1.0
 """
-from flask import Flask, request, jsonify, make_response, send_file
-from flask_cors import CORS
-from PIL import Image
-from firebase_admin import credentials, firestore,  initialize_app, auth
-
-from myanimelistScrapper import scrapManga, searchMangaOnline
-from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones
 from importlib import import_module
 import json
 import io
+import requests
+from PIL import Image
 
-def testSource(sourceReference):
-    print("Testing source, please wait...")
-    print("Testing: searchManga")
-    res = sourceReference.searchManga('boku')
-    time.sleep(1)
-    print("Testing: getMangaChapters")
-    res = sourceReference.getMangaChapters(res[0]['chapters_url'])
-    time.sleep(1)
-    print("Testing: getChapterURLS")
-    res = sourceReference.getChapterURLS(res[0]['url'])
-    time.sleep(1)
-    print("Testing: getImageBlob")
-    sourceReference.getImageBlob(res[0])
-    time.sleep(1)
-    print("...success!")
+mangaInfoEndpoints = [
+    {
+        "name": "myanimelist",
+        "url": "http://127.0.0.1:5001"
+    }
+]
+mangaEndpoints = [
+    {
+        "name": "manganelo",
+        "url": "http://127.0.0.1:5002"
+    },
+    {
+        "name": "mangakakalottv",
+        "url": "http://127.0.0.1:5003"
+    }
+]
 
-print("=== STARTING BACKEND ===")
-# Initialize all sources as modules
-sources = []
-def reloadSources():
-    with open('mangaSources.json', 'r', encoding='utf-8') as f:
-        tempSources = json.load(f)['mangaSources']
-        for source in tempSources:
-            moduleName = 'sources.'+source['file'][:-3] # Remove .py extension
-            if source['enabled'] == True:
-                try:
-                    print("Loading source: "+source['name']+"... ",end="")
-                    source['reference'] = import_module(moduleName)
-                    sources.append(source)
-                    print("success")
-                except:
-                    print("error")
-    f.close()
-reloadSources()
+print("=== STARTING MAIN API ENDPOINT ===")
 
 # Create connection to firebase and keep it alive
 print("Connecting to database... ",end="")
+from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones # Start conection on AI module as well
+from firebase_admin import credentials, firestore,  initialize_app, auth
 cred = credentials.Certificate('firebase-credentials.json')
 initialize_app(cred)
 db = firestore.client()
 print("success")
 
-# Initialize API
+from flask import Flask, request, jsonify, make_response, send_file
+from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
-
-def getUserRatings(uid):
-    # Fetch all user ratings
-    query = db.collection('ratings').where('uid', '==', uid).get()
-
-    # Generate list and return it
-    userRatings = []
-    for doc in query:
-        title = doc.get('title')
-        rating = float(doc.get('ratings'))
-        userRatings.append({
-            'name': title,
-            'rating': rating
-        })
-    return userRatings
 
 @app.route("/")
 def info():
     return "<p>Aplicacion multiplataforma y multinube para la descarga de contenido multimedia API v1.0</p>"
 
 @app.post("/searchManga")
-def searchMangaAnimelist():
+def searchManga():
     data = request.json
-    query = data['manga']
+    searchQuery = data['manga']
     safeSearch = data['safeSearch']
-    if(safeSearch):
-        mangas = searchMangaOnline(query, safeSearch=True)
-    else:
-        mangas = searchMangaOnline(query)
-    return jsonify(mangas)
+    body = {"manga": searchQuery, "safeSearch":safeSearch}
+    mangas = []
+    for endpoint in mangaInfoEndpoints:
+        try:
+            url = endpoint['url'] + "/searchManga"
+            res = requests.post(url, json=body)
+            res.raise_for_status()
+            result = json.loads(res.content)
+            if(type(result) is list):
+                mangas = mangas + result
+        except:
+            print("Endpoint failure: " + endpoint["name"])
+    return mangas
 
 @app.post("/getMangaInfo")
-def getMangaInfoAnimelist():
+def getMangaInfo():
     data = request.json
     url = data['url']
-    mangaInfo = scrapManga(url)
-    return jsonify(mangaInfo)
-
-@app.post("/getMangaSources")
-def getMangaSources():
-    tempJSON = sources.copy()
-    del tempJSON['reference']
-    return jsonify(tempJSON)
-
-@app.post("/findMangaSource")
-def findMangaSource():
-    data = request.json
-    manga = data['manga']
-    manga = manga.encode('utf-8', errors='ignore').decode('utf-8')
-    results = []
-    for source in sources:
+    body = {"url": url}
+    manga = {}
+    for endpoint in mangaInfoEndpoints:
         try:
-            result = source['reference'].searchManga(manga)
-            if( type(result) is list):
-                for res in result:
-                    res['source'] = source['name']
-                results = results + result[:5] # Only retrieve 5 results per source
+            url = endpoint['url'] + "/getMangaInfo"
+            res = requests.post(url, json=body)
+            res.raise_for_status()
+            result = json.loads(res.content)
+            if(type(result) is dict):
+                manga = result
         except:
-            print("An error ocurred in source: "+source['name'])
-    return results
+            print("Endpoint failure: " + endpoint["name"])
+    return manga
+
+@app.post("/findMangaInEndpoints")
+def findMangaInEndpoints():
+    data = request.json
+    searchQuery = data['manga']
+    body = {"manga": searchQuery}
+    mangas = []
+    for endpoint in mangaEndpoints:
+        try:
+            url = endpoint['url'] + "/searchManga"
+            res = requests.post(url, json=body)
+            res.raise_for_status()
+            result = json.loads(res.content)
+            if(type(result) is list):
+                temp = result[:5] # Only 5 sources per manga
+                for i in temp:
+                    i['srcName'] = endpoint['name'] # Include source name in results
+                mangas = mangas + temp
+        except:
+            print("Endpoint failure: " + endpoint["name"])
+    return mangas
 
 @app.post("/getMangaChapters")
 def getMangaChapters():
     data = request.json
     url = data['url']
     sourceName = data['source']
-    results = []
-    for source in sources:
-        if(source['name'] == sourceName):
+    body = {"url": url}
+    chapters = []
+    for endpoint in mangaEndpoints:
+        if(endpoint["name"] == sourceName):
             try:
-                result = source['reference'].getMangaChapters(url)
-                if( type(result) is list):
-                    for res in result:
-                        res['source'] = source['name']
-                    results = result
+                url = endpoint['url'] + "/getMangaChapters"
+                res = requests.post(url, json=body)
+                res.raise_for_status()
+                result = json.loads(res.content)
+                if(type(result) is list):
+                    temp = result
+                    for i in temp:
+                        i['srcName'] = endpoint['name'] # Include source name in results
+                    chapters = chapters + temp
             except:
-                print("An error ocurred in source: "+source['name'])
-    return results
+                print("Endpoint failure: " + endpoint["name"])
+    return chapters
 
-@app.post("/getChapterLinks")
-def getChapterLinks():
+@app.post("/getChapterURLS")
+def getChapterURLS():
     data = request.json
     url = data['url']
     sourceName = data['source']
-    results = []
-    for source in sources:
-        if(source['name'] == sourceName):
-            result = source['reference'].getChapterURLS(url)
-            if( type(result) is list):
-                for res in result:
-                    results.append({'source':source['name'],'url':res})
-    return results
+    body = {"url": url}
+    images = []
+    for endpoint in mangaEndpoints:
+        if(endpoint["name"] == sourceName):
+            try:
+                url = endpoint['url'] + "/getChapterURLS"
+                res = requests.post(url, json=body)
+                res.raise_for_status()
+                result = json.loads(res.content)
+                if(type(result) is list):
+                    temp = result
+                    for i in temp:
+                        tempRes = {}
+                        tempRes['url'] = i
+                        tempRes['srcName'] = sourceName # Include source name in results
+                        images.append(tempRes)
+            except:
+                print("Endpoint failure: " + endpoint["name"])
+    return images
 
-@app.post("/downloadChapterImage")
-def downloadChapterImage():
+@app.post("/getImageBlob")
+def getImageBlob():
     data = request.json
     url = data['url']
     quality = int(data['quality'])
     if(quality > 100 or quality < 1 ):
         quality = 50
     sourceName = data['source']
-    image_string = ''
-    response = {'result':'Failed to download image.'}
-    for source in sources:
-        if(source['name'] == sourceName):
+    body = {"url": url}
+    imageBlob = {}
+    for endpoint in mangaEndpoints:
+        if(endpoint["name"] == sourceName):
             try:
-                image = source['reference'].getImageBlob(url)
-                if( type(image) is bytes):
+                url = endpoint['url'] + "/getImageBlob"
+                res = requests.post(url, json=body)
+                res.raise_for_status()
+                result = res.content
+                if(type(result) is bytes):
                     # Save image as JPEG format, and apply image compression, number must be in %
                     # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#jpeg-saving
-                    buffer = io.BytesIO(image)
+                    buffer = io.BytesIO(result)
                     imgPIL = Image.open(buffer)
                     imgPIL = imgPIL.convert('RGB')
                     buffer2 = io.BytesIO()
                     imgPIL.save(buffer2,format='JPEG',optimize=True,quality=quality)
                     buffer3 = io.BytesIO(buffer2.getvalue())
-                    response = send_file(buffer3, mimetype='image/jpeg')
+                    imageBlob = send_file(buffer3, mimetype='image/jpeg')
             except:
-                print("An error ocurred in source: "+source['name'])
-    return response
+                print("Endpoint failure: " + endpoint["name"])
+    return imageBlob
 
 @app.post("/addToTopManga")
 def addToTopManga():
@@ -206,7 +203,7 @@ def addToTopManga():
         olddata = manga[0].to_dict()
         newtopmanga['viewcount'] = olddata['viewcount'] + 1
         db.collection('topmanga').document(manga[0].id).set(newtopmanga)
-    return jsonify({'result': str(data['mangaID']) + ' added to topmanga correctly'})
+    return {'result': str(data['mangaID']) + ' added to topmanga correctly'}
 
 @app.get("/getTopManga")
 def getTopManga():
@@ -217,13 +214,28 @@ def getTopManga():
         topmanga.append(manga)
     return topmanga
 
+def getUserRatings(uid):
+    # Fetch all user ratings
+    query = db.collection('ratings').where('uid', '==', uid).get()
+
+    # Generate list and return it
+    userRatings = []
+    for doc in query:
+        title = doc.get('title')
+        rating = float(doc.get('ratings'))
+        userRatings.append({
+            'name': title,
+            'rating': rating
+        })
+    return userRatings
+
 @app.post("/user/getUserGenres")
 def getUserGenres():
     data = request.json
     uid = data['uid']
     userInput = getUserRatings(uid)
     userGenres = obtener_generos(userInput)
-    return jsonify(userGenres)
+    return userGenres
 
 @app.post("/user/getUserRecomendations")
 def getUserRecomendations():
@@ -231,7 +243,7 @@ def getUserRecomendations():
     uid = data['uid']
     userInput = getUserRatings(uid)
     userGenres = obtener_recomendaciones(userInput)
-    return jsonify(userGenres)
+    return userGenres
 
 @app.post("/user/getMangaRating")
 def getMangaRating():
@@ -273,7 +285,7 @@ def rateManga():
             'ratings': rating
         }
         document_ref.update(updated_rating)
-    return jsonify({'result': 'Rating operation succesful'})
+    return {'result': 'Rating operation succesful'}
 
 @app.post("/user/updateEmail")
 def updateUserEmail():
@@ -283,7 +295,7 @@ def updateUserEmail():
     auth.update_user(uid, email= mail)
     user_ref = db.collection("users").document(uid)
     user_ref.update({"email": mail})
-    return jsonify({'result': 'E-Mail Successfully Updated'})
+    return {'result': 'E-Mail Successfully Updated'}
 
 
 @app.post("/user/updatePassword")
@@ -292,7 +304,7 @@ def updateUserPassword():
     uid = data['uid']
     passw = data['password']
     auth.update_user(uid, password = passw)
-    return jsonify({'result': 'Password Successfully Updated'})
+    return {'result': 'Password Successfully Updated'}
 
 @app.post("/user/addMangaToBookmarks")
 def addMangaToBookmarks():
@@ -310,7 +322,7 @@ def addMangaToBookmarks():
             'mangaURL': data['mangaURL']
         }
         db.collection('bookmarks').add(newbookmark)
-    return jsonify({'result': str(data['mangaID']) + ' added to bookmarks correctly'})
+    return {'result': str(data['mangaID']) + ' added to bookmarks correctly'}
 
 @app.post("/user/removeMangaFromBookmarks")
 def removeMangaFromBookmarks():
@@ -323,7 +335,7 @@ def removeMangaFromBookmarks():
     if len(query) > 0:
         # Remove
         db.collection('bookmarks').document(query[0].id).delete()
-    return jsonify({'result': str(data['mangaID']) + ' removed from bookmarks correctly'})
+    return {'result': str(data['mangaID']) + ' removed from bookmarks correctly'}
 
 @app.post("/user/getBookmarks")
 def getBookmarks():
@@ -332,7 +344,7 @@ def getBookmarks():
     mangas = []
     for bookmark in bookmarks:
         mangas.append(bookmark.to_dict())
-    return jsonify(mangas)
+    return mangas
 
 @app.post("/user/addToHistory")
 def addToHistory():
@@ -356,7 +368,7 @@ def addToHistory():
     else:
         # Update view date
         db.collection('history').document(query[0].id).set(newhistory)
-    return jsonify({'result': str(data['mangaID']) + ' added to user history correctly'})
+    return {'result': str(data['mangaID']) + ' added to user history correctly'}
 
 @app.post("/user/getHistory")
 def getHistory():
@@ -367,7 +379,7 @@ def getHistory():
     mangas = []
     for manga in query:
         mangas.append(manga.to_dict())
-    return jsonify(mangas)
+    return mangas
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -4,10 +4,21 @@ import io
 import time
 import requests
 
+from flask import Flask, request, jsonify, make_response, send_file
+from flask_cors import CORS
+app = Flask(__name__)
+CORS(app)
+
 scrapperManganeloAPI = "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/si"
 
-def searchManga(searchQuery):
+@app.route("/")
+def info():
+    return "<p>Manganelo Scrapper v1</p>"
+
+@app.post("/searchManga")
+def searchManga():
     """
+    Parameters: manga
     Returns an array[] like:
     [
         {
@@ -17,6 +28,8 @@ def searchManga(searchQuery):
         }
     ]
     """
+    data = request.json
+    searchQuery = data['manga']
     searchQuery = re.sub(r'\ ','_',searchQuery) # replace whitespaces with underscores
     searchQuery = searchQuery.lower() # uncapitalize
     body = {"url": "https://m.manganelo.com/search/story/"+searchQuery}
@@ -24,8 +37,10 @@ def searchManga(searchQuery):
     res.raise_for_status()
     return json.loads(res.content)
 
-def getMangaChapters(mangaURL):
+@app.post("/getMangaChapters")
+def getMangaChapters():
     """
+    Parameters: url
     Returns an array[] like:
     [
         {
@@ -34,6 +49,8 @@ def getMangaChapters(mangaURL):
         }
     ]
     """
+    data = request.json
+    mangaURL = data['url']
     body = {"url": mangaURL}
     res = requests.post(scrapperManganeloAPI+"/get-manga-chapters", json=body)
     res.raise_for_status()
@@ -41,37 +58,36 @@ def getMangaChapters(mangaURL):
     results.reverse() # Reverse because site goes lastest-first
     return results
 
-def getChapterURLS(chapterURL):
+@app.post("/getChapterURLS")
+def getChapterURLS():
     """
+    Parameters: url
     Returns an array[] like:
     [
         "url": ""
     ]
     """
+    data = request.json
+    chapterURL = data['url']
     body = {"url": chapterURL}
     res = requests.post(scrapperManganeloAPI+"/get-manga-urls", json=body)
     res.raise_for_status()
     return json.loads(res.content)
 
-def getImageBlob(imageURL):
+@app.post("/getImageBlob")
+def getImageBlob():
     """
+    Parameters: url
     Returns a single binary image
     """
-    url = imageURL
+    data = request.json
+    url = data['url']
     res = requests.get(url, headers={'referer': 'https://chapmanganelo.com/'})
     res.raise_for_status()    
     imgBlob = res.content
-    return imgBlob
+    buffer = io.BytesIO(imgBlob)
+    response = send_file(buffer, mimetype='image/jpeg')
+    return response
 
 if __name__ == '__main__':
-    res = searchManga('boku')
-    print(res)
-    time.sleep(1)
-    res = getMangaChapters(res[0]['chapters_url'])
-    print(res)
-    time.sleep(1)
-    res = getChapterURLS(res[0]['url'])
-    print(res)
-    time.sleep(1)
-    getImageBlob(res[0])
-    print(res)
+    app.run(host='0.0.0.0', port=5000, debug=True)

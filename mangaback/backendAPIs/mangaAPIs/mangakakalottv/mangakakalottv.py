@@ -2,11 +2,14 @@ import re
 import json
 import io
 import time
-
+import urllib
 import requests
 from bs4 import BeautifulSoup
 
-import urllib
+from flask import Flask, request, jsonify, make_response, send_file
+from flask_cors import CORS
+app = Flask(__name__)
+CORS(app)
 
 siteURL = "https://ww5.mangakakalot.tv"
 
@@ -19,8 +22,14 @@ browserConfig.add_argument('--no-sandbox')
 browserConfig.add_argument("--log-level=3") # Hide debug info that we dont care about
 browser = webdriver.Chrome(options=browserConfig)
 
-def searchManga(searchQuery):
+@app.route("/")
+def info():
+    return "<p>mangakakalot.tv Scrapper v1</p>"
+
+@app.post("/searchManga")
+def searchManga():
     """
+    Parameters: manga
     Returns an array[] like:
     [
         {
@@ -30,6 +39,8 @@ def searchManga(searchQuery):
         }
     ]
     """
+    data = request.json
+    searchQuery = data['manga']
     # Purify search query
     searchQuery = urllib.parse.quote(searchQuery)
     url = siteURL+"/search/"+searchQuery
@@ -48,8 +59,10 @@ def searchManga(searchQuery):
         mangas.append(newmanga)
     return mangas
 
-def getMangaChapters(mangaURL):
+@app.post("/getMangaChapters")
+def getMangaChapters():
     """
+    Parameters: url
     Returns an array[] like:
     [
         {
@@ -58,6 +71,8 @@ def getMangaChapters(mangaURL):
         }
     ]
     """
+    data = request.json
+    mangaURL = data['url']
     # Render w/ javascript
     browser.get(mangaURL)
     html = browser.page_source
@@ -77,13 +92,17 @@ def getMangaChapters(mangaURL):
     chapters.reverse() # Reverse because site goes lastest-first
     return chapters
 
-def getChapterURLS(chapterURL):
+@app.post("/getChapterURLS")
+def getChapterURLS():
     """
+    Parameters: url
     Returns an array[] like:
     [
         "url": ""
     ]
     """
+    data = request.json
+    chapterURL = data['url']
     # Render w/ javascript
     browser.get(chapterURL)
     html = browser.page_source
@@ -96,25 +115,20 @@ def getChapterURLS(chapterURL):
         links.append(newlink)
     return links
 
-def getImageBlob(imageURL):
+@app.post("/getImageBlob")
+def getImageBlob():
     """
+    Parameters: url
     Returns a single binary image
     """
-    url = imageURL
+    data = request.json
+    url = data['url']
     res = requests.get(url, headers={'referer': siteURL})
     res.raise_for_status()
     imgBlob = res.content
-    return imgBlob
+    buffer = io.BytesIO(imgBlob)
+    response = send_file(buffer, mimetype='image/jpeg')
+    return response
 
 if __name__ == '__main__':
-    res = searchManga('boku')
-    print(res)
-    time.sleep(1)
-    res = getMangaChapters(res[0]['chapters_url'])
-    print(res)
-    time.sleep(1)
-    res = getChapterURLS(res[0]['url'])
-    print(res)
-    time.sleep(1)
-    getImageBlob(res[0])
-    print(res)
+    app.run(host='0.0.0.0', port=5000, debug=True)

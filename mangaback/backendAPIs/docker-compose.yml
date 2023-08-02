@@ -1,9 +1,9 @@
 services:
-  mainMangaAPI:
+  mainmangaapi:
     build: ./mainAPI
     ports:
       - 127.0.0.1:5000:5000
-  myAnimeListAPI:
+  myanimelistapi:
     build: ./mangaInfoAPIs/myAnimeList
     ports:
       - 127.0.0.1:5000:5001

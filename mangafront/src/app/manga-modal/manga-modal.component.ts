@@ -89,9 +89,9 @@ export class MangaModalComponent implements OnInit {
               htmlimg.className = "img-fluid";
               const url = window.URL.createObjectURL(imagenBlob);
               htmlimg.src = url
-              htmlimg.onload = (evt) => {
-                window.URL.revokeObjectURL(url);
-              }
+              //htmlimg.onload = (evt) => {
+              //  window.URL.revokeObjectURL(url);
+              //}
               this.div?.append(htmlimg);
               this.cargadas = this.cargadas + 1;
               resolve();

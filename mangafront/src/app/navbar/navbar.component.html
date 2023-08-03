@@ -16,7 +16,7 @@
                 <!-- <button *ngIf="!user" class="btn btnPrimary" type="button" (click)="openSignupModal()">Sign up</button> -->
                 <button *ngIf="user" class="btn btnPrimary userProfileBtn dropdown text-white" data-bs-toggle="dropdown" aria-expanded="false">
                     <span>{{user.email}}</span>
-                    <img class="img-fluid" src="assets\bills.jpg" alt="user">
+                    <img class="img-fluid" [src]="profilePicture" alt="user">
                     <ul class="dropdown-menu dropdown-menu-end text-end">
                       <li><a class="dropdown-item" (click)="verPerfil()">Go to my homepage</a></li>
                       <li><a class="dropdown-item" (click)="this.userInfoModal.mostrar()">Modify user info</a></li>

@@ -25,6 +25,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { MangaModalComponent } from './manga-modal/manga-modal.component';
 import { UserLicenseComponent } from './user-license/user-license.component';
 import { FooterComponent } from './footer/footer.component';
@@ -50,6 +51,7 @@ import { ModifyUserInfoModalComponent } from './modify-user-info-modal/modify-us
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
+    AngularFireStorageModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,

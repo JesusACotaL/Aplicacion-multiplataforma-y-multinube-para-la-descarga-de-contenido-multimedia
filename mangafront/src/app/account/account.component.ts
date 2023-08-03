@@ -6,6 +6,13 @@ import { User } from 'firebase/auth'; // Importar User de firebase/auth
 import { MangaApiService } from '../services/manga-api.service';
 import { Router } from '@angular/router';
 
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+
+interface UserDocument {
+  photoURL: string;
+  // Otras propiedades que puedas tener en el documento
+}
+
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
@@ -17,8 +24,11 @@ export class AccountComponent implements OnInit {
   historial: Array<any> = []
   favoritos: Array<any> = []
   topmangas = [] as any
+  profilePicture= '';
 
-  constructor( private _location: Location, private userService: UserService, private mangaAPI: MangaApiService) { }
+  
+
+  constructor( private _location: Location, private userService: UserService, private mangaAPI: MangaApiService,private firestore: AngularFirestore) { }
 
   ngOnInit(): void {
     // Recuperar usuario
@@ -27,11 +37,25 @@ export class AccountComponent implements OnInit {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
         this.user = user;
-        this.cargarDatos();
+
+        this.firestore.collection('users').doc(this.user.uid).get()
+            .subscribe((doc) => {
+              if (doc.exists) {
+                const userData = doc.data() as UserDocument;
+                this.profilePicture = userData.photoURL;
+              } else {
+                console.log("El documento no existe.");
+              }
+            });
+
+        this.cargarDatos();    
       } else {
         // User is signed out
       }
     });
+
+    
+
   }
 
   async cargarDatos() {

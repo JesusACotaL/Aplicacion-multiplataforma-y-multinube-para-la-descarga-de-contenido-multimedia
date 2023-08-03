@@ -4,7 +4,7 @@
     <div> 
         <div class="imagen-perfil">
             <div style="font-size: 2em;">Welcome, {{user.email}}!</div>
-            <img src="assets\bills.jpg" class="img-fluid mx-auto" width="300"> 
+            <img [src]="profilePicture" class="img-fluid mx-auto" width="300"> 
         </div>
     </div>
     <div class="listaMangasDiv" *ngIf="historial.length > 0">

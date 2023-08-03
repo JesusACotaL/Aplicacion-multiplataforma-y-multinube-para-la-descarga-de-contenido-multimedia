@@ -2,20 +2,20 @@ services:
   mainmangaapi:
     build: ./mainAPI
     ports:
-      - 127.0.0.1:5000:5000
+      - 5000:5000
   myanimelistapi:
     build: ./mangaInfoAPIs/myAnimeList
     ports:
-      - 127.0.0.1:5000:5001
+      - 5001:5000
   manganelo:
     build: ./mangaAPIs/manganelo
     ports:
-      - 127.0.0.1:5000:5002
+      - 5002:5000
   mangakakalottv:
     build: ./mangaAPIs/mangakakalottv
     ports:
-      - 127.0.0.1:5000:5003
+      - 5003:5000
   mangakakalotcom:
     build: ./mangaAPIs/mangakakalotcom
     ports:
-      - 127.0.0.1:5000:5004
+      - 5004:5000

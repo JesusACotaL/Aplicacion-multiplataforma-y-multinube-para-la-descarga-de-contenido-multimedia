@@ -10,17 +10,21 @@ from PIL import Image
 mangaInfoEndpoints = [
     {
         "name": "myanimelist",
-        "url": "http://127.0.0.1:5001"
+        "url": "http://myanimelistapi:5000"
     }
 ]
 mangaEndpoints = [
     {
         "name": "manganelo",
-        "url": "http://127.0.0.1:5002"
+        "url": "http://manganelo:5000"
     },
     {
         "name": "mangakakalottv",
-        "url": "http://127.0.0.1:5003"
+        "url": "http://mangakakalottv:5000"
+    },
+    {
+        "name": "mangakakalotcom",
+        "url": "http://mangakakalotcom:5000"
     }
 ]
 

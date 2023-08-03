@@ -7,12 +7,19 @@
             </div>
             <div class="modal-body" style="background: #fff; color: #000;">
                 <div class="datos" *ngIf="user">
-                    <img src="assets\bills.jpg" class="img-fluid mx-auto" width="150">
+                    <img [src]="profilePicture" (click)="openFileInput()" class="img-fluid mx-auto" width="150">
+                    <input
+                    type="file"
+                    accept="image/*"
+                    style="display: none"
+                    #fileInput
+                    (change)="onFileSelected($event)"
+                    />
                     <span>Email: <span>{{user.email}}</span></span>
                 </div>
             </div>
             <div class="modal-footer" style="background: var(--primary-color); color: var(--text-color);">
-                <button type="button" class="btn btn-danger ms-auto" data-bs-dismiss="modal">Save changes & close</button>
+                <button (click)="reloadPage()" type="button" class="btn btn-danger ms-auto" data-bs-dismiss="modal">Save changes & close</button>
             </div>
         </div>
     </div>

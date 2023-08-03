@@ -3,9 +3,12 @@ import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signO
 import { User, onAuthStateChanged, setPersistence } from 'firebase/auth'; // Importar User de firebase/auth
 import { FirebaseApp } from '@angular/fire/app';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireStorage } from "@angular/fire/compat/storage";
+
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { last,switchMap } from "rxjs/operators";
 import { Manga } from "../interfaces/manga.interface";
 import * as bootstrap from 'bootstrap';
 import { Router } from "@angular/router";
@@ -17,8 +20,9 @@ export class UserService{
 
     backend = 'http://127.0.0.1:5000'
     currentUser = this.auth.currentUser;   
+    defaultPhotoURL = 'https://elcomercio.pe/resizer/SwLTlJ-gHmEyH2352WepGmtZQus=/1200x900/smart/filters:format(jpeg):quality(75)/arc-anglerfish-arc2-prod-elcomercio.s3.amazonaws.com/public/5XUOLS6PM5DIBG5WRDXLG7YDNY.jpg';
 
-    constructor(private auth:Auth,private firestore: AngularFirestore,private http: HttpClient, private router: Router){
+    constructor(private auth:Auth,private firestore: AngularFirestore,private http: HttpClient, private router: Router,private storage: AngularFireStorage){
         setPersistence(this.auth, browserSessionPersistence);
     }
 
@@ -78,10 +82,11 @@ export class UserService{
     }
 
     saveUserToFirestore(user: User) {
+        const photoURL = user.photoURL ? user.photoURL : this.defaultPhotoURL;
         return this.firestore.collection('users').doc(user.uid).set({
             email: user.email,
             displayName: user.displayName,
-            photoURL: user.photoURL,
+            photoURL: photoURL,
             uid: user.uid
         });
     }
@@ -181,4 +186,16 @@ export class UserService{
         const url = `${this.backend}/user/removeMangaFromBookmarks`;
         return this.http.post<any>(url,body);
     }
+
+    uploadPhoto(file: File): Observable<string> {
+        const filePath = `users/${file.name}`;
+        const fileRef = this.storage.ref(filePath);
+        const uploadTask = this.storage.upload(filePath, file);
+    
+        // Devuelve un Observable con la URL de descarga una vez que se haya completado la carga
+        return uploadTask.snapshotChanges().pipe(
+          last(), // Obtiene el último valor emitido por snapshotChanges una vez que la carga se haya completado
+          switchMap(() => fileRef.getDownloadURL())
+        );
+      }
 }

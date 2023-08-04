@@ -30,11 +30,17 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
 
-  encontrarFuentes(manga: string): Observable<any>{
+  obtenerFuentes(): Observable<any>{
+    const url = `${this.backend}/getMangaEndpoints`;
+    return this.http.get<any>(url);
+  }
+
+  buscarEnFuente(fuenteNombre: string, manga: string): Observable<any>{
     const body = {
+      source: fuenteNombre,
       manga: manga
     }
-    const url = `${this.backend}/findMangaInEndpoints`;
+    const url = `${this.backend}/findMangaInEndpoint`;
     return this.http.post<any>(url,body);
   }
   

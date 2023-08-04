@@ -31,6 +31,7 @@ export class MangaComponent implements OnInit {
   fuentes: any[] = []
   fuentesFiltradas: any[] = []
   fuentesNombres: any[] = []
+  fuenteActual = ''
   myanimelisturl = '';
 
   @ViewChild('mangaModal', { static: false }) mangaModal!: MangaModalComponent;
@@ -83,23 +84,34 @@ export class MangaComponent implements OnInit {
     return []
   }
 
-  obtenerFuentes() {
-    this.mangaAPI.encontrarFuentes(this.manga.name).subscribe( (sources: any[]) => {
+  buscarEnFuente(fuenteNombre: string) {
+    this.mangaAPI.buscarEnFuente(this.fuenteActual, this.manga.name).subscribe( (sources: any[]) => {
+      // Intentar encontrar en todas las fuentes, sino, rendirse
+      if(sources.length < 1 && fuenteNombre != this.fuentesNombres[this.fuentesNombres.length-1]) {
+        let i=0;
+        for(const fuente of this.fuentesNombres)
+          if(fuente == fuenteNombre) {
+            this.buscarEnFuente(this.fuentesNombres[i+1]);
+            i++;
+          }
+      }
       // Order by string length (so we mix by similar results to query provided)
       // ASC  -> a.length - b.length
       // DESC -> b.length - a.length
       sources.sort((a, b) => a['name'].length - b['name'].length);
-      // Get list of sources retrieved
-      let fuentesNombres: any[] = [];
-      for (const manga of sources) {
-        if(fuentesNombres.indexOf(manga['srcName']) == -1)
-        fuentesNombres.push(manga['srcName']);
-      }
       this.fuentes = sources;
-      this.fuentesNombres = fuentesNombres;
       this.fuentesFiltradas = this.fuentes
+      this.fuenteActual = fuenteNombre;
       this.cargando = false;
       this.seleccionandoManga = true;
+    });
+  }
+
+  obtenerFuentes() {
+    // Get list of sources retrieved
+    this.mangaAPI.obtenerFuentes().subscribe((fuentesNombres: string[]) => {
+      this.fuentesNombres = fuentesNombres;
+      this.buscarEnFuente(this.fuentesNombres[0]);
     });
   }
 
@@ -107,12 +119,18 @@ export class MangaComponent implements OnInit {
     if(fuenteNombre == '') {
       this.fuentesFiltradas = this.fuentes;
     } else {
-      let nuevaLista = []
-      for (const fuente of this.fuentes) {
-        if(fuente['srcName'] == fuenteNombre)
-          nuevaLista.push(fuente)
-      }
-      this.fuentesFiltradas = nuevaLista;
+      this.cargando = true;
+      this.seleccionandoManga = false;
+      this.fuenteActual = fuenteNombre;
+      this.mangaAPI.buscarEnFuente(this.fuenteActual, this.manga.name).subscribe( (sources: any[]) => {
+        // Order by string length (so we mix by similar results to query provided)
+        // ASC  -> a.length - b.length
+        // DESC -> b.length - a.length
+        sources.sort((a, b) => a['name'].length - b['name'].length);
+        this.fuentesFiltradas = sources;
+        this.cargando = false;
+        this.seleccionandoManga = true;
+      });
     }
   }
 

@@ -8,28 +8,9 @@ import requests
 from PIL import Image
 
 production = False
+mangaInfoEndpoints = []
+mangaEndpoints = []
 if(production):
-    mangaInfoEndpoints = [
-        {
-            "name": "myanimelist",
-            "url": "http://myanimelistapi:5000"
-        }
-    ]
-    mangaEndpoints = [
-        {
-            "name": "manganelo",
-            "url": "http://manganelo:5000"
-        },
-        {
-            "name": "mangakakalottv",
-            "url": "http://mangakakalottv:5000"
-        },
-        {
-            "name": "mangakakalotcom",
-            "url": "http://mangakakalotcom:5000"
-        }
-    ]
-else:
     mangaInfoEndpoints = [
         {
             "name": "myanimelist",
@@ -50,6 +31,28 @@ else:
             "url": "https://mangakakalotcom-qemeq7eoxq-uc.a.run.app"
         }
     ]
+else:
+    mangaInfoEndpoints = [
+        {
+            "name": "myanimelist",
+            "url": "http://127.0.0.1:5001"
+        }
+    ]
+    mangaEndpoints = [
+        {
+            "name": "manganelo",
+            "url": "http://127.0.0.1:5002"
+        },
+        {
+            "name": "mangakakalottv",
+            "url": "http://127.0.0.1:5003"
+        },
+        {
+            "name": "mangakakalotcom",
+            "url": "http://127.0.0.1:5004"
+        }
+    ]
+
 
 print("=== STARTING MAIN API ENDPOINT ===")
 
@@ -115,25 +118,27 @@ def getMangaEndpoints():
         endpoints.append(endpoint['name'])
     return endpoints
 
-@app.post("/findMangaInEndpoints")
-def findMangaInEndpoints():
+@app.post("/findMangaInEndpoint")
+def findMangaInEndpoint():
     data = request.json
     searchQuery = data['manga']
+    sourceName = data['source']
     body = {"manga": searchQuery}
     mangas = []
     for endpoint in mangaEndpoints:
-        try:
-            url = endpoint['url'] + "/searchManga"
-            res = requests.post(url, json=body)
-            res.raise_for_status()
-            result = json.loads(res.content)
-            if(type(result) is list):
-                temp = result[:5] # Only 5 sources per manga
-                for i in temp:
-                    i['srcName'] = endpoint['name'] # Include source name in results
-                mangas = mangas + temp
-        except:
-            print("Endpoint failure: " + endpoint["name"])
+        if(endpoint["name"] == sourceName):
+            try:
+                url = endpoint['url'] + "/searchManga"
+                res = requests.post(url, json=body)
+                res.raise_for_status()
+                result = json.loads(res.content)
+                if(type(result) is list):
+                    temp = result[:5] # Only 5 sources per manga
+                    for i in temp:
+                        i['srcName'] = endpoint['name'] # Include source name in results
+                    mangas = mangas + temp
+            except:
+                print("Endpoint failure: " + endpoint["name"])
     return mangas
 
 @app.post("/getMangaChapters")

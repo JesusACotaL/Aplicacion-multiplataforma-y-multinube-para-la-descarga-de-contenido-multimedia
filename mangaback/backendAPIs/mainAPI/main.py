@@ -7,26 +7,49 @@ import io
 import requests
 from PIL import Image
 
-mangaInfoEndpoints = [
-    {
-        "name": "myanimelist",
-        "url": "https://myanimelist-qemeq7eoxq-uc.a.run.app"
-    }
-]
-mangaEndpoints = [
-    {
-        "name": "manganelo",
-        "url": "https://manganelo-qemeq7eoxq-uc.a.run.app"
-    },
-    {
-        "name": "mangakakalottv",
-        "url": "https://mangakakalottv-qemeq7eoxq-uc.a.run.app"
-    },
-    {
-        "name": "mangakakalotcom",
-        "url": "https://mangakakalotcom-qemeq7eoxq-uc.a.run.app"
-    }
-]
+production = False
+if(production):
+    mangaInfoEndpoints = [
+        {
+            "name": "myanimelist",
+            "url": "http://myanimelistapi:5000"
+        }
+    ]
+    mangaEndpoints = [
+        {
+            "name": "manganelo",
+            "url": "http://manganelo:5000"
+        },
+        {
+            "name": "mangakakalottv",
+            "url": "http://mangakakalottv:5000"
+        },
+        {
+            "name": "mangakakalotcom",
+            "url": "http://mangakakalotcom:5000"
+        }
+    ]
+else:
+    mangaInfoEndpoints = [
+        {
+            "name": "myanimelist",
+            "url": "https://myanimelist-qemeq7eoxq-uc.a.run.app"
+        }
+    ]
+    mangaEndpoints = [
+        {
+            "name": "manganelo",
+            "url": "https://manganelo-qemeq7eoxq-uc.a.run.app"
+        },
+        {
+            "name": "mangakakalottv",
+            "url": "https://mangakakalottv-qemeq7eoxq-uc.a.run.app"
+        },
+        {
+            "name": "mangakakalotcom",
+            "url": "https://mangakakalotcom-qemeq7eoxq-uc.a.run.app"
+        }
+    ]
 
 print("=== STARTING MAIN API ENDPOINT ===")
 
@@ -84,6 +107,13 @@ def getMangaInfo():
         except:
             print("Endpoint failure: " + endpoint["name"])
     return manga
+
+@app.get("/getMangaEndpoints")
+def getMangaEndpoints():
+    endpoints = []
+    for endpoint in mangaEndpoints:
+        endpoints.append(endpoint['name'])
+    return endpoints
 
 @app.post("/findMangaInEndpoints")
 def findMangaInEndpoints():

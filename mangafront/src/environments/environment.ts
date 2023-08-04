@@ -12,7 +12,7 @@ export const environment = {
     messagingSenderId: '608745411249',
   },
   production: false,
-  mangaApiUrl: "https://5t9ckx5fk5.execute-api.us-west-1.amazonaws.com/v2"
+  mainMangaAPI: "http://127.0.0.1:5000"
 };
 
 /*

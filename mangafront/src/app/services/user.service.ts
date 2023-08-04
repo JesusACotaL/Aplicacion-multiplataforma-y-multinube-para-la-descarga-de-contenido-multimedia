@@ -18,7 +18,7 @@ import { Router } from "@angular/router";
 })
 export class UserService{
 
-    backend = 'http://127.0.0.1:5000'
+    backend = 'https://mainapi-qemeq7eoxq-uc.a.run.app'
     currentUser = this.auth.currentUser;   
     defaultPhotoURL = 'https://elcomercio.pe/resizer/SwLTlJ-gHmEyH2352WepGmtZQus=/1200x900/smart/filters:format(jpeg):quality(75)/arc-anglerfish-arc2-prod-elcomercio.s3.amazonaws.com/public/5XUOLS6PM5DIBG5WRDXLG7YDNY.jpg';
 

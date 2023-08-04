@@ -20,6 +20,7 @@ browserConfig = Options()
 browserConfig.add_argument('--headless')
 browserConfig.add_argument('--no-sandbox')
 browserConfig.add_argument("--log-level=3") # Hide debug info that we dont care about
+browserConfig.add_argument('--disable-dev-shm-usage')
 browser = webdriver.Chrome(options=browserConfig)
 
 @app.route("/")

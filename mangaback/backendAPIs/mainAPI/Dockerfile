@@ -1,4 +1,4 @@
-# Debian with python pre installed
+# Debian with python pre installed 
 # https://hub.docker.com/_/python
 FROM python:3.8-slim
 # Allow statements and log messages to immediately appear in the logs
@@ -18,5 +18,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # example: --workers 1 --threads 8
 # Timeout is set to 0 to disable the timeouts of the workers to allow Cloud Run to handle instance scaling.
 RUN pip install --no-cache-dir gunicorn
-CMD exec gunicorn --bind :${PORT} --workers 1 --threads 8 --timeout 0 manganelo:app
+CMD exec gunicorn --bind :${PORT} --workers 1 --threads 8 --timeout 0 main:app
 EXPOSE ${PORT}

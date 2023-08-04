@@ -10,21 +10,21 @@ from PIL import Image
 mangaInfoEndpoints = [
     {
         "name": "myanimelist",
-        "url": "http://myanimelistapi:5000"
+        "url": "https://myanimelist-qemeq7eoxq-uc.a.run.app"
     }
 ]
 mangaEndpoints = [
     {
         "name": "manganelo",
-        "url": "http://manganelo:5000"
+        "url": "https://manganelo-qemeq7eoxq-uc.a.run.app"
     },
     {
         "name": "mangakakalottv",
-        "url": "http://mangakakalottv:5000"
+        "url": "https://mangakakalottv-qemeq7eoxq-uc.a.run.app"
     },
     {
         "name": "mangakakalotcom",
-        "url": "http://mangakakalotcom:5000"
+        "url": "https://mangakakalotcom-qemeq7eoxq-uc.a.run.app"
     }
 ]
 

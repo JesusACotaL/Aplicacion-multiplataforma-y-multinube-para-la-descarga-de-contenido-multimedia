@@ -1,4 +1,4 @@
-# Debian with python pre installed
+# Debian with python pre installed 
 # https://hub.docker.com/_/python
 FROM python:3.8-slim
 # Allow statements and log messages to immediately appear in the logs

@@ -9,7 +9,7 @@ import { Manga } from '../interfaces/manga.interface';
 
 export class MangaApiService {
 
-  backend = 'http://127.0.0.1:5000'
+  backend = 'https://mainapi-qemeq7eoxq-uc.a.run.app'
   constructor(private http: HttpClient) {}
 
   buscarManga(nombre: string, filtroAdulto: boolean): Observable<any>{

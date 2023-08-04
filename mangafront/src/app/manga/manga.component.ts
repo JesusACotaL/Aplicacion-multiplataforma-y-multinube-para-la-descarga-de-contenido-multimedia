@@ -84,34 +84,21 @@ export class MangaComponent implements OnInit {
     return []
   }
 
-  buscarEnFuente(fuenteNombre: string) {
-    this.mangaAPI.buscarEnFuente(this.fuenteActual, this.manga.name).subscribe( (sources: any[]) => {
-      // Intentar encontrar en todas las fuentes, sino, rendirse
-      if(sources.length < 1 && fuenteNombre != this.fuentesNombres[this.fuentesNombres.length-1]) {
-        let i=0;
-        for(const fuente of this.fuentesNombres)
-          if(fuente == fuenteNombre) {
-            this.buscarEnFuente(this.fuentesNombres[i+1]);
-            i++;
-          }
-      }
-      // Order by string length (so we mix by similar results to query provided)
-      // ASC  -> a.length - b.length
-      // DESC -> b.length - a.length
-      sources.sort((a, b) => a['name'].length - b['name'].length);
-      this.fuentes = sources;
-      this.fuentesFiltradas = this.fuentes
-      this.fuenteActual = fuenteNombre;
-      this.cargando = false;
-      this.seleccionandoManga = true;
-    });
-  }
-
   obtenerFuentes() {
     // Get list of sources retrieved
     this.mangaAPI.obtenerFuentes().subscribe((fuentesNombres: string[]) => {
       this.fuentesNombres = fuentesNombres;
-      this.buscarEnFuente(this.fuentesNombres[0]);
+      this.fuenteActual = this.fuentesNombres[0];
+      this.mangaAPI.buscarEnFuente(this.fuenteActual, this.manga.name).subscribe( (sources: any[]) => {
+        // Order by string length (so we mix by similar results to query provided)
+        // ASC  -> a.length - b.length
+        // DESC -> b.length - a.length
+        sources.sort((a, b) => a['name'].length - b['name'].length);
+        this.fuentes = sources;
+        this.fuentesFiltradas = this.fuentes;
+        this.cargando = false;
+        this.seleccionandoManga = true;
+      });
     });
   }
 

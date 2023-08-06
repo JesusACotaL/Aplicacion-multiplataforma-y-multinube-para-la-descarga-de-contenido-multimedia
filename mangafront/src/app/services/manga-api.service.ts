@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Manga } from '../interfaces/manga.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Manga } from '../interfaces/manga.interface';
 
 export class MangaApiService {
 
-  backend = 'https://mainapi-qemeq7eoxq-uc.a.run.app'
+  backend = environment.mainMangaAPI;
   constructor(private http: HttpClient) {}
 
   buscarManga(nombre: string, filtroAdulto: boolean): Observable<any>{
@@ -29,11 +30,17 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
 
-  encontrarFuentes(manga: string): Observable<any>{
+  obtenerFuentes(): Observable<any>{
+    const url = `${this.backend}/getMangaEndpoints`;
+    return this.http.get<any>(url);
+  }
+
+  buscarEnFuente(fuenteNombre: string, manga: string): Observable<any>{
     const body = {
+      source: fuenteNombre,
       manga: manga
     }
-    const url = `${this.backend}/findMangaInEndpoints`;
+    const url = `${this.backend}/findMangaInEndpoint`;
     return this.http.post<any>(url,body);
   }
   

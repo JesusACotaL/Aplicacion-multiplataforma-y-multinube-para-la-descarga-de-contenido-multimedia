@@ -7,5 +7,6 @@ export const environment = {
     authDomain: 'mango-ec7e1.firebaseapp.com',
     messagingSenderId: '608745411249',
   },
-  production: true
+  production: true,
+  mainMangaAPI: "https://mainapi-qemeq7eoxq-uc.a.run.app"
 };

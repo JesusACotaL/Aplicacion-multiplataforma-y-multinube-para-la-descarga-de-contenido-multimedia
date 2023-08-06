@@ -1,4 +1,4 @@
-<div *ngIf="!user && !cargando;" class="h-100 d-flex flex-column p-4">
+<div *ngIf="!user && !cargando;" style="padding: 1rem;">
     <div class="homescreen">
         <div>
             <div class="logo">
@@ -9,7 +9,7 @@
             </div>
             <form #formularioBusqueda="ngForm" (ngSubmit)="formularioBusqueda.valid && buscar()" class="input-group" role="search">
                 <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control " type="search" placeholder="Search a manga...">
-                <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
+                <button type="submit" class="btn btnPrimary"><i class="bi bi-search"></i></button>
             </form>
         </div>
         <div class="topmangas">

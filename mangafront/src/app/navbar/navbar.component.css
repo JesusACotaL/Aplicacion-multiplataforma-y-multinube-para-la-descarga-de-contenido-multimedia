@@ -25,15 +25,16 @@
     margin-left: auto;
 }
 
+.brandLogo img{
+    width: 70px;
+}
+
 @media (max-width: 600px) {
-    .brandLogo {
-        display: none;
+    .brandLogo img{
+        width: 50px;
     }
     .searchBar {
-        width: 70%;
-    }
-    .navbarContent {
-        padding-top: 1rem;
+        max-width: 12.5rem;
     }
     .navbarContent .loginbtn {
         margin-left: 0;

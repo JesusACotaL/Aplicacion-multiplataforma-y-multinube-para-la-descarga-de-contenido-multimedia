@@ -1,24 +1,29 @@
 .perfil{
   display: flex;
   flex-direction: column;
-  background: url('/assets/fondo.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
 }
 
 .imagen-perfil {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2em;
-    padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  padding-bottom: 0;
+  margin-bottom: 2rem;
 }
 
 .imagen-perfil img {
-    border: 5px solid black;
-    border-radius: 50%;
+  border: 5px solid black;
+  border-radius: 50%;
+  width: 200px;
+}
+
+@media (min-width: 600px) {
+  .imagen-perfil img {
+    display: none;
+  }
 }
 
 .listaMangasDiv {
@@ -82,4 +87,24 @@
 
 .manga:hover {
   transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+  .imagen-perfil img {
+    width: 100px;
+  }
+  .listaMangasDiv {
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+  .listaMangasDiv h4{
+    margin-left: 1rem;
+  }
+  .listaMangasDiv .listaMangasContainer{
+    border-radius: 0;
+    border: none;
+  }
+  .arrow {
+    display: none;
+  }
 }

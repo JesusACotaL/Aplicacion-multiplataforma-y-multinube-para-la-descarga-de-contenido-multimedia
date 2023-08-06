@@ -4,7 +4,10 @@
             <button class="btn btnPrimary" type="button" (click)="login();">Log in <i class="bi bi-door-open"></i></button>  
         </div>
         <div *ngIf="user" class="d-flex align-items-center gap-2">
-            <a class="btn btnPrimary" href="/home">Logged in as: {{ user.email }}</a>
+            <div style="display: flex; flex-direction: column; font-size: 0.7rem;">
+                <span>Logged in as:</span>
+                <span>{{ user.email }}</span>
+            </div>
             <button class="btn btnPrimary" type="button" (click)="logOut();">Log out</button>   
         </div>
         <div class="ms-auto">

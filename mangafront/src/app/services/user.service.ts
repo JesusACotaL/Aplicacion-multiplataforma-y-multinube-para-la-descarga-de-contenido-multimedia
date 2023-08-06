@@ -12,13 +12,14 @@ import { last,switchMap } from "rxjs/operators";
 import { Manga } from "../interfaces/manga.interface";
 import * as bootstrap from 'bootstrap';
 import { Router } from "@angular/router";
+import { environment } from "src/environments/environment";
 
 @Injectable({
     providedIn:'root'
 })
 export class UserService{
 
-    backend = 'https://mainapi-qemeq7eoxq-uc.a.run.app'
+    backend = environment.mainMangaAPI;
     currentUser = this.auth.currentUser;   
     defaultPhotoURL = 'https://elcomercio.pe/resizer/SwLTlJ-gHmEyH2352WepGmtZQus=/1200x900/smart/filters:format(jpeg):quality(75)/arc-anglerfish-arc2-prod-elcomercio.s3.amazonaws.com/public/5XUOLS6PM5DIBG5WRDXLG7YDNY.jpg';
 

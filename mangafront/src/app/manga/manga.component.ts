@@ -31,6 +31,7 @@ export class MangaComponent implements OnInit {
   fuentes: any[] = []
   fuentesFiltradas: any[] = []
   fuentesNombres: any[] = []
+  fuenteActual = ''
   myanimelisturl = '';
 
   @ViewChild('mangaModal', { static: false }) mangaModal!: MangaModalComponent;
@@ -84,22 +85,20 @@ export class MangaComponent implements OnInit {
   }
 
   obtenerFuentes() {
-    this.mangaAPI.encontrarFuentes(this.manga.name).subscribe( (sources: any[]) => {
-      // Order by string length (so we mix by similar results to query provided)
-      // ASC  -> a.length - b.length
-      // DESC -> b.length - a.length
-      sources.sort((a, b) => a['name'].length - b['name'].length);
-      // Get list of sources retrieved
-      let fuentesNombres: any[] = [];
-      for (const manga of sources) {
-        if(fuentesNombres.indexOf(manga['srcName']) == -1)
-        fuentesNombres.push(manga['srcName']);
-      }
-      this.fuentes = sources;
+    // Get list of sources retrieved
+    this.mangaAPI.obtenerFuentes().subscribe((fuentesNombres: string[]) => {
       this.fuentesNombres = fuentesNombres;
-      this.fuentesFiltradas = this.fuentes
-      this.cargando = false;
-      this.seleccionandoManga = true;
+      this.fuenteActual = this.fuentesNombres[0];
+      this.mangaAPI.buscarEnFuente(this.fuenteActual, this.manga.name).subscribe( (sources: any[]) => {
+        // Order by string length (so we mix by similar results to query provided)
+        // ASC  -> a.length - b.length
+        // DESC -> b.length - a.length
+        sources.sort((a, b) => a['name'].length - b['name'].length);
+        this.fuentes = sources;
+        this.fuentesFiltradas = this.fuentes;
+        this.cargando = false;
+        this.seleccionandoManga = true;
+      });
     });
   }
 
@@ -107,12 +106,18 @@ export class MangaComponent implements OnInit {
     if(fuenteNombre == '') {
       this.fuentesFiltradas = this.fuentes;
     } else {
-      let nuevaLista = []
-      for (const fuente of this.fuentes) {
-        if(fuente['srcName'] == fuenteNombre)
-          nuevaLista.push(fuente)
-      }
-      this.fuentesFiltradas = nuevaLista;
+      this.cargando = true;
+      this.seleccionandoManga = false;
+      this.fuenteActual = fuenteNombre;
+      this.mangaAPI.buscarEnFuente(this.fuenteActual, this.manga.name).subscribe( (sources: any[]) => {
+        // Order by string length (so we mix by similar results to query provided)
+        // ASC  -> a.length - b.length
+        // DESC -> b.length - a.length
+        sources.sort((a, b) => a['name'].length - b['name'].length);
+        this.fuentesFiltradas = sources;
+        this.cargando = false;
+        this.seleccionandoManga = true;
+      });
     }
   }
 

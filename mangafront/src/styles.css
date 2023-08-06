@@ -49,3 +49,12 @@ body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+@media (max-width: 600px) {
+    .btnPrimary {
+        --bs-btn-padding-y: 0.25rem;
+        --bs-btn-padding-x: 0.5rem;
+        --bs-btn-font-size: 0.875rem;
+        --bs-btn-border-radius: 0.25rem;
+    }
+}

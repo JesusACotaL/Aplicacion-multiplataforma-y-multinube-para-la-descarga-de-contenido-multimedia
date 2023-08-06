@@ -10,3 +10,32 @@
     border-radius: 1rem;
     margin-left: 1rem;
 }
+
+.searchBar {
+    width: auto;
+}
+
+.navbarContent {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+}
+
+.navbarContent .loginbtn {
+    margin-left: auto;
+}
+
+@media (max-width: 600px) {
+    .brandLogo {
+        display: none;
+    }
+    .searchBar {
+        width: 70%;
+    }
+    .navbarContent {
+        padding-top: 1rem;
+    }
+    .navbarContent .loginbtn {
+        margin-left: 0;
+    }
+}

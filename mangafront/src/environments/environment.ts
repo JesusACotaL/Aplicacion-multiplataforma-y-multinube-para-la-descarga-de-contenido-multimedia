@@ -12,7 +12,7 @@ export const environment = {
     messagingSenderId: '608745411249',
   },
   production: false,
-  mainMangaAPI: "http://192.168.1.12:5000"
+  mainMangaAPI: "http://127.0.0.1:5000"
 };
 
 /*

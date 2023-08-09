@@ -1,150 +1,151 @@
 <app-navbar></app-navbar>
-<div style="padding: 1rem; padding-bottom: 0; display: flex;">
-    <h2> {{ manga.name }}</h2>
-    <button *ngIf="user && manga.name && !this.inBookmarks" type="button" class="btn btnBookmark ms-auto" (click)="addToBookmarks()"><i class="bi bi-bookmark-plus"></i></button>
-    <button *ngIf="user && manga.name && this.inBookmarks" type="button" class="btn btnBookmark ms-auto" (click)="removeFromBookmarks()"><i class="bi bi-bookmark-x"></i></button>
-</div>
-<div class="manga-contenedor">
-    <div *ngIf="manga.name" class="resumen">
-        <div class="logotipo">
-            <img [src]="manga.img" alt="" class="img-fluid" width="225">
-        </div>
-        <div class="informacion">     
-            <h5>Ranking {{manga.statistics.popularity}}</h5>
-            <span>{{manga.name_english}}</span>
-            <span>{{manga.statistics.score}} <i class="bi bi-star-fill"></i></span>
-            <span>By: {{manga.authors}}</span>
-            <span>{{manga.genres}}</span>
-            <span>{{manga.date}}</span>
-            <span>Status: {{manga.status}}</span>
-            <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
-            <a [href]="myanimelisturl" target="_blank">Visit on myanimelist <i class="bi bi-box-arrow-up-right"></i></a>
-            <div *ngIf="user" style="margin-top: .5rem;">
-                <span>Your rating: {{userRating}}</span>
-                <div class="rating">
-                    <form>
-                        <p class="clasificacion">
-                          <input id="radio5" type="radio" name="estrellas" (click)="rate(5)">
-                          <label for="radio5">★</label>
-                          <input id="radio4" type="radio" name="estrellas"  (click)="rate(4)">
-                          <label for="radio4">★</label>
-                          <input id="radio3" type="radio" name="estrellas"  (click)="rate(3)">
-                          <label for="radio3">★</label>
-                          <input id="radio2" type="radio" name="estrellas"  (click)="rate(2)">
-                          <label for="radio2">★</label>
-                          <input id="radio1" type="radio" name="estrellas"  (click)="rate(1)">
-                          <label for="radio1">★</label>
-                        </p>
-                    </form>
-                </div>
-            </div>
-        </div>
+<div style="padding: 1rem;">
+    <div style="padding: 1rem; padding-bottom: 0; display: flex;">
+        <h2> {{ manga.name }}</h2>
+        <button *ngIf="user && manga.name && !this.inBookmarks" type="button" class="btn btnBookmark ms-auto" (click)="addToBookmarks()"><i class="bi bi-bookmark-plus"></i></button>
+        <button *ngIf="user && manga.name && this.inBookmarks" type="button" class="btn btnBookmark ms-auto" (click)="removeFromBookmarks()"><i class="bi bi-bookmark-x"></i></button>
     </div>
-    <div class="capitulos">
-        <div *ngIf="cargando">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
-                <div style="position: absolute; right: 50%+10rem;">Indexing <br> sources...</div>
-                <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
+    <div class="manga-contenedor">
+        <div *ngIf="manga.name" class="resumen">
+            <div class="logotipo">
+                <img [src]="manga.img" alt="" class="img-fluid" width="225">
             </div>
-        </div>
-        <div *ngIf="seleccionandoManga">
-            <div>
-                <div style="display: flex;">
-                    <h4>Choose a source to read this manga: </h4>
-                    <select #fuenteFiltro class="form-select" style="margin-left: auto; width: inherit;" (change)="filtrarFuentesPorNombre(fuenteFiltro.value)">
-                        <option [selected]="fuenteActual==fuente" *ngFor="let fuente of fuentesNombres;let i=index; first as isFirst" [value]="fuente">{{fuente}}</option>
-                    </select>
-                </div>
-                <div class="fuentes" *ngIf="fuentesFiltradas.length > 0">
-                    <div class="fuenteManga" *ngFor="let fuente of fuentesFiltradas" (click)="obtenerCapitulos(fuente.srcName, fuente.chapters_url)">
-                        <img [src]="fuente.image_url" alt="" width="50">
-                        <div style="display: flex; flex-direction: column; justify-content: center;">
-                            <span>{{fuente.name}}</span>
-                            <span>{{fuente.chapters_url}}</span>
-                        </div>
+            <div class="informacion">     
+                <h5>Ranking {{manga.statistics.popularity}}</h5>
+                <span>{{manga.name_english}}</span>
+                <span>{{manga.statistics.score}} <i class="bi bi-star-fill"></i></span>
+                <span>By: {{manga.authors}}</span>
+                <span>{{manga.genres}}</span>
+                <span>{{manga.date}}</span>
+                <span>Status: {{manga.status}}</span>
+                <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
+                <a [href]="myanimelisturl" target="_blank">Visit on myanimelist <i class="bi bi-box-arrow-up-right"></i></a>
+                <div *ngIf="user" style="margin-top: .5rem;">
+                    <span>Your rating: {{userRating}}</span>
+                    <div class="rating">
+                        <form>
+                            <p class="clasificacion">
+                              <input id="radio5" type="radio" name="estrellas" (click)="rate(5)">
+                              <label for="radio5">★</label>
+                              <input id="radio4" type="radio" name="estrellas"  (click)="rate(4)">
+                              <label for="radio4">★</label>
+                              <input id="radio3" type="radio" name="estrellas"  (click)="rate(3)">
+                              <label for="radio3">★</label>
+                              <input id="radio2" type="radio" name="estrellas"  (click)="rate(2)">
+                              <label for="radio2">★</label>
+                              <input id="radio1" type="radio" name="estrellas"  (click)="rate(1)">
+                              <label for="radio1">★</label>
+                            </p>
+                        </form>
                     </div>
                 </div>
-                <div *ngIf="fuentesFiltradas.length <= 0" style="height: 10rem;display: flex;align-items: center;">
-                    <h5>Oops! Sorry, we couldn't find this manga in this source :(</h5>
+            </div>
+        </div>
+        <div class="capitulos">
+            <div *ngIf="cargando">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
+                    <div style="position: absolute; right: 50%+10rem;">Getting data <br> please wait ...</div>
+                    <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
+                </div>
+            </div>
+            <div *ngIf="seleccionandoManga">
+                <div>
+                    <div class="sourceSelector">
+                        <span>Choose a source to read this manga: </span>
+                        <select #fuenteFiltro class="form-select" (change)="filtrarFuentesPorNombre(fuenteFiltro.value)">
+                            <option [selected]="fuenteActual==fuente" *ngFor="let fuente of fuentesNombres;let i=index; first as isFirst" [value]="fuente">{{fuente}}</option>
+                        </select>
+                    </div>
+                    <div class="fuentes" *ngIf="fuentesFiltradas.length > 0">
+                        <div class="fuenteManga" *ngFor="let fuente of fuentesFiltradas" (click)="obtenerCapitulos(fuente.srcName, fuente.chapters_url)">
+                            <img [src]="fuente.image_url" alt="" width="50">
+                            <div style="display: flex; flex-direction: column; justify-content: center;">
+                                <span>{{fuente.name}}</span>
+                                <span>{{fuente.chapters_url}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="fuentesFiltradas.length <= 0" style="height: 10rem;display: flex;align-items: center;">
+                        <h5>Oops! Sorry, we couldn't find this manga in this source :(</h5>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!cargando && !seleccionandoManga">
+                <nav class="navegador">
+                    <input [(ngModel)]="chapQuery" name="chapQuery" class="form-control mb-1" type="search" placeholder="Filter chapters by search..." (input)="filterChapters()">
+                    <ul class="pagination justify-content-center mb-1">
+                        <li>
+                            <span class="page-link" (click)="verColeccionPaginas(1)">
+                                First
+                            </span>
+                        </li>
+                        <li>
+                            <span class="page-link" [ngClass]="{'disabled': paginaActual === 1}" (click)="!(paginaActual === 1) && verColeccionPaginas(coleccionPaginas-5)">
+                                <i class="bi bi-arrow-left"></i>
+                            </span>
+                        </li>
+                        <li [ngClass]="{'active': i === paginaActual}" *ngFor="let i of paginas | slice: coleccionPaginas - 1: coleccionPaginas + 4" (click)="verPagina(i)">
+                            <span class="page-link">{{i}}</span>
+                        </li>
+                        <li>
+                            <span class="page-link" [ngClass]="{'disabled': paginaActual > paginas.length-5}" (click)="!(paginaActual > paginas.length-5) && verColeccionPaginas(coleccionPaginas+5)">
+                                <i class="bi bi-arrow-right"></i>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="page-link" (click)="verColeccionPaginas(paginas.length)">
+                                Last
+                            </span>
+                        </li>
+                    </ul>
+                </nav>
+                <ul *ngIf="chapQuery == ''" class="list-group list-group-flush" style="border-radius: .5rem;">
+                    <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'], capitulo['srcName'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
+                        <span>{{ capitulo['name'] }}</span>
+                        <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
+                    </li>
+                </ul>
+                <ul *ngIf="chapQuery != ''" class="list-group list-group-flush" style="border-radius: .5rem;">
+                    <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'], capitulo['srcName'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
+                        <span>{{ capitulo['name'] }}</span>
+                        <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
+                    </li>
+                </ul>
+            </div>
+            <div *ngIf="!cargando && !seleccionandoManga && capitulos.length < 1" class="text-center">
+                No chapters found.
+            </div>
+        </div>
+    </div>
+    <div class="info-adicional">
+        <hr>
+        <span style="font-style: italic;">
+            {{manga.synopsis}}
+        </span>
+        <br><br>
+        <span>
+            {{manga.background}}
+        </span>
+        <div style="margin-top: 1rem;">
+            <div *ngIf="getMainPlot().length > 0">
+                <h4>Main Plot</h4>
+                <div class="characters">
+                    <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getMainPlot()">
+                        <img [src]="character.image" alt="" class="img-fluid">
+                        <span>{{character.name}}</span>
+                    </a>
+                </div>
+            </div>
+            <div *ngIf="getAdditionalCharacters().length > 0">
+                <h4>Adittional characters</h4>
+                <div class="characters">
+                    <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getAdditionalCharacters()">
+                        <img [src]="character.image" alt="" class="img-fluid">
+                        <span>{{character.name}}</span>
+                    </a>
                 </div>
             </div>
         </div>
-        <div *ngIf="!cargando && !seleccionandoManga">
-            <nav class="navegador">
-                <input [(ngModel)]="chapQuery" name="chapQuery" class="form-control mb-1" type="search" placeholder="Filter chapters by search..." (input)="filterChapters()">
-                <ul class="pagination justify-content-center mb-1">
-                    <li>
-                        <span class="page-link" (click)="verColeccionPaginas(1)">
-                            First
-                        </span>
-                    </li>
-                    <li>
-                        <span class="page-link" [ngClass]="{'disabled': paginaActual === 1}" (click)="!(paginaActual === 1) && verColeccionPaginas(coleccionPaginas-5)">
-                            <i class="bi bi-arrow-left"></i>
-                        </span>
-                    </li>
-                    <li [ngClass]="{'active': i === paginaActual}" *ngFor="let i of paginas | slice: coleccionPaginas - 1: coleccionPaginas + 4" (click)="verPagina(i)">
-                        <span class="page-link">{{i}}</span>
-                    </li>
-                    <li>
-                        <span class="page-link" [ngClass]="{'disabled': paginaActual > paginas.length-5}" (click)="!(paginaActual > paginas.length-5) && verColeccionPaginas(coleccionPaginas+5)">
-                            <i class="bi bi-arrow-right"></i>
-                        </span>
-                    </li>
-                    <li>
-                        <span class="page-link" (click)="verColeccionPaginas(paginas.length)">
-                            Last
-                        </span>
-                    </li>
-                </ul>
-            </nav>
-            <ul *ngIf="chapQuery == ''" class="list-group list-group-flush" style="border-radius: .5rem;">
-                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'], capitulo['srcName'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
-                    <span>{{ capitulo['name'] }}</span>
-                    <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
-                </li>
-            </ul>
-            <ul *ngIf="chapQuery != ''" class="list-group list-group-flush" style="border-radius: .5rem;">
-                <li (click)="mostrarEpisodio(capitulo['name'], capitulo['url'], capitulo['srcName'])" class="list-group-item text-white capitulo" *ngFor="let capitulo of filtrados | slice: (paginaActual-1) * capitulosPorPagina : paginaActual * capitulosPorPagina">
-                    <span>{{ capitulo['name'] }}</span>
-                    <i class="bi bi-file-earmark-arrow-down ms-auto"></i>
-                </li>
-            </ul>
-        </div>
-        <div *ngIf="!cargando && !seleccionandoManga && capitulos.length < 1" class="text-center">
-            No chapters found.
-        </div>
     </div>
 </div>
-<div class="info-adicional">
-    <hr>
-    <span style="font-style: italic;">
-        {{manga.synopsis}}
-    </span>
-    <br><br>
-    <span>
-        {{manga.background}}
-    </span>
-    <div style="margin-top: 1rem;">
-        <div *ngIf="getMainPlot().length > 0">
-            <h4>Main Plot</h4>
-            <div class="characters">
-                <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getMainPlot()">
-                    <img [src]="character.image" alt="" class="img-fluid">
-                    <span>{{character.name}}</span>
-                </a>
-            </div>
-        </div>
-        <div *ngIf="getAdditionalCharacters().length > 0">
-            <h4>Adittional characters</h4>
-            <div class="characters">
-                <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getAdditionalCharacters()">
-                    <img [src]="character.image" alt="" class="img-fluid">
-                    <span>{{character.name}}</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
 <app-manga-modal #mangaModal></app-manga-modal>

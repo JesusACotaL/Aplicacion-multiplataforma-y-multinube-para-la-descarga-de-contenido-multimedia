@@ -3,4 +3,5 @@
     flex-direction: column;
     background: var(--primary-color); 
     color: var(--text-color);
+    overflow: hidden;
 }

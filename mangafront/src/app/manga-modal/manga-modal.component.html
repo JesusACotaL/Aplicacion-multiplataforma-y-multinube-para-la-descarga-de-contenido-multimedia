@@ -5,31 +5,33 @@
             <div class="barraNavegacion">
                 <button class="btn btn-danger" style="display: flex; gap: 1rem; align-items: center;" data-bs-dismiss="modal" (click)="closeModal()">
                     <i class="bi bi-arrow-return-left"></i>
-                    <span>Back to chapters</span>
                 </button>
-                <span *ngIf="obteniendoLinks">Getting links, please wait...</span>
-                <span *ngIf="!obteniendoLinks">{{cargadas}} / {{total}} pages loaded</span>
-                <div style="display: flex; align-items: center; gap: 1rem; align-items: center; margin-left: auto;">
+                <div>
+                    <span *ngIf="!obteniendoLinks">{{titulo}}</span>
+                </div>
+                <div class="resolutionChanger">
                     <button type="button" class="btn btn-danger" (click)="recargar()"><i class="bi bi-arrow-clockwise"></i></button>
                     <span>Image resolution:</span>
-                    <select #resolution class="form-select" style="margin-left: auto; width: inherit;" [(ngModel)]="calidad" (change)="cambiarCalidad(resolution.value)">
+                    <select #resolution class="form-select" [(ngModel)]="calidad" (change)="cambiarCalidad(resolution.value)">
                         <option value="25">Low</option>
                         <option value="50">Medium</option>
                         <option value="75">High</option>
                         <option value="100">Native</option>
                     </select>
                 </div>
-                <span style="margin-left: auto;">{{titulo}}</span>
-                <button class="btn btn-danger" style="display: flex; gap: 1rem;" (click)="descargarEpisodio()" [ngClass]="{'disabled':loadingImages()}">
-                    <div *ngIf="loadingImages()" style="display: flex; align-items: center; gap: 1rem;">
-                        <span>Loading pages...</span> 
-                        <div class="spinner-border spinner-border-sm text-light"></div>
-                    </div>
-                    <div *ngIf="!loadingImages()" style="display: flex; align-items: center; gap: 1rem;">
-                        <span>Download (.pdf)</span> 
-                        <i class="bi bi-download"></i>
-                    </div>
-                </button>
+                <div style="margin-left: auto;">
+                    <span *ngIf="obteniendoLinks">Getting links, please wait...</span>
+                    <button *ngIf="!obteniendoLinks" class="btn btn-danger downloadBtn" (click)="!loadingImages() && descargarEpisodio()" [ngClass]="{'disabled':loadingImages()}">
+                        <span *ngIf="loadingImages()" style="width: 4rem;">{{cargadas}} / {{total}}</span>
+                        <div *ngIf="loadingImages()" style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="spinner-border spinner-border-sm text-light"></div>
+                        </div>
+                        <div *ngIf="!loadingImages()" style="display: flex; align-items: center; gap: 1rem;">
+                            <span>Download (.pdf)</span> 
+                            <i class="bi bi-download"></i>
+                        </div>
+                    </button>
+                </div>
             </div>
             <div class="modal-body">
                 <div id="ImagenesCapitulo"></div>

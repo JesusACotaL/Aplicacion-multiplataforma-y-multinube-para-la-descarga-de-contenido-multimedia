@@ -1,18 +1,20 @@
-<div *ngIf="!user && !cargando;" class="h-100 d-flex flex-column p-4">
-    <div class="buscador d-flex flex-column gap-2 w-100 my-auto">
-        <div class="logo">
-            <img src="/assets/personaje.png" alt="Bootstrap" width="70">
-            <span style="font-size: 1.5rem;font-family: cursive;">
-                Aplicacion multiplataforma y multinube <br> para la descarga de contenido multimedia
-            </span>
+<div *ngIf="!user && !cargando;" style="padding: 1rem;">
+    <div class="homescreen">
+        <div>
+            <div class="logo">
+                <img src="/assets/personaje.png" alt="Bootstrap" width="70">
+                <span style="font-size: 1.5rem;">
+                    Aplicacion multiplataforma y multinube <br> para la descarga de contenido multimedia
+                </span>
+            </div>
+            <form #formularioBusqueda="ngForm" (ngSubmit)="formularioBusqueda.valid && buscar()" class="input-group" role="search">
+                <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control " type="search" placeholder="Search a manga...">
+                <button type="submit" class="btn btnPrimary"><i class="bi bi-search"></i></button>
+            </form>
         </div>
-        <form #formularioBusqueda="ngForm" (ngSubmit)="formularioBusqueda.valid && buscar()" class="input-group" role="search">
-            <input [(ngModel)]="manga" #mangaInput="ngModel" name="mangaInput" required class="form-control " type="search" placeholder="Search a manga...">
-            <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
-        </form>
-        <div class="busquedas mt-2">
+        <div class="topmangas">
             <span class="text-decoration-underline">Top mangas:</span>
-            <ul>
+            <ul class="busquedas">
                 <a *ngFor="let manga of busquedasPopulares" [href]="verMangaLink(manga.mangaURL)">{{manga.name}}</a>
             </ul>
         </div>

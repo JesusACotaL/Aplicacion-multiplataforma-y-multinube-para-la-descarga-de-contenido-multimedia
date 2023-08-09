@@ -1,5 +1,5 @@
 .manga-contenedor {
-    padding: 1rem;
+    margin-top: 1rem;
     gap: 2rem;
     display: grid;
     overflow: hidden;
@@ -11,7 +11,7 @@
     border: 1px solid gray;
     color: #FFF;
     cursor: pointer;
-    font-size: .4rem;
+    font-size: .5rem;
 }
 
 .pagination .page-link:hover {
@@ -23,23 +23,9 @@
     color: #000;
 }
 
-@media (min-width: 600px) {
-    .pagination .page-link {
-        font-size: 1rem;
-    }
-    .manga-contenedor {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, 45%);
-        justify-content: space-evenly;
-    }
-}
-
-.resumen {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 45%);
-    overflow: hidden;
-    word-wrap: break-word;
-    justify-content: space-evenly;
+.resumen .logotipo{
+    display: flex;
+    justify-content: center;
 }
 
 .resumen .informacion{
@@ -117,16 +103,21 @@
 }
 
 .character {
-    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: .5rem;
-    border-radius: 1rem;
     cursor: pointer;
     text-decoration: none;
     color: inherit;
 }
+.character img {
+    width: 150px;
+}
 
 .character:hover {
-    border: 1px solid black;
+    background-color: var(--secondary-color);
 }
 
 /* Rating CSS */
@@ -188,4 +179,55 @@
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: #ffc107;
     --bs-btn-disabled-border-color: #ffc107;
+}
+
+.sourceSelector {
+    display: flex;
+}
+.sourceSelector span{
+    font-size: 1.3rem;
+}
+.sourceSelector select{
+    margin-left: auto; 
+    width: inherit;
+}
+
+@media (min-width: 600px) {
+    .resumen {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 45%);
+        overflow: hidden;
+        word-wrap: break-word;
+        justify-content: space-evenly;
+    }
+    .pagination .page-link {
+        font-size: 1rem;
+    }
+    .manga-contenedor {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 45%);
+        justify-content: space-evenly;
+    }
+}
+
+@media (max-width: 600px) {
+    .resumen {
+        display: flex;
+        gap: 1rem;
+        flex-direction: column;
+        justify-content: center;
+        word-wrap: break-word;
+    }
+    .sourceSelector {
+        flex-direction: column;
+    }
+    .sourceSelector span{
+        font-size: 1rem;
+    }
+    .sourceSelector select{
+        margin-left: 0;
+    }
+    .character img {
+        width: auto;
+    }
 }

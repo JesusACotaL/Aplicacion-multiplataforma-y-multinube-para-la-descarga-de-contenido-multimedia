@@ -15,3 +15,28 @@
     padding: .5rem;
     align-items: center;
 }
+
+.resolutionChanger{
+    display: flex; 
+    align-items: center; 
+    gap: 1rem; 
+    align-items: center; 
+    margin-left: auto;
+}
+.resolutionChanger select {
+    margin-left: auto;
+    width: inherit;
+}
+
+.downloadBtn {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 600px) {
+    .resolutionChanger {
+        display: none;
+    }
+}

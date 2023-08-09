@@ -13,12 +13,18 @@ a:hover {
     color: #eee;
 }
 
-.busquedas {
-    font-size: 1em;
-    color: #ccc;
+.homescreen {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
-.busquedas ul {
+.busquedas {
+    font-size: 1rem;
+    color: #ccc;
     display: grid;
     grid-template-columns: repeat(5, auto);
     gap: 1rem;
@@ -26,8 +32,48 @@ a:hover {
     margin: 0;
 }
 
-.busquedas ul a {
+.busquedas a {
     white-space: nowrap; 
     text-overflow: ellipsis; 
     overflow: hidden;
+}
+
+form {
+    margin-top: 2rem;
+}
+
+@media (max-width: 600px) {
+    .logo {
+        flex-direction: column;
+    }
+    .logo img {
+        display: none;
+    }
+    .busquedas {
+        max-height: 6rem;
+        overflow-y: scroll;
+        grid-template-columns: repeat(1, auto);
+    }
+    .busquedas::-webkit-scrollbar {
+        height: .5rem;
+    }
+    
+    .busquedas::-webkit-scrollbar-thumb,
+    .busquedas::-webkit-scrollbar-track {
+      border-radius: 92px;
+    }
+    
+    .busquedas::-webkit-scrollbar-thumb {
+      background: var(--bs-primary);
+    }
+    
+    .busquedas::-webkit-scrollbar-track {
+      background: var(--bs-gray);
+    }
+    .homescreen {
+        margin-top: 0;
+    }
+    .topmangas {
+        margin-top: auto;
+    }
 }

@@ -1,11 +1,11 @@
 <!-- Modal -->
 <div class="modal fade" id="accountModal">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered mx-auto">
         <div class="modal-content bg-dark">
-            <div class="modal-header" style="background: var(--primary-color); color: var(--text-color);">
+            <div class="modal-header" style="background: var(--primary-color); color: var(--text-color); border: none;">
                 <h5 class="modal-title">Modify account information</h5>
             </div>
-            <div class="modal-body" style="background: #fff; color: #000;">
+            <div class="modal-body" style="background: var(--background); color: var(--text-color);">
                 <div class="datos" *ngIf="user">
                     <img [src]="profilePicture" (click)="openFileInput()" class="img-fluid mx-auto" width="150">
                     <input
@@ -18,8 +18,8 @@
                     <span>Email: <span>{{user.email}}</span></span>
                 </div>
             </div>
-            <div class="modal-footer" style="background: var(--primary-color); color: var(--text-color);">
-                <button (click)="reloadPage()" type="button" class="btn btn-danger ms-auto" data-bs-dismiss="modal">Save changes & close</button>
+            <div class="modal-footer" style="background: var(--primary-color); color: var(--text-color); border: none;">
+                <button (click)="reloadPage()" type="button" class="btn btnPrimary ms-auto" data-bs-dismiss="modal">Save changes & close</button>
             </div>
         </div>
     </div>

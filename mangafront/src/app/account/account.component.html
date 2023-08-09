@@ -1,11 +1,9 @@
 
 <app-navbar></app-navbar>
 <div *ngIf="user" class="perfil">
-    <div> 
-        <div class="imagen-perfil">
-            <div style="font-size: 2em;">Welcome, {{user.email}}!</div>
-            <img [src]="profilePicture" class="img-fluid mx-auto" width="300"> 
-        </div>
+    <div class="imagen-perfil">
+        <img [src]="profilePicture" class="img-fluid mx-auto"> 
+        <h3>Welcome, {{user.email}}!</h3>
     </div>
     <div class="listaMangasDiv" *ngIf="historial.length > 0">
         <h4>Continue reading</h4>

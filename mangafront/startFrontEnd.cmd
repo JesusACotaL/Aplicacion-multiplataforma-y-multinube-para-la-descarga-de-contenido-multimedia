@@ -1,1 +1,1 @@
-start npm run start_net
+start npm run start

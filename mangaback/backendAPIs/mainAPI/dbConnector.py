@@ -4,6 +4,7 @@ import shutil
 import json
 import uuid
 import requests
+import math
 
 # Local storage folder
 folder = 'mangaDB' + os.sep
@@ -260,6 +261,31 @@ def removeMangaFromHistory(uuid, mangaID):
     if(data):
         cursor.execute("DELETE * FROM history WHERE uuid = ? AND mangaID = ?",[uuid, mangaID])
         con.commit()
+
+def getLocalDBMeta():
+    def get_tree_size(path):
+        """Return total size of files in given path and subdirs."""
+        total = 0
+        for entry in os.scandir(path):
+            if entry.is_dir(follow_symlinks=False):
+                total += get_tree_size(entry.path)
+            else:
+                total += entry.stat(follow_symlinks=False).st_size
+        return total
+    def convert_size(size_bytes):
+        if size_bytes == 0:
+            return "0B"
+        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        i = int(math.floor(math.log(size_bytes, 1024)))
+        p = math.pow(1024, i)
+        s = round(size_bytes / p, 2)
+        return "%s %s" % (s, size_name[i])
+    filesSize = get_tree_size(folder)
+    filesSize = convert_size(filesSize)
+    dbSize = os.path.getsize('mangas.db')
+    dbSize = convert_size(dbSize)
+    totalMangas = cursor.execute("SELECT COUNT() FROM manga").fetchone()
+    return {'filesSize':filesSize,'dbSize':dbSize,'totalMangas':totalMangas}
 
 if __name__ == '__main__':
     mangas = getMangas()

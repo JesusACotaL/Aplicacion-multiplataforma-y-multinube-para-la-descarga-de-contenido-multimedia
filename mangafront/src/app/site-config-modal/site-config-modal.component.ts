@@ -10,6 +10,8 @@ import { MangaApiService } from '../services/manga-api.service';
 export class SiteConfigModalComponent implements OnInit {
   siteConfigModal!: bootstrap.Modal;
   dbSize = 0
+  totalMangas = 0
+  filesSize = 0
 
   constructor(private mangaAPI: MangaApiService) {
   }
@@ -20,8 +22,10 @@ export class SiteConfigModalComponent implements OnInit {
 
   mostrar() {
     this.siteConfigModal.show()
-    this.mangaAPI.checarTamanioDB().subscribe((tamanio)=>{
-      this.dbSize = tamanio.size;
+    this.mangaAPI.obtenerDBmeta().subscribe((datos)=>{
+      this.filesSize = datos['filesSize']
+      this.dbSize = datos['dbSize']
+      this.totalMangas = datos['totalMangas']
     });
   }
 

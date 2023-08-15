@@ -108,8 +108,8 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
 
-  checarTamanioDB(): Observable<any> {
-    const url = `${this.backend}/getLocalDBSize`;
+  obtenerDBmeta(): Observable<any> {
+    const url = `${this.backend}/getLocalDBmetadata`;
     return this.http.get<any>(url);
   }
 

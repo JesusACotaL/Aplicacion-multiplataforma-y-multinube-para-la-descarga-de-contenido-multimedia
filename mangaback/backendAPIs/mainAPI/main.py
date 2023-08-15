@@ -7,7 +7,6 @@ import io
 import time
 import requests
 import os
-import math
 import uuid
 from PIL import Image
 
@@ -131,30 +130,10 @@ def nukeLocalDB():
         dbConnector.deleteDatabase()
     return { 'result': 'Database cleared entirely.'}
 
-@app.get("/getLocalDBSize")
-def getLocalDBSize():
-    """ Return total size of files in manga folder """
-    def get_tree_size(path):
-        """Return total size of files in given path and subdirs."""
-        total = 0
-        for entry in os.scandir(path):
-            if entry.is_dir(follow_symlinks=False):
-                total += get_tree_size(entry.path)
-            else:
-                total += entry.stat(follow_symlinks=False).st_size
-        return total
-    def convert_size(size_bytes):
-        if size_bytes == 0:
-            return "0B"
-        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-        i = int(math.floor(math.log(size_bytes, 1024)))
-        p = math.pow(1024, i)
-        s = round(size_bytes / p, 2)
-        return "%s %s" % (s, size_name[i])
-    fileSize = get_tree_size('mangaDB')
-    dbSize = os.path.getsize('mangas.db')
-    total = convert_size(dbSize+fileSize)
-    return {'size':total}
+@app.get("/getLocalDBmetadata")
+def getLocalDBmetadata():
+    res = dbConnector.getLocalDBMeta()
+    return res
 
 @app.post("/searchManga")
 def searchManga():

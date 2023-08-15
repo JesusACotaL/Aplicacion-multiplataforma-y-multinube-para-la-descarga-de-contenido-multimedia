@@ -43,6 +43,6 @@ export class HomeComponent implements OnInit {
   }
 
   verMangaLink(url: string) {
-    return '/manga?' + new URLSearchParams({manga: url}).toString()
+    return '/manga?' + new URLSearchParams({id: url}).toString()
   }
 }

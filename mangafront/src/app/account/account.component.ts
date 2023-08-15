@@ -5,7 +5,7 @@ import { UserService } from '../services/user.service';
 import { User } from 'firebase/auth'; // Importar User de firebase/auth
 import { MangaApiService } from '../services/manga-api.service';
 import { Router } from '@angular/router';
-
+import { environment } from 'src/environments/environment';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 interface UserDocument {
@@ -25,7 +25,7 @@ export class AccountComponent implements OnInit {
   favoritos: Array<any> = []
   topmangas = [] as any
   profilePicture= '';
-
+  backend = environment.mainMangaAPI;
   
 
   constructor( private _location: Location, private userService: UserService, private mangaAPI: MangaApiService,private firestore: AngularFirestore) { }
@@ -77,8 +77,11 @@ export class AccountComponent implements OnInit {
     });
   }
 
+  verManga(id: any) {
+    return '/manga?id='+id.toString()
+  }
   verMangaLink(url: string) {
-    return '/manga?' + new URLSearchParams({manga: url}).toString()
+    return '/manga?' + new URLSearchParams({id: url}).toString()
   }
 
   volver() {

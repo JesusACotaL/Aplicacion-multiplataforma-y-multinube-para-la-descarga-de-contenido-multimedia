@@ -1,21 +1,22 @@
-export interface Manga {
-    mangaID: string,
+interface MangaCharacter {
     name: string,
-    name_english: string,
-    authors: string,
-    background: string,
-    characters: Array<any>,
+    role: string
+    image: string
+    url: string
+}
+
+export interface Manga {
+    id: number,
+    name: string,
+    originURL: string,
     date: string,
-    genres: string,
-    img: string,
-    site: string,
-    statistics: {
-        popularity: string,
-        ranked: string,
-        score: string,
-        scoreUsers: string
-    },
     status: string,
-    synopsis: string,
-    mangaURL: string
+    score: string,
+    popularity_rank: string,
+    site: string,
+    background: string,
+    img: string,
+    genres: Array<string>,
+    authors: Array<string>,
+    characters: Array<MangaCharacter>
 }

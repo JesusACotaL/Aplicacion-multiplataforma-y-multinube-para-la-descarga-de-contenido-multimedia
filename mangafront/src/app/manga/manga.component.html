@@ -8,18 +8,17 @@
     <div class="manga-contenedor">
         <div *ngIf="manga.name" class="resumen">
             <div class="logotipo">
-                <img [src]="manga.img" alt="" class="img-fluid" width="225">
+                <img [src]="backend + manga.img" alt="" class="img-fluid" width="225">
             </div>
             <div class="informacion">     
-                <h5>Ranking {{manga.statistics.popularity}}</h5>
-                <span>{{manga.name_english}}</span>
-                <span>{{manga.statistics.score}} <i class="bi bi-star-fill"></i></span>
+                <h5>Ranking {{manga.popularity_rank}}</h5>
+                <span>{{manga.score}} <i class="bi bi-star-fill"></i></span>
                 <span>By: {{manga.authors}}</span>
                 <span>{{manga.genres}}</span>
                 <span>{{manga.date}}</span>
                 <span>Status: {{manga.status}}</span>
                 <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
-                <a [href]="myanimelisturl" target="_blank">Visit on myanimelist <i class="bi bi-box-arrow-up-right"></i></a>
+                <a [href]="manga.originURL" target="_blank">Visit original source <i class="bi bi-box-arrow-up-right"></i></a>
                 <div *ngIf="user" style="margin-top: .5rem;">
                     <span>Your rating: {{userRating}}</span>
                     <div class="rating">
@@ -72,6 +71,9 @@
             </div>
             <div *ngIf="!cargando && !seleccionandoManga">
                 <nav class="navegador">
+                    <div style="display: flex; justify-content: center; margin-bottom: .5rem;">
+                        <button type="button" class="btn btnPrimary" (click)="regresarAfuentes()"> <i class="bi bi-arrow-left"></i> Return to sources </button>
+                    </div>
                     <input [(ngModel)]="chapQuery" name="chapQuery" class="form-control mb-1" type="search" placeholder="Filter chapters by search..." (input)="filterChapters()">
                     <ul class="pagination justify-content-center mb-1">
                         <li>
@@ -119,10 +121,6 @@
     </div>
     <div class="info-adicional">
         <hr>
-        <span style="font-style: italic;">
-            {{manga.synopsis}}
-        </span>
-        <br><br>
         <span>
             {{manga.background}}
         </span>
@@ -131,7 +129,7 @@
                 <h4>Main Plot</h4>
                 <div class="characters">
                     <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getMainPlot()">
-                        <img [src]="character.image" alt="" class="img-fluid">
+                        <img [src]="backend + character.image" alt="" class="img-fluid">
                         <span>{{character.name}}</span>
                     </a>
                 </div>
@@ -140,7 +138,7 @@
                 <h4>Adittional characters</h4>
                 <div class="characters">
                     <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getAdditionalCharacters()">
-                        <img [src]="character.image" alt="" class="img-fluid">
+                        <img [src]="backend + character.image" alt="" class="img-fluid">
                         <span>{{character.name}}</span>
                     </a>
                 </div>

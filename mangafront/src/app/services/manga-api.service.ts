@@ -13,7 +13,7 @@ export class MangaApiService {
   backend = environment.mainMangaAPI;
   constructor(private http: HttpClient) {}
 
-  buscarManga(nombre: string, filtroAdulto: boolean): Observable<any>{
+  buscarManga(nombre: string, filtroAdulto: boolean): Observable<Array<any>>{
     const body = {
       manga: nombre,
       safeSearch: filtroAdulto
@@ -22,15 +22,32 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
 
-  obtenerMangaInfo(manga_url: string): Observable<any>{
+  buscarMangaLocalDB(nombre: string, filtroAdulto: boolean): Observable<Array<Manga>>{
     const body = {
-      url: manga_url
+      manga: nombre,
+      safeSearch: filtroAdulto
     }
-    const url = `${this.backend}/getMangaInfo`;
+    const url = `${this.backend}/searchMangaInLocalDB`;
     return this.http.post<any>(url,body);
   }
 
-  obtenerFuentes(): Observable<any>{
+  obtenerMangaInfoLocalDB(id: number): Observable<Manga>{
+    const body = {
+      id: id
+    }
+    const url = `${this.backend}/getMangaFromLocalDB`;
+    return this.http.post<any>(url,body);
+  }
+
+  guardarMangaInfo(manga_url: string): Observable<any>{
+    const body = {
+      url: manga_url
+    }
+    const url = `${this.backend}/saveMangaInfo`;
+    return this.http.post<any>(url,body);
+  }
+
+  obtenerFuentes(): Observable<Array<string>>{
     const url = `${this.backend}/getMangaEndpoints`;
     return this.http.get<any>(url);
   }
@@ -44,10 +61,10 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
   
-  obtenerCapitulos(fuenteNombre: string, mangaURL: string): Observable<any>{
+  obtenerCapitulos(fuenteNombre: string, originURL: string): Observable<any>{
     const body = {
       source: fuenteNombre,
-      url: mangaURL
+      url: originURL
     }
     const url = `${this.backend}/getMangaChapters`;
     return this.http.post<any>(url,body);
@@ -78,16 +95,29 @@ export class MangaApiService {
     return this.http.post<any>(url,body,options);
   }
 
-  obtenerBusquedasPopulares() {
+  obtenerBusquedasPopulares(): Observable<any> {
     const url = `${this.backend}/getTopManga`;
     return this.http.get(url);
   }
 
-  agregarBusquedaPopular(manga: Manga) {
+  agregarBusquedaPopular(manga: Manga): Observable<any> {
     const body = {
       ... manga
     }
     const url = `${this.backend}/addToTopManga`;
+    return this.http.post<any>(url,body);
+  }
+
+  checarTamanioDB(): Observable<any> {
+    const url = `${this.backend}/getLocalDBSize`;
+    return this.http.get<any>(url);
+  }
+
+  borrarDB(): Observable<any> {
+    const body = {
+      confirm: true
+    }
+    const url = `${this.backend}/nukeLocalDB`;
     return this.http.post<any>(url,body);
   }
 }

@@ -4,3 +4,5 @@
 *.pyd
 __pycache__
 .pytest_cache
+mainAPI/mangaDB/*.jpg
+mainAPI/mangas.db

@@ -1,11 +1,36 @@
 import pandas as pd
 import itertools
 import os
+import json
+import sqlite3
+
+def getMangasInDB():
+    con = sqlite3.connect("mangas.db")
+    cursor = con.cursor()
+    res = cursor.execute("SELECT id,name,genres,authors,img,originURL FROM manga")
+    data = res.fetchall()
+    mangas = []
+    for item in data:
+        manga = {}
+        manga['id'] = item[0],
+        manga['id'] = manga['id'][0] # Stupid sqlite threats id as tuple only when saving value, why?
+        manga['name'] = item[1]
+        manga['genres'] = json.loads(item[2])
+        manga['authors'] = json.loads(item[3])
+        manga['img'] = item[4]
+        manga['originURL'] = item[5]
+        mangas.append(manga)
+    return mangas
 
 def obtener_recomendaciones(userInput, amount=20, debug=False):
     # Reading manga information into a pandas dataframe
-    mangas_df = pd.read_csv('mangas.csv')
-    mangas_df['genres'] = mangas_df.genres.str.split(', ')
+    # mangas_df = pd.read_csv('mangas.csv')
+    # mangas_df['genres'] = mangas_df.genres.str.split(', ')
+    # mangas_df.info(verbose=True)
+    # print(mangas_df)
+    mangas = getMangasInDB()
+    mangas_df = pd.DataFrame.from_dict(mangas)
+    #mangas_df.info(verbose=True)
 
     # Copying the manga dataframe into a new one since we won't need to use the genre information in our first case.
     mangasWithGenres_df = mangas_df.copy()
@@ -21,11 +46,11 @@ def obtener_recomendaciones(userInput, amount=20, debug=False):
     inputMangas = pd.DataFrame(userInput)
     # Filtering out the mangas by name
     inputId = mangas_df[mangas_df['name'].isin(inputMangas['name'].tolist())]
-    # Then merging it so we can get the mangaID. It's implicitly merging it by name.
+    # Then merging it so we can get the id. It's implicitly merging it by name.
     inputMangas = pd.merge(inputId, inputMangas)
     # Final input dataframe
     # Dropping information we won't use from the input dataframe
-    inputMangas = inputMangas.drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('mangaURL', axis=1)
+    inputMangas = inputMangas.drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('originURL', axis=1)
 
     # Filtering out the mangas from the input
     userMangas = mangasWithGenres_df[mangasWithGenres_df['name'].isin(inputMangas['name'].tolist())]
@@ -34,7 +59,7 @@ def obtener_recomendaciones(userInput, amount=20, debug=False):
     if debug: print("userMangas: \n", userMangas)
 
     # Dropping unnecessary issues due to save memory and to avoid issues
-    userGenreTable = userMangas.drop('mangaID', axis=1).drop('name', axis=1).drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('mangaURL', axis=1)
+    userGenreTable = userMangas.drop('id', axis=1).drop('name', axis=1).drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('originURL', axis=1)
     if debug: print("Tabla de generos: \n", userGenreTable)
 
     # Dot produt to get weights
@@ -42,9 +67,9 @@ def obtener_recomendaciones(userInput, amount=20, debug=False):
     if debug: print("Categorías que el Usuario Prefiere: \n", userProfile);
 
     # Now let's get the genres of every manga in our original dataframe
-    genreTable = mangasWithGenres_df.set_index(mangasWithGenres_df['mangaID'])
+    genreTable = mangasWithGenres_df.set_index(mangasWithGenres_df['id'])
     # And drop the unnecessary information
-    genreTable = genreTable.drop('mangaID', axis=1).drop('name', axis=1).drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('mangaURL', axis=1)
+    genreTable = genreTable.drop('id', axis=1).drop('name', axis=1).drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('originURL', axis=1)
     
     # Multiply the genres by the weights and then take the weighted average
     recommendationTable_df = ((genreTable * userProfile).sum(axis=1)) / (userProfile.sum())
@@ -54,21 +79,23 @@ def obtener_recomendaciones(userInput, amount=20, debug=False):
     recomendaciones = recommendationTable_df.head(amount)
     mangaIds = recomendaciones.index.tolist()
     titulos_recomendaciones = []
-    for mangaID in mangaIds:
-        manga = mangas_df.loc[mangas_df['mangaID'] == mangaID]
+    for id in mangaIds:
+        manga = mangas_df.loc[mangas_df['id'] == id]
         titulos_recomendaciones.append({
-            'mangaID': int(manga['mangaID'].values[0]),
+            'id': int(manga['id'].values[0]),
             'name': manga['name'].values[0],
             'genres': manga['genres'].values[0],
             'authors': manga['authors'].values[0],
             'img': manga['img'].values[0],
-            'mangaURL': manga['mangaURL'].values[0]
+            'originURL': manga['originURL'].values[0]
         })
     return titulos_recomendaciones
 
 def obtener_generos(userInput):
-    mangas_df = pd.read_csv('mangas.csv')
-    mangas_df['genres'] = mangas_df.genres.str.split(', ')
+    # mangas_df = pd.read_csv('mangas.csv')
+    # mangas_df['genres'] = mangas_df.genres.str.split(', ')
+    mangas = getMangasInDB()
+    mangas_df = pd.DataFrame.from_dict(mangas)
 
     mangasWithGenres_df = mangas_df.copy()
 
@@ -81,12 +108,12 @@ def obtener_generos(userInput):
 
     inputId = mangas_df[mangas_df['name'].isin(inputMangas['name'].tolist())]
     inputMangas = pd.merge(inputId, inputMangas)
-    inputMangas = inputMangas.drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('mangaURL', axis=1)
+    inputMangas = inputMangas.drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('originURL', axis=1)
 
     userMangas = mangasWithGenres_df[mangasWithGenres_df['name'].isin(inputMangas['name'].tolist())]
 
     userMangas = userMangas.reset_index(drop=True)
-    userGenreTable = userMangas.drop('mangaID', axis=1).drop('name', axis=1).drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('mangaURL', axis=1)
+    userGenreTable = userMangas.drop('id', axis=1).drop('name', axis=1).drop('genres', axis=1).drop('authors', axis=1).drop('img', axis=1).drop('originURL', axis=1)
 
     userProfile = userGenreTable.transpose().dot(inputMangas['rating'])
     generos_seleccionados = userProfile[userProfile > 0]
@@ -96,16 +123,14 @@ def obtener_generos(userInput):
     return generos_lista
 
 if __name__ == '__main__':
-    from generar_ratings import generar_ratings
     userInput = [
             {'name': 'Akira', 'rating': 5},
             {'name': 'Dorohedoro', 'rating': 5},
             {'name': 'Solo Leveling', 'rating': 5},
             {'name': 'Pandora Hearts', 'rating': 1}
         ]
-    # userInput = generar_ratings('mwF5DVD0KXN7tVwygzjQRtQvNtj2')
     # print(userInput)
     reco = obtener_recomendaciones(userInput, debug=True)
-    print(len(reco))
+    print(reco)
     generos = obtener_generos(userInput)
-    #print(generos)
+    print(generos)

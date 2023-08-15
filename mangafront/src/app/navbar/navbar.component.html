@@ -23,6 +23,7 @@
                       <li><a class="dropdown-item" (click)="logOut()">Log out <i class="bi bi-box-arrow-right"></i></a></li>
                     </ul>
                 </button>
+                <button class="btn btnPrimary" type="button" (click)="this.siteConfigModal.mostrar()"><i class="bi bi-database-gear" style="font-size: 1rem;"></i></button>
             </div>
         </div>
     </div>
@@ -30,3 +31,4 @@
 
 
 <app-modify-user-info-modal #userInfoModal *ngIf="user"></app-modify-user-info-modal>
+<app-site-config-modal #siteConfigModal></app-site-config-modal>

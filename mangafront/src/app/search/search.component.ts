@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
+import { Manga } from '../interfaces/manga.interface';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-search',
@@ -11,6 +13,7 @@ export class SearchComponent implements OnInit {
   cargando = true;
   mangaBuscado = ''
   manga = '';
+  mangasEncontradosDBLocal: Array<Manga> = [];
   mangasEncontrados: any[] = [
     {
       name: '',
@@ -21,6 +24,8 @@ export class SearchComponent implements OnInit {
     }
   ];
   filtroAdulto = false;
+  fuentesInfo: Array<any> = []
+  backend = environment.mainMangaAPI;
 
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService) { }
 
@@ -41,15 +46,21 @@ export class SearchComponent implements OnInit {
   buscarAPI() {
     this.cargando = true;
     // Buscar manga en API
-    this.mangaAPI.buscarManga(this.manga, this.filtroAdulto).subscribe( (mangas) => {
-      this.mangasEncontrados = mangas;
-      this.mangaBuscado = this.manga
-      this.cargando= false;
+    this.mangaAPI.buscarMangaLocalDB(this.manga, this.filtroAdulto).subscribe( (mangasLocal) => {
+      this.mangasEncontradosDBLocal = mangasLocal;
+      this.mangaAPI.buscarManga(this.manga, this.filtroAdulto).subscribe( (fuentesEncontradas) => {
+        this.fuentesInfo = fuentesEncontradas;
+        this.mangaBuscado = this.manga
+        this.cargando= false;
+      });
     });
   }
 
+  verManga(id: number) {
+    return '/manga?' + new URLSearchParams({id: id.toString()}).toString()
+  }
   verMangaLink(url: string) {
-    return '/manga?' + new URLSearchParams({manga: url}).toString()
+    return '/manga?' + new URLSearchParams({id: url}).toString()
   }
 
 }

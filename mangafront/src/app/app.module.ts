@@ -30,6 +30,7 @@ import { MangaModalComponent } from './manga-modal/manga-modal.component';
 import { UserLicenseComponent } from './user-license/user-license.component';
 import { FooterComponent } from './footer/footer.component';
 import { ModifyUserInfoModalComponent } from './modify-user-info-modal/modify-user-info-modal.component';
+import { SiteConfigModalComponent } from './site-config-modal/site-config-modal.component';
 
 @NgModule({
   declarations: [ 
@@ -44,7 +45,8 @@ import { ModifyUserInfoModalComponent } from './modify-user-info-modal/modify-us
     MangaModalComponent,
     UserLicenseComponent,
     FooterComponent,
-    ModifyUserInfoModalComponent
+    ModifyUserInfoModalComponent,
+    SiteConfigModalComponent
   ],
   imports: [
     BrowserModule,

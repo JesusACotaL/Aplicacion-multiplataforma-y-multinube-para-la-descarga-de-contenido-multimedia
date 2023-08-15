@@ -1,0 +1,20 @@
+<!-- Modal -->
+<div class="modal fade" id="siteConfigModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered mx-auto">
+        <div class="modal-content bg-dark">
+            <div class="modal-header" style="background: var(--primary-color); color: var(--text-color); border: none;">
+                <h5 class="modal-title">Modify site configuration</h5>
+            </div>
+            <div class="modal-body" style="background: var(--background); color: var(--text-color);">
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    <span>Database size: {{dbSize}}</span>
+                    <button type="button" class="btn btn-warning me-auto">🧹Clear viewed mangas cache</button>
+                    <button type="button" class="btn btn-danger me-auto" (click)="borrarDB()">💥Nuke manga database</button>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: var(--primary-color); color: var(--text-color); border: none;">
+                <button type="button" class="btn btnPrimary ms-auto" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,7 +4,10 @@ MAIN API ENDPOINT for Aplicacion multiplataforma y multinube para la descarga de
 from importlib import import_module
 import json
 import io
+import time
 import requests
+import os
+import math
 from PIL import Image
 
 production = False
@@ -56,9 +59,13 @@ else:
 
 print("=== STARTING MAIN API ENDPOINT ===")
 
+print("Connecting to local manga database... ",end="")
+import dbConnector
+print("success")
+
 # Create connection to firebase and keep it alive
-print("Connecting to database... ",end="")
-from backendIA.recomendaciones import obtener_generos, obtener_recomendaciones # Start conection on AI module as well
+print("Connecting to firebase... ",end="")
+from IArecomendaciones import obtener_generos, obtener_recomendaciones # Start conection on AI module as well
 from firebase_admin import credentials, firestore,  initialize_app, auth
 cred = credentials.Certificate('firebase-credentials.json')
 initialize_app(cred)
@@ -67,12 +74,86 @@ print("success")
 
 from flask import Flask, request, jsonify, make_response, send_file
 from flask_cors import CORS
-app = Flask(__name__)
+app = Flask(__name__, static_folder='mangaDB', static_url_path='/mangaDB')
 CORS(app)
 
 @app.route("/")
 def info():
     return "<p>Aplicacion multiplataforma y multinube para la descarga de contenido multimedia API v1.0</p>"
+
+@app.post("/populateLocalDB")
+def populateLocalDB():
+    data = request.json
+    limit = int(data['limit'])
+    for endpoint in mangaInfoEndpoints:
+        print("Getting top mangas for "+endpoint['name'])
+        body = {"limit": limit}
+        url = endpoint['url'] + "/getTopMangas"
+        res = requests.post(url, json=body)
+        res.raise_for_status()
+        topMangas = json.loads(res.content)
+        for url in topMangas:
+            print("Scrapping "+url+" ...",end="")
+            requrl = endpoint['url'] + "/getMangaInfo"
+            body = {"url": url}
+            res = requests.post(requrl, json=body)
+            res.raise_for_status()
+            result = json.loads(res.content)
+            if(type(result) is dict):
+                manga = result
+                print("Saving to db...")
+                dbConnector.insertManga(manga)
+            time.sleep(1)
+    return {'done'}
+
+@app.post("/getMangaFromLocalDB")
+def getMangaFromLocalDB():
+    data = request.json
+    id = data['id']
+    manga = dbConnector.getManga(id)
+    return manga
+
+@app.post("/searchMangaInLocalDB")
+def searchMangaInLocalDB():
+    data = request.json
+    searchQuery = data['manga']
+    safeSearch = data['safeSearch']
+    body = {"manga": searchQuery, "safeSearch":safeSearch}
+    mangas = dbConnector.searchManga(searchQuery, safeSearch)
+    return mangas
+
+@app.post("/nukeLocalDB")
+def nukeLocalDB():
+    data = request.json
+    confirmation = data['confirm']
+    if(confirmation):
+        dbConnector.deleteDatabase()
+    return { 'result': 'Database cleared entirely.'}
+
+@app.get("/getLocalDBSize")
+def getLocalDBSize():
+    """ Return total size of files in manga folder """
+    def get_tree_size(path):
+        """Return total size of files in given path and subdirs."""
+        total = 0
+        for entry in os.scandir(path):
+            if entry.is_dir(follow_symlinks=False):
+                total += get_tree_size(entry.path)
+            else:
+                total += entry.stat(follow_symlinks=False).st_size
+        return total
+    def convert_size(size_bytes):
+        if size_bytes == 0:
+            return "0B"
+        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        i = int(math.floor(math.log(size_bytes, 1024)))
+        p = math.pow(1024, i)
+        s = round(size_bytes / p, 2)
+        return "%s %s" % (s, size_name[i])
+    fileSize = get_tree_size('mangaDB')
+    dbSize = os.path.getsize('mangas.db')
+    total = convert_size(dbSize+fileSize)
+    return {'size':total}
 
 @app.post("/searchManga")
 def searchManga():
@@ -88,27 +169,30 @@ def searchManga():
             res.raise_for_status()
             result = json.loads(res.content)
             if(type(result) is list):
-                mangas = mangas + result
+                sourceRes = {}
+                sourceRes['srcName'] = endpoint['name']
+                sourceRes['mangas'] = result[:25] # Only 25 results
+                mangas.append(sourceRes)
         except:
             print("Endpoint failure: " + endpoint["name"])
     return mangas
 
-@app.post("/getMangaInfo")
-def getMangaInfo():
+@app.post("/saveMangaInfo")
+def saveMangaInfo():
     data = request.json
     url = data['url']
     body = {"url": url}
     manga = {}
     for endpoint in mangaInfoEndpoints:
-        try:
+        if endpoint['name'] == 'myanimelist':
             url = endpoint['url'] + "/getMangaInfo"
             res = requests.post(url, json=body)
-            res.raise_for_status()
+            res.raise_for_status() 
             result = json.loads(res.content)
             if(type(result) is dict):
                 manga = result
-        except:
-            print("Endpoint failure: " + endpoint["name"])
+                id = dbConnector.insertManga(manga)
+                manga['id'] = id
     return manga
 
 @app.get("/getMangaEndpoints")
@@ -226,12 +310,11 @@ def addToTopManga():
     import datetime
     now = datetime.datetime.now()
     # Verify existance
-    manga = db.collection('topmanga').where('mangaID', '==', data['mangaID']).get()
+    manga = db.collection('topmanga').where('name', '==', data['name']).get()
     newtopmanga = {
-        'mangaID': data['mangaID'],
         'name': data['name'],
         'img': data['img'],
-        'mangaURL': data['mangaURL'],
+        'originURL': data['originURL'],
         'viewcount': 1
     }
     if len(manga) == 0:
@@ -242,7 +325,7 @@ def addToTopManga():
         olddata = manga[0].to_dict()
         newtopmanga['viewcount'] = olddata['viewcount'] + 1
         db.collection('topmanga').document(manga[0].id).set(newtopmanga)
-    return {'result': str(data['mangaID']) + ' added to topmanga correctly'}
+    return {'result': str(data['id']) + ' added to topmanga correctly'}
 
 @app.get("/getTopManga")
 def getTopManga():
@@ -281,8 +364,8 @@ def getUserRecomendations():
     data = request.json
     uid = data['uid']
     userInput = getUserRatings(uid)
-    userGenres = obtener_recomendaciones(userInput)
-    return userGenres
+    mangas = obtener_recomendaciones(userInput)
+    return mangas
 
 @app.post("/user/getMangaRating")
 def getMangaRating():
@@ -350,31 +433,31 @@ def addMangaToBookmarks():
     data = request.json
     # Verify existance
     bookmarks = db.collection('bookmarks').where('uid', '==', data['uid'])
-    query = bookmarks.where('mangaID', '==', data['mangaID']).get()
+    query = bookmarks.where('id', '==', data['id']).get()
     if len(query) == 0:
         # Add
         newbookmark = {
             'uid': data['uid'],
-            'mangaID': data['mangaID'],
+            'id': data['id'],
             'name': data['name'],
             'img': data['img'],
-            'mangaURL': data['mangaURL']
+            'originURL': data['originURL']
         }
         db.collection('bookmarks').add(newbookmark)
-    return {'result': str(data['mangaID']) + ' added to bookmarks correctly'}
+    return {'result': str(data['id']) + ' added to bookmarks correctly'}
 
 @app.post("/user/removeMangaFromBookmarks")
 def removeMangaFromBookmarks():
     data = request.json
     uid = data['uid']
-    mangaID = data['mangaID']
+    id = data['id']
     # Verify existance
     bookmarks = db.collection('bookmarks').where('uid', '==', uid)
-    query = bookmarks.where('mangaID', '==', mangaID).get()
+    query = bookmarks.where('id', '==', id).get()
     if len(query) > 0:
         # Remove
         db.collection('bookmarks').document(query[0].id).delete()
-    return {'result': str(data['mangaID']) + ' removed from bookmarks correctly'}
+    return {'result': str(data['id']) + ' removed from bookmarks correctly'}
 
 @app.post("/user/getBookmarks")
 def getBookmarks():
@@ -392,13 +475,13 @@ def addToHistory():
     now = datetime.datetime.now()
     # Verify existance
     history = db.collection('history').where('uid', '==', data['uid'])
-    query = history.where('mangaID', '==', data['mangaID']).get()
+    query = history.where('id', '==', data['id']).get()
     newhistory = {
         'uid': data['uid'],
-        'mangaID': data['mangaID'],
+        'id': data['id'],
         'name': data['name'],
         'img': data['img'],
-        'mangaURL': data['mangaURL'],
+        'originURL': data['originURL'],
         'datetime': now
     }
     if len(query) == 0:
@@ -407,7 +490,7 @@ def addToHistory():
     else:
         # Update view date
         db.collection('history').document(query[0].id).set(newhistory)
-    return {'result': str(data['mangaID']) + ' added to user history correctly'}
+    return {'result': str(data['id']) + ' added to user history correctly'}
 
 @app.post("/user/getHistory")
 def getHistory():

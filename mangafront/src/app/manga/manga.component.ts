@@ -8,7 +8,7 @@ import { AngularFirestore, AngularFirestoreCollection, QuerySnapshot } from '@an
 import firebase from "firebase/compat/app";
 import FieldValue = firebase.firestore.FieldValue;
 import { MangaModalComponent } from '../manga-modal/manga-modal.component';
-
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-manga',
@@ -32,13 +32,13 @@ export class MangaComponent implements OnInit {
   fuentesFiltradas: any[] = []
   fuentesNombres: any[] = []
   fuenteActual = ''
-  myanimelisturl = '';
 
   @ViewChild('mangaModal', { static: false }) mangaModal!: MangaModalComponent;
 
   userRating = 'Not rated yet';
 
   inBookmarks = false;
+  backend = environment.mainMangaAPI;
 
   constructor(private router: Router,private route: ActivatedRoute, private mangaAPI: MangaApiService,private userService: UserService,
      private firestore: AngularFirestore) {}
@@ -46,26 +46,45 @@ export class MangaComponent implements OnInit {
   ngOnInit(): void {
     // Recuperar manga de API
     this.route.queryParams.subscribe( (parametros) => {
-      const url = parametros['manga'];
-      this.myanimelisturl = url;
-      this.mangaAPI.obtenerMangaInfo(url).subscribe( (manga: Manga) => {
-        this.manga = manga;
-        // Agregar vista a TopMangas
-        this.mangaAPI.agregarBusquedaPopular(manga).subscribe(() => {});
-
-        this.obtenerFuentes();
-        this.userService.getAuth().onAuthStateChanged((user) => {
-          if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/firebase.User
-            this.user = user;
-            this.getRating();
-            this.checkIfInBookmarks();
+      const urlORid = parametros['id'];
+      let isnum = /^\d+$/.test(urlORid); // Si no es URL, entonces es una ID de la DB local
+      if(isnum) {
+        this.mangaAPI.obtenerMangaInfoLocalDB(Number(urlORid)).subscribe( (manga: Manga) => {
+          this.manga = manga;
+          // Agregar vista a TopMangas
+          this.mangaAPI.agregarBusquedaPopular(manga).subscribe(() => {});
+          
+          
+          // Cargar visor de episodios si se selecciono ya uno
+          const src = parametros['src'];
+          const srcName = parametros['srcName'];
+          if(src && srcName) {
+            this.obtenerCapitulos(srcName, src);
           } else {
-            // User is signed out
+            // Obtener lista de fuentes disponibles de backend
+            this.obtenerFuentes();
           }
+
+          // Iniciar sesion
+          this.userService.getAuth().onAuthStateChanged((user) => {
+            if (user) {
+              // User is signed in, see docs for a list of available properties
+              // https://firebase.google.com/docs/reference/js/firebase.User
+              this.user = user;
+              this.getRating();
+              this.checkIfInBookmarks();
+            } else {
+              // User is signed out
+            }
+          });
         });
-      });
+      } else {
+        // Guardar, luego cargar
+        this.mangaAPI.guardarMangaInfo(urlORid).subscribe( (manga: Manga) => {
+          this.router.navigateByUrl('/manga?id=' + manga.id.toString())
+        });
+      }
+
     });
 
   }
@@ -121,7 +140,17 @@ export class MangaComponent implements OnInit {
     }
   }
 
+  regresarAfuentes() {
+    window.history.pushState( {} , '', '/manga?id='+this.manga.id );
+    if(this.fuentes.length < 1) {
+      this.seleccionandoManga = false;
+      this.cargando = true;
+      this.obtenerFuentes();
+    }
+  }
+
   obtenerCapitulos(fuente_nombre:string, fuente_url: string) {
+    window.history.pushState( {} , '', '/manga?id='+this.manga.id+'&'+ new URLSearchParams({srcName: fuente_nombre, src: fuente_url}).toString() );
     this.seleccionandoManga = false;
     this.cargando = true;
     this.mangaAPI.obtenerCapitulos(fuente_nombre,fuente_url).subscribe( (capitulos) => {
@@ -218,7 +247,7 @@ export class MangaComponent implements OnInit {
     if(this.user && this.manga.name) {
       this.userService.getBookmarks(this.user.uid).subscribe((bookmarks: Array<Manga>) => {
         for (const manga of bookmarks) {
-          if(this.manga.mangaID == manga.mangaID) this.inBookmarks = true;
+          if(this.manga.id == manga.id) this.inBookmarks = true;
         }
       });
     }

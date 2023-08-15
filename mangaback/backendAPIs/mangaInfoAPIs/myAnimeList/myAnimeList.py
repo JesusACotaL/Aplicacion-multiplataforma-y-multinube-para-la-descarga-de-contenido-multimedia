@@ -116,12 +116,16 @@ def getMangaInfo():
     Returns an object like:
     {
         "name": ""
-        "mangaURL": "",
-        "name_english": "",
-        "authors": "",
+        "originURL": "",
         "date": "",
         "status": "",
-        "genres": "",
+        "score": "",
+        "popularity_rank": "",
+        "site": "",
+        "background": "",
+        "img": "",
+        "genres": [],
+        "authors": [],
         "characters": [
             {
                 "name": "",
@@ -129,19 +133,7 @@ def getMangaInfo():
                 "image": "",
                 "url": "",
             }
-        ],
-        "statistics": [
-            {
-                "score": "",
-                "scoreUsers": "",
-                "ranked": "",
-                "popularity": "",
-            }
-        ],
-        "site": "",
-        "synopsis": "",
-        "background": "",
-        "img": "",
+        ]
     }
     """
     data = request.json
@@ -158,26 +150,23 @@ def getMangaInfo():
     name = html.find('span', itemprop='name').find(string=True)
     manga['name'] = name
 
-    # Original url
-    mangaURL = html.find('div', attrs={'class': 'breadcrumb','itemtype':'http://schema.org/BreadcrumbList'})
-    mangaURL = mangaURL.find('meta', attrs={'content':'3'}).find_previous_sibling()
-    mangaURL = mangaURL['href']
-    manga['mangaURL'] = mangaURL
-
-    # Original myanimelist ID
-    mangaID = re.findall("\/[0-9]+\/",mangaURL)[0][1:-1]
-    manga['mangaID'] = mangaID
-
     # English name
-    name_english = html.find('span', string='English:')
-    if(name_english):
-        name_english = name_english.next_sibling.strip()
-    else:
-        name_english=''
-    manga['name_english'] = name_english
+    # name_english = html.find('span', string='English:')
+    # if(name_english):
+    #     name_english = name_english.next_sibling.strip()
+    # else:
+    #     name_english=''
+    # manga['name_english'] = name_english
+
+    # Source url
+    originURL = html.find('div', attrs={'class': 'breadcrumb','itemtype':'http://schema.org/BreadcrumbList'})
+    originURL = originURL.find('meta', attrs={'content':'3'}).find_previous_sibling()
+    originURL = originURL['href']
+    manga['originURL'] = originURL
 
     # Authors
-    authors = html.find('span', string='Authors:').find_next_sibling('a').string
+    authors = html.find('span', string='Authors:').parent.find_all('a')
+    authors = [element.string for element in authors]
     manga['authors'] = authors
 
     # Date
@@ -191,6 +180,7 @@ def getMangaInfo():
     # Genres
     genresDiv = html.find_all('span', itemprop='genre')
     genres = ', '.join([g.string for g in genresDiv])
+    genres = (genres + "").split(', ')
     manga['genres'] = genres
 
     # Characters
@@ -214,27 +204,22 @@ def getMangaInfo():
             charactersList.append(character)
             # URL
             character['url']=c['href']
-    
     manga['characters'] = charactersList
     
-    # Statistics
-    statistics = {}
+    # Score
     scoreDiv = html.find('span', string='Score:').find_next_sibling('span').span
     score = 'N/A'
-    scoreUsers = 'N/A'
     if(not scoreDiv.find(string="N/A")):
         score = html.find('span', string='Score:').find_next_sibling('span').span.string
-        scoreUsers = html.find('span', string='Score:').find_next_sibling('span').find(itemprop='ratingCount').string
-    statistics['score'] = score
-    statistics['scoreUsers'] = scoreUsers
+    manga['score'] = score
 
+    # Ranked
+    # ranked = html.find('span', string='Ranked:').next_sibling.strip()
+    # manga['ranked'] = ranked
     
-    ranked = html.find('span', string='Ranked:').next_sibling.strip()
-    statistics['ranked'] = ranked
-    
+    # Popularity rank
     popularity = html.find('span', string='Popularity:').next_sibling.strip()
-    statistics['popularity'] = popularity
-    manga['statistics'] = statistics
+    manga['popularity_rank'] = popularity
 
     # Oficial site (if exists)
     site = html.find(lambda tag:tag.name=="h2" and "Available At" in tag.text)
@@ -242,22 +227,20 @@ def getMangaInfo():
         site = site.next_sibling.a['href']
     manga['site'] = site
 
-    # Synopsis
+    # Background
     synopsis = ''
     synopsisDiv = html.find('span', itemprop='description')
     if(synopsisDiv):
         synopsis = synopsisDiv.text
         synopsis = ''.join(e for e in synopsis if e.isalnum() or e == '/' or e == '_' or e == ':' or e == ' ' or e == '.' or e == ',')
         synopsis = synopsis.strip(' \n\r')
-    manga['synopsis'] = synopsis
-
-    # Background
     background = ''
     backgroundDiv = html.find(lambda tag:tag.name=="h2" and "Background" in tag.text).next_siblings
     if(backgroundDiv):
         background = ' '.join([item.text for item in backgroundDiv])
         background = ''.join(e for e in background if e.isalnum() or e == '/' or e == '_' or e == ':' or e == ' ' or e == '.' or e == ',')
         background = background.strip(' \n\r')
+    background = synopsis + "\n\n" + background
     manga['background'] = background
 
     # Image
@@ -265,6 +248,35 @@ def getMangaInfo():
     manga['img'] = img['data-src']
 
     return manga
+
+@app.post("/getTopMangas")
+def getTopMangas():
+    """ 
+    Returns a url list of top site mangas
+    []
+    """
+    data = request.json
+    limit = int(data['limit'])
+    currentPage = 1
+    pageAmount = limit / 50
+    urls = []
+    while(currentPage <= pageAmount):
+        # Request search
+        url = 'https://myanimelist.net/topmanga.php'
+        res = requests.get(url, params=[('limit',(currentPage*50) - 50)])
+        res.raise_for_status()
+        html = res.content
+        # Parse results
+        topmanga_soup = BeautifulSoup(html, 'html.parser')
+        topmanga_soupTable = topmanga_soup.find('table', attrs={'class':'top-ranking-table'})
+        mangaList = topmanga_soupTable.find_all('tr', attrs={'class':'ranking-list'})
+        for manga in mangaList:
+            mangaURL = manga.find('td', attrs={'class':'title al va-t clearfix word-break'}).findChildren('a')
+            mangaURL = mangaURL[0]['href']
+            urls.append(mangaURL)
+        currentPage = currentPage + 1
+        time.sleep(1)
+    return urls
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

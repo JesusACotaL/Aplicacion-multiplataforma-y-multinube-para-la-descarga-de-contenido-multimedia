@@ -8,6 +8,7 @@ import time
 import requests
 import os
 import uuid
+from threading import Thread
 from PIL import Image
 
 production = False
@@ -81,19 +82,38 @@ CORS(app)
 def info():
     return "<p>Aplicacion multiplataforma y multinube para la descarga de contenido multimedia API v1.0</p>"
 
-@app.post("/populateLocalDB")
-def populateLocalDB():
+@app.post("/getTopMangasInSources")
+def getTopMangasInSources():
     data = request.json
     limit = int(data['limit'])
+    topmangas = []
     for endpoint in mangaInfoEndpoints:
         print("Getting top mangas for "+endpoint['name'])
         body = {"limit": limit}
         url = endpoint['url'] + "/getTopMangas"
         res = requests.post(url, json=body)
         res.raise_for_status()
-        topMangas = json.loads(res.content)
-        for url in topMangas:
+        result = json.loads(res.content)
+        if(type(result) == list):
+            results = []
+            for res in result:
+                data = {}
+                data['url'] = res
+                data['srcName'] = endpoint['name']
+                results.append(data)
+            topmangas = topmangas + results
+        time.sleep(1)
+    return topmangas
+
+@app.post("/insertMangaDB")
+def insertMangaDB():
+    data = request.json
+    url = data['url']
+    srcName = data['srcName']
+    for endpoint in mangaInfoEndpoints:
+        if(endpoint['name'] == srcName):
             print("Scrapping "+url+" ...",end="")
+            time.sleep(1)
             requrl = endpoint['url'] + "/getMangaInfo"
             body = {"url": url}
             res = requests.post(requrl, json=body)
@@ -103,8 +123,7 @@ def populateLocalDB():
                 manga = result
                 print("Saving to db...")
                 dbConnector.insertManga(manga)
-            time.sleep(1)
-    return {'done'}
+    return {'status':'done', 'totalMangas':dbConnector.getLocalDBMeta()['totalMangas']}
 
 @app.post("/getMangaFromLocalDB")
 def getMangaFromLocalDB():
@@ -127,8 +146,14 @@ def nukeLocalDB():
     data = request.json
     confirmation = data['confirm']
     if(confirmation):
-        dbConnector.deleteDatabase()
-    return { 'result': 'Database cleared entirely.'}
+        def deletedb():
+            print('DELETING DATABASE DATA AND FILES!')
+            dbConnector.deleteDatabase()
+            print('DATABASE DELETED!')
+        thread = Thread(target=deletedb)
+        thread.start()
+    return { 'result': 'Database clearing started.'}
+
 
 @app.get("/getLocalDBmetadata")
 def getLocalDBmetadata():
@@ -518,6 +543,14 @@ def getHistory():
     for manga in query:
         mangas.append(manga.to_dict())
     return mangas
+
+@app.post("/uploadBackground")
+def uploadBackground():
+    file = request.files['file']
+    if(file):
+        res = dbConnector.uploadFile(file)
+        return { 'file': res}
+    return {'file': None}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

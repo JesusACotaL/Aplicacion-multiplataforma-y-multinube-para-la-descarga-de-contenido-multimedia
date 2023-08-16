@@ -120,4 +120,28 @@ export class MangaApiService {
     const url = `${this.backend}/nukeLocalDB`;
     return this.http.post<any>(url,body);
   }
+
+  subirBackground(file: File): Observable<any> {
+    const formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+    const url = `${this.backend}/uploadBackground`;
+    return this.http.post<any>(url,formData);
+  }
+
+  obtenerTopMangasFuentes(cantidad: number): Observable<any> { 
+    const body = {
+      limit: cantidad
+    }
+    const url = `${this.backend}/getTopMangasInSources`;
+    return this.http.post<any>(url,body);
+  }
+  
+  subirMangaDB(mangaURL: string, srcName: string): Observable<any> { 
+    const body = {
+      url: mangaURL,
+      srcName: srcName
+    }
+    const url = `${this.backend}/insertMangaDB`;
+    return this.http.post<any>(url,body);
+  }
 }

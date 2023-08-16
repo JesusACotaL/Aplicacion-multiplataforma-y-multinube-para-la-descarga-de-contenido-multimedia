@@ -1,13 +1,14 @@
 <!-- Modal -->
 <div class="modal fade" id="accountModal">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered mx-auto">
+    <div class="modal-dialog modal-sm modal-dialog-scrollable modal-dialog-centered mx-auto">
         <div class="modal-content bg-dark">
             <div class="modal-header" style="background: var(--primary-color); color: var(--text-color); border: none;">
-                <h5 class="modal-title">Modify account information</h5>
+                <h5 class="modal-title">My account</h5>
             </div>
             <div class="modal-body" style="background: var(--primary-color); color: var(--text-color);">
                 <div class="datos" *ngIf="user">
-                    <img [src]="profilePicture" (click)="openFileInput()" class="img-fluid mx-auto" width="150">
+                    <span>Click your user profile image to change it!</span>
+                    <img [src]="profilePicture" (click)="openFileInput()" class="img-fluid imagenUsuario" width="150">
                     <input
                     type="file"
                     accept="image/*"
@@ -19,7 +20,7 @@
                 </div>
             </div>
             <div class="modal-footer" style="background: var(--primary-color); color: var(--text-color); border: none;">
-                <button (click)="reloadPage()" type="button" class="btn btnPrimary ms-auto" data-bs-dismiss="modal">Save changes & close</button>
+                <button (click)="reloadPage()" type="button" class="btn btnPrimary ms-auto" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

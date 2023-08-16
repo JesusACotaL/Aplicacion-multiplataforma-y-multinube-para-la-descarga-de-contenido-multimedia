@@ -42,7 +42,7 @@ body::before {
 }
 
 a:hover {
-    color: inherit !important;
+    color: inherit;
 }
 
 app-root {

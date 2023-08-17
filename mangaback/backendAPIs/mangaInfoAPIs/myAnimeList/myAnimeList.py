@@ -40,8 +40,8 @@ def searchManga():
     siteUrl = "https://myanimelist.net/manga.php"
     columns = ['a', 'g', 'c', 'f'] # Type=a, Chapters=c, Score=g, ,Total members=f
     excluded_genres = []
-    if(safeSearch == "true"):
-        excluded_genres = [49, 12] # Exclude Erotica and Hentai
+    if(safeSearch):
+        excluded_genres = [49,12] # Exclude Erotica and Hentai
     parameters = {
         'cat': 'manga',
         'q' : searchQuery,

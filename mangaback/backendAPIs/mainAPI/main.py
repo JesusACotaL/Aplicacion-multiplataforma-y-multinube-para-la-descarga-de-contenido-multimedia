@@ -141,6 +141,19 @@ def searchMangaInLocalDB():
     mangas = dbConnector.searchManga(searchQuery, safeSearch)
     return mangas
 
+@app.post("/clearChapterCacheDB")
+def clearChapterCacheDB():
+    data = request.json
+    confirmation = data['confirm']
+    if(confirmation):
+        def deletedb():
+            print('DELETING CACHE FOR CHAPTERS!')
+            dbConnector.deleteChapterCache()
+            print('CHAPTER CACHE DELETED!')
+        thread = Thread(target=deletedb)
+        thread.start()
+    return { 'result': 'Chapter cache clearing started.'}
+
 @app.post("/nukeLocalDB")
 def nukeLocalDB():
     data = request.json
@@ -260,6 +273,14 @@ def getChapterURLS():
     sourceName = data['source']
     body = {"url": url}
     images = []
+    test = dbConnector.checkIfChapterExists(url)
+    if(test):
+        for i in test:
+            tempRes = {}
+            tempRes['url'] = i
+            tempRes['srcName'] = sourceName # Include source name in results
+            images.append(tempRes)
+        return images
     for endpoint in mangaEndpoints:
         if(endpoint["name"] == sourceName):
             try:
@@ -269,6 +290,7 @@ def getChapterURLS():
                 result = json.loads(res.content)
                 if(type(result) is list):
                     temp = result
+                    dbConnector.insertChapter(data['url'], sourceName, json.dumps(temp)) # Cache chapter
                     for i in temp:
                         tempRes = {}
                         tempRes['url'] = i
@@ -277,6 +299,27 @@ def getChapterURLS():
             except:
                 print("Endpoint failure: " + endpoint["name"])
     return images
+
+@app.post("/getChapterImage")
+def getChapterImage():
+    data = request.json
+    chapterURL = data['chapterURL']
+    sourceName = data['source']
+    newurl = ''
+    cached = dbConnector.checkIfCachedImage(data['url'])
+    if(not cached):
+        for endpoint in mangaEndpoints:
+            if(endpoint["name"] == sourceName):
+                urlreq = endpoint['url'] + "/getImageBlob"
+                body = {"url": data['url']}
+                res = requests.post(urlreq, json=body)
+                res.raise_for_status()
+                result = res.content
+                if(type(result) is bytes):
+                    newurl = dbConnector.cacheChapterImage(chapterURL, data['url'], result)
+    else:
+        newurl = data['url']
+    return {'url':newurl}
 
 @app.post("/getImageBlob")
 def getImageBlob():

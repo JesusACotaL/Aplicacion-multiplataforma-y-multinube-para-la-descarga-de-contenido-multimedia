@@ -125,19 +125,19 @@
             {{manga.background}}
         </span>
         <div style="margin-top: 1rem;">
-            <div *ngIf="getMainPlot().length > 0">
+            <div *ngIf="mainPlot.length > 0">
                 <h4>Main Plot</h4>
                 <div class="characters">
-                    <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getMainPlot()">
+                    <a target="_blank" [href]="character.url" class="character" *ngFor="let character of mainPlot">
                         <img [src]="backend + character.image" alt="" class="img-fluid">
                         <span>{{character.name}}</span>
                     </a>
                 </div>
             </div>
-            <div *ngIf="getAdditionalCharacters().length > 0">
+            <div *ngIf="additionalCharacters.length > 0">
                 <h4>Adittional characters</h4>
                 <div class="characters">
-                    <a target="_blank" [href]="character.url" class="character" *ngFor="let character of getAdditionalCharacters()">
+                    <a target="_blank" [href]="character.url" class="character" *ngFor="let character of additionalCharacters">
                         <img [src]="backend + character.image" alt="" class="img-fluid">
                         <span>{{character.name}}</span>
                     </a>

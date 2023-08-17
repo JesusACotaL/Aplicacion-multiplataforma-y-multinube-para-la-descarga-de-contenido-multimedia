@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Manga } from '../interfaces/manga.interface';
+import { Manga, MangaCharacter } from '../interfaces/manga.interface';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
 import { UserService } from '../services/user.service';
@@ -33,6 +33,9 @@ export class MangaComponent implements OnInit {
   fuentesNombres: any[] = []
   fuenteActual = ''
 
+  mainPlot: Array<MangaCharacter> = []
+  additionalCharacters: Array<MangaCharacter> = []
+
   @ViewChild('mangaModal', { static: false }) mangaModal!: MangaModalComponent;
 
   userRating = 'Not rated yet';
@@ -51,6 +54,8 @@ export class MangaComponent implements OnInit {
       if(isnum) {
         this.mangaAPI.obtenerMangaInfoLocalDB(Number(urlORid)).subscribe( (manga: Manga) => {
           this.manga = manga;
+          this.mainPlot = this.manga.characters.filter(c=>c.role=='Main');
+          this.additionalCharacters = this.manga.characters.filter(c=>c.role!='Main')
           // Agregar vista a TopMangas
           this.mangaAPI.agregarBusquedaPopular(manga).subscribe(() => {});
           
@@ -87,20 +92,6 @@ export class MangaComponent implements OnInit {
 
     });
 
-  }
-
-  getMainPlot() {
-    if(this.manga.characters)
-    return this.manga.characters.filter(c=>c.role=='Main');
-    else
-    return []
-  }
-
-  getAdditionalCharacters() {
-    if(this.manga.characters)
-    return this.manga.characters.filter(c=>c.role!='Main')
-    else
-    return []
   }
 
   obtenerFuentes() {

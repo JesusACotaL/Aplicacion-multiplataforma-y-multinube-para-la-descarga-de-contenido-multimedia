@@ -42,8 +42,8 @@
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
                         <span>Total manga amount: {{totalMangas}}</span>
                         <div style="display: flex; gap: 1rem;">
-                            <label for="mangaFetchAmount" [(ngModel)]="mangaFetchAmount">Amount to fetch:</label>
-                            <input type="number" name="mangaFetchAmount" id="mangaFetchAmount" style="border-radius: 10px;text-align: right;" value="100">
+                            <label for="mangaFetchAmount" >Amount to fetch:</label>
+                            <input type="number" [(ngModel)]="mangaFetchAmount" name="mangaFetchAmount" id="mangaFetchAmount" style="border-radius: 10px;text-align: right;" value="100">
                         </div>
                         <span>
                             We will be fetching top mangas from your enabled sources one by one. This operation will take a while.

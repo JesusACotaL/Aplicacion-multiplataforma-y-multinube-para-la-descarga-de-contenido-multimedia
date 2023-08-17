@@ -142,7 +142,8 @@ export class MangaComponent implements OnInit {
 
   regresarAfuentes() {
     window.history.pushState( {} , '', '/manga?id='+this.manga.id );
-    if(this.fuentes.length < 1) {
+    this.seleccionandoManga = true;
+    if(this.fuentesFiltradas.length < 1) {
       this.seleccionandoManga = false;
       this.cargando = true;
       this.obtenerFuentes();

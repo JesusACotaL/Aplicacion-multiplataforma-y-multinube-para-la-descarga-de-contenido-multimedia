@@ -4,9 +4,10 @@ import shutil
 import json
 import uuid
 import requests
+import math
 
 # Local storage folder
-folder = 'mangaDB' + os.sep
+folder = 'mangaDB'
 
 # Create connection
 # SQLITE only allows a single thread (since it's only one file), so we inform it that we want to use it as an import
@@ -59,14 +60,15 @@ def deleteDatabase():
     recreateDatabase()
     # Clear storage folder
     for filename in os.listdir(folder):
-        file_path = os.path.join(folder, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+        if(filename != '.gitignore'):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 def formatAsManga(data):
     """
@@ -113,7 +115,7 @@ def convertImagesToLocal(manga):
     res.raise_for_status()
     imageBytes = res.content
     unique_filename = str(uuid.uuid4()) + '.jpg'
-    with open(folder + unique_filename, 'wb') as f:
+    with open(folder + os.sep + unique_filename, 'wb') as f:
         f.write(imageBytes)
     manga['img']= '/mangaDB/' + unique_filename
     # Characters images
@@ -124,7 +126,7 @@ def convertImagesToLocal(manga):
         res.raise_for_status()
         imageBytes = res.content
         unique_filename = uuid.uuid4().hex + '.jpg'
-        with open(folder + unique_filename, 'wb') as f:
+        with open(folder + os.sep + unique_filename, 'wb') as f:
             f.write(imageBytes)
         character['image'] = '/mangaDB/' + unique_filename
         newcharacters.append(character)
@@ -260,6 +262,37 @@ def removeMangaFromHistory(uuid, mangaID):
     if(data):
         cursor.execute("DELETE * FROM history WHERE uuid = ? AND mangaID = ?",[uuid, mangaID])
         con.commit()
+
+def getLocalDBMeta():
+    def get_tree_size(path):
+        """Return total size of files in given path and subdirs."""
+        total = 0
+        for entry in os.scandir(path):
+            if entry.is_dir(follow_symlinks=False):
+                total += get_tree_size(entry.path)
+            else:
+                total += entry.stat(follow_symlinks=False).st_size
+        return total
+    def convert_size(size_bytes):
+        if size_bytes == 0:
+            return "0B"
+        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        i = int(math.floor(math.log(size_bytes, 1024)))
+        p = math.pow(1024, i)
+        s = round(size_bytes / p, 2)
+        return "%s %s" % (s, size_name[i])
+    filesSize = get_tree_size(folder)
+    filesSize = convert_size(filesSize)
+    dbSize = os.path.getsize('mangas.db')
+    dbSize = convert_size(dbSize)
+    totalMangas = cursor.execute("SELECT COUNT() FROM manga").fetchone()
+    return {'filesSize':filesSize,'dbSize':dbSize,'totalMangas':totalMangas}
+
+def uploadFile(file):
+    ext = '.'+file.filename.rsplit('.', 1)[1].lower()
+    unique_filename = uuid.uuid4().hex + ext
+    file.save(folder + os.sep + unique_filename)
+    return '/'+folder+'/'+unique_filename
 
 if __name__ == '__main__':
     mangas = getMangas()

@@ -41,7 +41,11 @@
               "node_modules/popper.js/dist/popper.min.js"
             ],
             "serviceWorker": true,
-            "ngswConfigPath": "ngsw-config.json"
+            "ngswConfigPath": "ngsw-config.json",
+            "allowedCommonJsDependencies": [
+              "core-js",
+              "raf"
+            ]
           },
           "configurations": {
             "production": {

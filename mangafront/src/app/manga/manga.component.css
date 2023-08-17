@@ -68,7 +68,7 @@
 }
 
 .fuentes::-webkit-scrollbar-thumb {
-  background: var(--bs-primary);
+  background: var(--button-color);
 }
 
 .fuentes::-webkit-scrollbar-track {
@@ -87,7 +87,7 @@
 }
 
 .fuenteManga:hover {
-    background-color: var(--third-color);
+    background-color: var(--button-color);
 }
 
 .info-adicional {

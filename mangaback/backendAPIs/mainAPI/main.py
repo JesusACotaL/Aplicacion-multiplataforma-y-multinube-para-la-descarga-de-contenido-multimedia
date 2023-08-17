@@ -1,5 +1,7 @@
 """
 MAIN API ENDPOINT for Aplicacion multiplataforma y multinube para la descarga de contenido multimedia API v1.0
+pip install -r requirements.txt
+pip freeze > requirements.txt
 """
 from importlib import import_module
 import json
@@ -11,52 +13,28 @@ import uuid
 from threading import Thread
 from PIL import Image
 
-production = False
 mangaInfoEndpoints = []
 mangaEndpoints = []
-if(production):
-    mangaInfoEndpoints = [
-        {
-            "name": "myanimelist",
-            "url": "https://myanimelist-qemeq7eoxq-uc.a.run.app"
-        }
-    ]
-    mangaEndpoints = [
-        {
-            "name": "manganelo",
-            "url": "https://manganelo-qemeq7eoxq-uc.a.run.app"
-        },
-        {
-            "name": "mangakakalottv",
-            "url": "https://mangakakalottv-qemeq7eoxq-uc.a.run.app"
-        },
-        {
-            "name": "mangakakalotcom",
-            "url": "https://mangakakalotcom-qemeq7eoxq-uc.a.run.app"
-        }
-    ]
-else:
-    mangaInfoEndpoints = [
-        {
-            "name": "myanimelist",
-            "url": "http://127.0.0.1:5001"
-        }
-    ]
-    mangaEndpoints = [
-        {
-            "name": "manganelo",
-            "url": "http://127.0.0.1:5002"
-        },
-        {
-            "name": "mangakakalottv",
-            "url": "http://127.0.0.1:5003"
-        },
-        {
-            "name": "mangakakalotcom",
-            "url": "http://127.0.0.1:5004"
-        }
-    ]
-
+mangaInfoEndpoints = [
+    {
+        "name": "myanimelist",
+        "url": "http://127.0.0.1:5001"
+    }
+]
+mangaEndpoints = [
+    {
+        "name": "manganelo",
+        "url": "http://127.0.0.1:5002"
+    },
+    {
+        "name": "mangakakalottv",
+        "url": "http://127.0.0.1:5003"
+    },
+    {
+        "name": "mangakakalotcom",
+        "url": "http://127.0.0.1:5004"
+    }
+]
 
 print("=== STARTING MAIN API ENDPOINT ===")
 
@@ -73,16 +51,29 @@ initialize_app(cred)
 db = firestore.client()
 print("success")
 
-from flask import Flask, request, jsonify, make_response, send_file
+from flask import Flask, request, jsonify, make_response, send_file, send_from_directory
 from flask_cors import CORS
-app = Flask(__name__, static_folder='mangaDB', static_url_path='/mangaDB')
+app = Flask(__name__)
 CORS(app)
 
-@app.route("/")
+@app.route('/')
+def root():
+    return send_from_directory('mangafront', 'index.html')
+
+@app.route("/<path:path>")
+def frontend(path):
+    if path.endswith(".js"): return send_from_directory('mangafront', path, mimetype="application/javascript")
+    return send_from_directory('mangafront', path)
+
+@app.route("/mangaAPI/")
 def info():
     return "<p>Aplicacion multiplataforma y multinube para la descarga de contenido multimedia API v1.0</p>"
 
-@app.post("/getTopMangasInSources")
+@app.route("/mangaAPI/mangaDB/<path:path>")
+def mangaDBFolder(path):
+    return send_from_directory('mangaDB', path)
+
+@app.post("/mangaAPI/getTopMangasInSources")
 def getTopMangasInSources():
     data = request.json
     limit = int(data['limit'])
@@ -105,7 +96,7 @@ def getTopMangasInSources():
         time.sleep(1)
     return topmangas
 
-@app.post("/insertMangaDB")
+@app.post("/mangaAPI/insertMangaDB")
 def insertMangaDB():
     data = request.json
     url = data['url']
@@ -125,14 +116,14 @@ def insertMangaDB():
                 dbConnector.insertManga(manga)
     return {'status':'done', 'totalMangas':dbConnector.getLocalDBMeta()['totalMangas']}
 
-@app.post("/getMangaFromLocalDB")
+@app.post("/mangaAPI/getMangaFromLocalDB")
 def getMangaFromLocalDB():
     data = request.json
     id = data['id']
     manga = dbConnector.getManga(id)
     return manga
 
-@app.post("/searchMangaInLocalDB")
+@app.post("/mangaAPI/searchMangaInLocalDB")
 def searchMangaInLocalDB():
     data = request.json
     searchQuery = data['manga']
@@ -141,7 +132,7 @@ def searchMangaInLocalDB():
     mangas = dbConnector.searchManga(searchQuery, safeSearch)
     return mangas
 
-@app.post("/clearChapterCacheDB")
+@app.post("/mangaAPI/clearChapterCacheDB")
 def clearChapterCacheDB():
     data = request.json
     confirmation = data['confirm']
@@ -154,7 +145,7 @@ def clearChapterCacheDB():
         thread.start()
     return { 'result': 'Chapter cache clearing started.'}
 
-@app.post("/nukeLocalDB")
+@app.post("/mangaAPI/nukeLocalDB")
 def nukeLocalDB():
     data = request.json
     confirmation = data['confirm']
@@ -168,12 +159,12 @@ def nukeLocalDB():
     return { 'result': 'Database clearing started.'}
 
 
-@app.get("/getLocalDBmetadata")
+@app.get("/mangaAPI/getLocalDBmetadata")
 def getLocalDBmetadata():
     res = dbConnector.getLocalDBMeta()
     return res
 
-@app.post("/searchManga")
+@app.post("/mangaAPI/searchManga")
 def searchManga():
     data = request.json
     searchQuery = data['manga']
@@ -195,7 +186,7 @@ def searchManga():
             print("Endpoint failure: " + endpoint["name"])
     return mangas
 
-@app.post("/saveMangaInfo")
+@app.post("/mangaAPI/saveMangaInfo")
 def saveMangaInfo():
     data = request.json
     url = data['url']
@@ -213,14 +204,14 @@ def saveMangaInfo():
                 manga['id'] = id
     return manga
 
-@app.get("/getMangaEndpoints")
+@app.get("/mangaAPI/getMangaEndpoints")
 def getMangaEndpoints():
     endpoints = []
     for endpoint in mangaEndpoints:
         endpoints.append(endpoint['name'])
     return endpoints
 
-@app.post("/findMangaInEndpoint")
+@app.post("/mangaAPI/findMangaInEndpoint")
 def findMangaInEndpoint():
     data = request.json
     searchQuery = data['manga']
@@ -243,7 +234,7 @@ def findMangaInEndpoint():
                 print("Endpoint failure: " + endpoint["name"])
     return mangas
 
-@app.post("/getMangaChapters")
+@app.post("/mangaAPI/getMangaChapters")
 def getMangaChapters():
     data = request.json
     url = data['url']
@@ -266,7 +257,7 @@ def getMangaChapters():
                 print("Endpoint failure: " + endpoint["name"])
     return chapters
 
-@app.post("/getChapterURLS")
+@app.post("/mangaAPI/getChapterURLS")
 def getChapterURLS():
     data = request.json
     url = data['url']
@@ -300,7 +291,7 @@ def getChapterURLS():
                 print("Endpoint failure: " + endpoint["name"])
     return images
 
-@app.post("/getChapterImage")
+@app.post("/mangaAPI/getChapterImage")
 def getChapterImage():
     data = request.json
     chapterURL = data['chapterURL']
@@ -321,7 +312,7 @@ def getChapterImage():
         newurl = data['url']
     return {'url':newurl}
 
-@app.post("/getImageBlob")
+@app.post("/mangaAPI/getImageBlob")
 def getImageBlob():
     data = request.json
     url = data['url']
@@ -352,7 +343,7 @@ def getImageBlob():
                 print("Endpoint failure: " + endpoint["name"])
     return imageBlob
 
-@app.post("/addToTopManga")
+@app.post("/mangaAPI/addToTopManga")
 def addToTopManga():
     data = request.json
     import datetime
@@ -387,7 +378,7 @@ def addToTopManga():
         db.collection('topmanga').document(manga[0].id).set(olddata)
     return {'result': str(data['id']) + ' added to topmanga correctly'}
 
-@app.get("/getTopManga")
+@app.get("/mangaAPI/getTopManga")
 def getTopManga():
     query = db.collection('topmanga').order_by("viewcount", direction=firestore.Query.DESCENDING).limit(10).get()
     topmanga = []
@@ -411,7 +402,7 @@ def getUserRatings(uid):
         })
     return userRatings
 
-@app.post("/user/getUserGenres")
+@app.post("/mangaAPI/user/getUserGenres")
 def getUserGenres():
     data = request.json
     uid = data['uid']
@@ -419,7 +410,7 @@ def getUserGenres():
     userGenres = obtener_generos(userInput)
     return userGenres
 
-@app.post("/user/getUserRecomendations")
+@app.post("/mangaAPI/user/getUserRecomendations")
 def getUserRecomendations():
     data = request.json
     uid = data['uid']
@@ -427,7 +418,7 @@ def getUserRecomendations():
     mangas = obtener_recomendaciones(userInput)
     return mangas
 
-@app.post("/user/getMangaRating")
+@app.post("/mangaAPI/user/getMangaRating")
 def getMangaRating():
     data = request.json
     uid = data['uid']
@@ -442,7 +433,7 @@ def getMangaRating():
         })
     return userRatings[0] if (len(userRatings) > 0) else ''
 
-@app.post("/user/rate")
+@app.post("/mangaAPI/user/rate")
 def rateManga():
     data = request.json
     # Verify existance
@@ -469,7 +460,7 @@ def rateManga():
         document_ref.update(updated_rating)
     return {'result': 'Rating operation succesful'}
 
-@app.post("/user/updateEmail")
+@app.post("/mangaAPI/user/updateEmail")
 def updateUserEmail():
     data = request.json
     uid = data['uid']
@@ -480,7 +471,7 @@ def updateUserEmail():
     return {'result': 'E-Mail Successfully Updated'}
 
 
-@app.post("/user/updatePassword")
+@app.post("/mangaAPI/user/updatePassword")
 def updateUserPassword():
     data = request.json
     uid = data['uid']
@@ -488,7 +479,7 @@ def updateUserPassword():
     auth.update_user(uid, password = passw)
     return {'result': 'Password Successfully Updated'}
 
-@app.post("/user/addMangaToBookmarks")
+@app.post("/mangaAPI/user/addMangaToBookmarks")
 def addMangaToBookmarks():
     data = request.json
     # Verify existance
@@ -517,7 +508,7 @@ def addMangaToBookmarks():
         db.collection('bookmarks').add(newbookmark)
     return {'result': str(data['id']) + ' added to bookmarks correctly'}
 
-@app.post("/user/removeMangaFromBookmarks")
+@app.post("/mangaAPI/user/removeMangaFromBookmarks")
 def removeMangaFromBookmarks():
     data = request.json
     uid = data['uid']
@@ -530,7 +521,7 @@ def removeMangaFromBookmarks():
         db.collection('bookmarks').document(query[0].id).delete()
     return {'result': str(data['id']) + ' removed from bookmarks correctly'}
 
-@app.post("/user/getBookmarks")
+@app.post("/mangaAPI/user/getBookmarks")
 def getBookmarks():
     data = request.json
     bookmarks = db.collection('bookmarks').where('uid', '==', data['uid']).get()
@@ -539,7 +530,7 @@ def getBookmarks():
         mangas.append(bookmark.to_dict())
     return mangas
 
-@app.post("/user/addToHistory")
+@app.post("/mangaAPI/user/addToHistory")
 def addToHistory():
     data = request.json
     import datetime
@@ -576,7 +567,7 @@ def addToHistory():
         db.collection('history').document(query[0].id).set(manga)
     return {'result': str(data['id']) + ' added to user history correctly'}
 
-@app.post("/user/getHistory")
+@app.post("/mangaAPI/user/getHistory")
 def getHistory():
     data = request.json
     # Remember that firebase requires an index if you want to manage complex queries beyond a single field
@@ -587,7 +578,7 @@ def getHistory():
         mangas.append(manga.to_dict())
     return mangas
 
-@app.post("/uploadBackground")
+@app.post("/mangaAPI/uploadBackground")
 def uploadBackground():
     file = request.files['file']
     if(file):

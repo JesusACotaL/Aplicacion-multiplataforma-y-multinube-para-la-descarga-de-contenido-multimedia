@@ -7,3 +7,4 @@ __pycache__
 mainAPI/mangas.db
 mainAPI/mangaDB
 mainAPI/mangaDB/*
+mainAPI/mangafront/*

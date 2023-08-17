@@ -8,5 +8,5 @@ export const environment = {
     messagingSenderId: '608745411249',
   },
   production: true,
-  mainMangaAPI: "https://mainapi-qemeq7eoxq-uc.a.run.app"
+  mainMangaAPI: "/mangaAPI"
 };

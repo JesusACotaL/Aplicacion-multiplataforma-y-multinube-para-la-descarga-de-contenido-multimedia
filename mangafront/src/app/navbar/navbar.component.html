@@ -12,18 +12,18 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="navbarContent" style="align-items: center; gap: .5rem;">
-                <button *ngIf="!user" class="btn btnPrimary loginbtn" type="button" (click)="login()">Log in</button>
+                <button style="height: 3rem" *ngIf="!user" class="btn btnPrimary loginbtn" type="button" (click)="login()">Log in</button>
                 <!-- <button *ngIf="!user" class="btn btnPrimary" type="button" (click)="openSignupModal()">Sign up</button> -->
-                <button *ngIf="user" class="btn btnPrimary userProfileBtn dropdown text-white" data-bs-toggle="dropdown" aria-expanded="false">
+                <button style="height: 3rem" *ngIf="user" class="btn btnPrimary userProfileBtn dropdown text-white" data-bs-toggle="dropdown" aria-expanded="false">
                     <span>{{user.email}}</span>
                     <img class="img-fluid" [src]="profilePicture" alt="user">
                     <ul class="dropdown-menu dropdown-menu-end text-end">
                       <li><a class="dropdown-item" (click)="verPerfil()">Go to my homepage</a></li>
-                      <li><a class="dropdown-item" (click)="this.userInfoModal.mostrar()">Modify user info</a></li>
+                      <li><a class="dropdown-item" (click)="this.userInfoModal.mostrar()">View Account information</a></li>
                       <li><a class="dropdown-item" (click)="logOut()">Log out <i class="bi bi-box-arrow-right"></i></a></li>
                     </ul>
                 </button>
-                <button class="btn btnPrimary" type="button" (click)="this.siteConfigModal.mostrar()"><i class="bi bi-database-gear" style="font-size: 1rem;"></i></button>
+                <button style="height: 3rem"class="btn btnPrimary" type="button" (click)="this.siteConfigModal.mostrar()"><i class="bi bi-database-gear" style="font-size: 1rem;"></i></button>
             </div>
         </div>
     </div>

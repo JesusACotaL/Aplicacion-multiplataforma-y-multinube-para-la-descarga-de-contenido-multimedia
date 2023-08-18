@@ -95,6 +95,16 @@ export class MangaApiService {
     return this.http.post<any>(url,body,options);
   }
 
+  obtenerImagenURL(fuenteNombre: string, imagenURL: string, chapterURL: string): Observable<any>{
+    const body = {
+      source: fuenteNombre,
+      url: imagenURL,
+      chapterURL: chapterURL
+    }
+    const url = `${this.backend}/getChapterImage`;
+    return this.http.post<any>(url,body);
+  }
+
   obtenerBusquedasPopulares(): Observable<any> {
     const url = `${this.backend}/getTopManga`;
     return this.http.get(url);
@@ -118,6 +128,14 @@ export class MangaApiService {
       confirm: true
     }
     const url = `${this.backend}/nukeLocalDB`;
+    return this.http.post<any>(url,body);
+  }
+  
+  borrarCapitulosDB(): Observable<any> {
+    const body = {
+      confirm: true
+    }
+    const url = `${this.backend}/clearChapterCacheDB`;
     return this.http.post<any>(url,body);
   }
 

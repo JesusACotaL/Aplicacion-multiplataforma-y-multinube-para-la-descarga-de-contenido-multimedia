@@ -5,3 +5,6 @@
 __pycache__
 .pytest_cache
 mainAPI/mangas.db
+mainAPI/mangaDB
+mainAPI/mangaDB/*
+mainAPI/mangafront/*

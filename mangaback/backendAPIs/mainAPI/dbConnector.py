@@ -8,6 +8,11 @@ import math
 
 # Local storage folder
 folder = 'mangaDB'
+if not os.path.exists(folder):
+    os.makedirs(folder)
+chaptersFolder = 'chapterCache'
+if not os.path.exists(folder+os.sep+chaptersFolder):
+    os.makedirs(folder+os.sep+chaptersFolder)
 
 # Create connection
 # SQLITE only allows a single thread (since it's only one file), so we inform it that we want to use it as an import
@@ -34,17 +39,11 @@ def recreateDatabase():
         )
     """)
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS history(
+        CREATE TABLE IF NOT EXISTS chapter(
             id INTEGER PRIMARY KEY,
-            uuid TEXT,
-            mangaID TEXT
-        )
-    """)
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS bookmarks(
-            id INTEGER PRIMARY KEY,
-            uuid TEXT,
-            mangaID TEXT
+            chapterURL TEXT,
+            srcName TEXT,
+            images TEXT
         )
     """)
 
@@ -54,8 +53,7 @@ recreateDatabase()
 def deleteDatabase():
     # Delete database
     cursor.execute("DROP TABLE IF EXISTS manga")
-    cursor.execute("DROP TABLE IF EXISTS history")
-    cursor.execute("DROP TABLE IF EXISTS bookmarks")
+    cursor.execute("DROP TABLE IF EXISTS chapter")
     # Recreate tables
     recreateDatabase()
     # Clear storage folder
@@ -109,6 +107,15 @@ def formatAsManga(data):
     manga['characters'] = json.loads(data[12])
     return manga
 
+def cacheImage(imageURL):
+    res = requests.get(imageURL)
+    res.raise_for_status()
+    imageBytes = res.content
+    unique_filename = uuid.uuid4().hex + '.jpg'
+    with open(folder + os.sep + unique_filename, 'wb') as f:
+        f.write(imageBytes)
+    return '/' + folder + '/' + unique_filename
+
 def convertImagesToLocal(manga):
     # Manga Portrait
     res = requests.get(manga['img'])
@@ -122,13 +129,8 @@ def convertImagesToLocal(manga):
     characters = manga['characters']
     newcharacters = []
     for character in characters:
-        res = requests.get(character['image'])
-        res.raise_for_status()
-        imageBytes = res.content
-        unique_filename = uuid.uuid4().hex + '.jpg'
-        with open(folder + os.sep + unique_filename, 'wb') as f:
-            f.write(imageBytes)
-        character['image'] = '/mangaDB/' + unique_filename
+        url = character['image']
+        character['image'] = cacheImage(url)
         newcharacters.append(character)
     manga['characters']=newcharacters
     return manga
@@ -215,54 +217,6 @@ def searchManga(manga, safeSearch=False):
             mangas.append(manga)
     return mangas
 
-def getUserBookmarks(uuid):
-    res = cursor.execute("""
-    SELECT * FROM bookmarks WHERE uuid = ?
-    """,[uuid])
-    data = res.fetchone()
-
-def addMangaToBookmarks(uuid, mangaID):
-    res = cursor.execute("""
-    SELECT * FROM bookmarks WHERE uuid = ? AND mangaID = ?
-    """,[uuid, mangaID])
-    data = res.fetchone()
-    if(not data):
-        cursor.execute("INSERT INTO bookmarks (uuid, mangaID) VALUES (?, ?)",[uuid, mangaID])
-        con.commit()
-
-def removeMangaFromBookmarks(uuid, mangaID):
-    res = cursor.execute("""
-    SELECT * FROM bookmarks WHERE uuid = ? AND mangaID = ?
-    """,[uuid, mangaID])
-    data = res.fetchone()
-    if(data):
-        cursor.execute("DELETE * FROM bookmarks WHERE uuid = ? AND mangaID = ?",[uuid, mangaID])
-        con.commit()
-
-def getUserHistory(uuid):
-    res = cursor.execute("""
-    SELECT * FROM history WHERE uuid = ?
-    """,[uuid])
-    data = res.fetchone()
-
-def addMangaToHistory():
-    res = cursor.execute("""
-    SELECT * FROM history WHERE uuid = ? AND mangaID = ?
-    """,[uuid, mangaID])
-    data = res.fetchone()
-    if(not data):
-        cursor.execute("INSERT INTO history (uuid, mangaID) VALUES (?, ?)",[uuid, mangaID])
-        con.commit()
-
-def removeMangaFromHistory(uuid, mangaID):
-    res = cursor.execute("""
-    SELECT * FROM history WHERE uuid = ? AND mangaID = ?
-    """,[uuid, mangaID])
-    data = res.fetchone()
-    if(data):
-        cursor.execute("DELETE * FROM history WHERE uuid = ? AND mangaID = ?",[uuid, mangaID])
-        con.commit()
-
 def getLocalDBMeta():
     def get_tree_size(path):
         """Return total size of files in given path and subdirs."""
@@ -281,18 +235,92 @@ def getLocalDBMeta():
         p = math.pow(1024, i)
         s = round(size_bytes / p, 2)
         return "%s %s" % (s, size_name[i])
+    mangaCacheSize = get_tree_size(folder + os.sep + chaptersFolder)
     filesSize = get_tree_size(folder)
-    filesSize = convert_size(filesSize)
+    filesSize = convert_size(filesSize-mangaCacheSize)
+    mangaCacheSize = convert_size(mangaCacheSize)
     dbSize = os.path.getsize('mangas.db')
     dbSize = convert_size(dbSize)
     totalMangas = cursor.execute("SELECT COUNT() FROM manga").fetchone()
-    return {'filesSize':filesSize,'dbSize':dbSize,'totalMangas':totalMangas}
+    return {'filesSize':filesSize,'dbSize':dbSize,'totalMangas':totalMangas, 'mangaCacheSize': mangaCacheSize}
 
 def uploadFile(file):
     ext = '.'+file.filename.rsplit('.', 1)[1].lower()
     unique_filename = uuid.uuid4().hex + ext
     file.save(folder + os.sep + unique_filename)
     return '/'+folder+'/'+unique_filename
+
+def checkIfChapterExists(chapterURL):
+    res = cursor.execute("""
+    SELECT (images) FROM chapter WHERE chapterURL = ?
+    """,[chapterURL])
+    data = res.fetchone()
+    if(data):
+        images = json.loads(data[0])
+        return images
+    return False
+
+def insertChapter(chapterURL, srcName, images):
+    res = cursor.execute("""
+    SELECT * FROM chapter WHERE chapterURL = ?
+    """,[chapterURL])
+    data = res.fetchone()
+    if(not data):
+        cursor.execute("INSERT INTO chapter (chapterURL, srcName, images) VALUES (?, ?, ?)",[chapterURL, srcName, images])
+        con.commit()
+
+def checkIfCachedImage(imageURL):
+    """
+    Check if current image is already cached
+    """
+    if(folder in imageURL):
+        return True
+    return False
+
+def cacheChapterImage(chapterURL, imageURL, imageBytes):
+    # Get list of chapter images
+    res = cursor.execute("""
+    SELECT (images) FROM chapter WHERE chapterURL = ?
+    """,[chapterURL])
+    data = res.fetchone()
+    images = json.loads(data[0])
+    # Find image link and update it with a local link
+    url = ''
+    newimages = []
+    for image in images:
+        if(image == imageURL):
+            unique_filename = uuid.uuid4().hex + '.jpg'
+            with open(folder + os.sep + chaptersFolder + os.sep + unique_filename, 'wb') as f:
+                f.write(imageBytes)
+            url = '/' + folder + '/' + chaptersFolder + '/' + unique_filename
+            image = url # Update in list
+        newimages.append(image)
+    # Update image list
+    cursor.execute("""
+    UPDATE chapter
+    SET images = ?
+    WHERE chapterURL = ?
+    """, [json.dumps(newimages), chapterURL])
+    con.commit()
+    return url
+
+def deleteChapterCache():
+    # Delete database
+    cursor.execute("DROP TABLE IF EXISTS chapter")
+    # Recreate chapter table
+    recreateDatabase()
+    # Clear chapter cache folder
+    newfolder = folder + os.sep + chaptersFolder
+    for filename in os.listdir(newfolder):
+        if(filename != '.gitignore'):
+            file_path = os.path.join(newfolder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 if __name__ == '__main__':
     mangas = getMangas()

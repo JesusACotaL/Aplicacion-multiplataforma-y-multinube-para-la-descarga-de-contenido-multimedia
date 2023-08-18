@@ -1,4 +1,4 @@
-interface MangaCharacter {
+export interface MangaCharacter {
     name: string,
     role: string
     image: string

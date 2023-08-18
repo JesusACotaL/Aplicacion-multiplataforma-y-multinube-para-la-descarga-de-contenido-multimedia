@@ -8,9 +8,10 @@
             <div class="modal-body" style="background: var(--secondary-color); color: var(--text-color);">
                 <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center;">
                     <div style="display: flex; flex-direction: column; align-items: center;">
-                        <span>Total files size: {{filesSize}}</span>
+                        <span>Chapter cache size: {{ mangaCacheSize }}</span>
+                        <span>Extra files size: {{filesSize}}</span>
                         <span>Database size: {{dbSize}}</span>
-                        <span>Total manga amount: {{totalMangas}}</span>
+                        <span>Mangas in DB: {{totalMangas}}</span>
                     </div>
                     <button type="button" class="btn btn-dark" (click)="favcolor.click()" style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
                         🎨 Change theme color:
@@ -21,7 +22,7 @@
                         <input hidden type="file" name="bgImageBtn" id="bgImageBtn" #bgImageBtn (change)="changeBackground(bgImageBtn.files![0])">
                     </button>
                     <button type="button" class="btn btn-success" (click)="populatingDBModal.show()" data-bs-dismiss="modal">🔍 Fill database with top mangas</button>
-                    <button hidden type="button" class="btn btn-warning">🧹 Clear viewed mangas cache</button>
+                    <button type="button" class="btn btn-warning" (click)="borrarCapitulosDB()">🧹 Clear viewed mangas cache</button>
                     <button type="button" class="btn btn-danger" (click)="borrarDB()">💥 Nuke manga database</button>
                 </div>
             </div>

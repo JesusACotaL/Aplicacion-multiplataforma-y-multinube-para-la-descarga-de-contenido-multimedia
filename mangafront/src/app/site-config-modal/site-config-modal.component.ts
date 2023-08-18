@@ -15,6 +15,7 @@ export class SiteConfigModalComponent implements OnInit {
   dbSize = 0
   totalMangas = 0
   filesSize = 0
+  mangaCacheSize = 0
   themeColor = '#441f89'
   backend = environment.mainMangaAPI
   filling = false
@@ -42,6 +43,7 @@ export class SiteConfigModalComponent implements OnInit {
       this.filesSize = datos['filesSize']
       this.dbSize = datos['dbSize']
       this.totalMangas = datos['totalMangas']
+      this.mangaCacheSize = datos['mangaCacheSize']
     });
   }
 
@@ -53,6 +55,14 @@ export class SiteConfigModalComponent implements OnInit {
     const confirmation = confirm("WARNING!\nThis will delete ALL files and mangas in DB. This is irreversible.\nAre you sure you want to continue?");
     if(confirmation) {
       this.mangaAPI.borrarDB().subscribe((data)=>console.log(data));
+      localStorage.setItem('backgroundImg','');
+    }
+  }
+  
+  borrarCapitulosDB() {
+    const confirmation = confirm("This will delete ALL cached tomes. \nDo you want to continue?");
+    if(confirmation) {
+      this.mangaAPI.borrarCapitulosDB().subscribe((data)=>console.log(data));
       localStorage.setItem('backgroundImg','');
     }
   }

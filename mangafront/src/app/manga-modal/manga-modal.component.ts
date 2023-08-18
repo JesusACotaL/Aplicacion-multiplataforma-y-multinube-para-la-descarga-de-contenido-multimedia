@@ -3,6 +3,7 @@ import * as bootstrap from 'bootstrap';
 import { MangaApiService } from '../services/manga-api.service';
 import { jsPDF } from "jspdf";
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-manga-modal',
@@ -21,6 +22,7 @@ export class MangaModalComponent implements OnInit {
 
   fuenteActualNombre = ""
   fuenteActualURL = ""
+  backend = environment.mainMangaAPI;
   
   constructor(private mangaAPI: MangaApiService, private router: Router, private route: ActivatedRoute) {}
 
@@ -84,14 +86,10 @@ export class MangaModalComponent implements OnInit {
       for (const imagen of imagenes) {
         if(this.mostrando) { // Cancel if user closed modal
           await new Promise<void>(resolve => {
-            this.mangaAPI.descargarImagenCapitulo(imagen['srcName'], imagen['url'], parseInt(this.calidad)).subscribe( ( imagenBlob ) => {
+            this.mangaAPI.obtenerImagenURL(imagen['srcName'], imagen['url'], this.fuenteActualURL).subscribe( ( respuesta ) => {
               let htmlimg = new Image();
               htmlimg.className = "img-fluid";
-              const url = window.URL.createObjectURL(imagenBlob);
-              htmlimg.src = url
-              //htmlimg.onload = (evt) => {
-              //  window.URL.revokeObjectURL(url);
-              //}
+              htmlimg.src = this.backend + respuesta.url
               this.div?.append(htmlimg);
               this.cargadas = this.cargadas + 1;
               resolve();

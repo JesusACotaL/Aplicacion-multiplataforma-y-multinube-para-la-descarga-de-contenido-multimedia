@@ -52,9 +52,6 @@ db = firestore.client()
 print("success")
 
 from flask import Flask, request, jsonify, make_response, send_file, send_from_directory
-import mimetypes
-mimetypes.add_type('application/javascript', '.mjs')
-mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 
 @app.route('/', defaults={'path': ''})
@@ -67,10 +64,6 @@ def frontend(path):
         return send_from_directory('mangafront', path)
     else:
         return send_from_directory('mangafront', 'index.html') # angular router will handle the rest
-
-@app.errorhandler(404)
-def not_found_error(error):
-    return send_from_directory('mangafront', 'index.html') # angular router will handle the rest
 
 @app.route("/mangaAPI/")
 def info():

@@ -52,9 +52,7 @@ db = firestore.client()
 print("success")
 
 from flask import Flask, request, jsonify, make_response, send_file, send_from_directory
-from flask_cors import CORS
 app = Flask(__name__)
-CORS(app)
 
 @app.route('/')
 def root():
@@ -587,4 +585,6 @@ def uploadBackground():
     return {'file': None}
 
 if __name__ == '__main__':
+    from flask_cors import CORS
+    CORS(app)
     app.run(host='0.0.0.0', port=5000, debug=True)

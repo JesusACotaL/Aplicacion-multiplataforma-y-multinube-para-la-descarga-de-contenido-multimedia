@@ -1,6 +1,6 @@
 call .venv/Scripts/activate
 cd mainAPI
-start flask --app main run --debug --port 5000 --host=0.0.0.0
+start python main.py
 cd ..
 
 cd mangaInfoAPIs

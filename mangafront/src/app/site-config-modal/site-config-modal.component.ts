@@ -35,6 +35,8 @@ export class SiteConfigModalComponent implements OnInit {
     const backgroundImg = localStorage.getItem('backgroundImg');
     if(backgroundImg)
       this.setBackgroundImg(backgroundImg);
+    else
+      this.setBackgroundImg('assets/fondo.jpg')
   }
 
   mostrar() {

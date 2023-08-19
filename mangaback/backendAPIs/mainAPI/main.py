@@ -212,6 +212,7 @@ def saveMangaInfo():
             result = json.loads(res.content)
             if(type(result) is dict):
                 manga = result
+                manga['srcName'] = srcInfoName
                 id = dbConnector.insertManga(manga)
                 manga['id'] = id
     return manga
@@ -410,6 +411,7 @@ def addToTopManga():
             'name': data['name'],
             'img': url,
             'originURL': data['originURL'],
+            'srcName': data['srcName'],
             'viewcount': 1
         }
         # Add with 1 view count
@@ -546,7 +548,8 @@ def addMangaToBookmarks():
             'uid': data['uid'],
             'name': data['name'],
             'img': url,
-            'originURL': data['originURL']
+            'originURL': data['originURL'],
+            'srcName': data['srcName']
         }
         db.collection('bookmarks').add(newbookmark)
     return {'result': str(data['id']) + ' added to bookmarks correctly'}
@@ -599,6 +602,7 @@ def addToHistory():
             'name': data['name'],
             'img': url,
             'originURL': data['originURL'],
+            'srcName': data['srcName'],
             'datetime': now
         }
         # Add

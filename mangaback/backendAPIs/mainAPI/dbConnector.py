@@ -26,6 +26,7 @@ def recreateDatabase():
             id INTEGER PRIMARY KEY,
             name TEXT,
             originURL TEXT,
+            srcName TEXT,
             date TEXT,
             status TEXT,
             score TEXT,
@@ -95,16 +96,17 @@ def formatAsManga(data):
     manga['id'] = manga['id'][0] # Stupid sqlite threats id as tuple only when saving value, why?
     manga['name'] = data[1]
     manga['originURL'] = data[2]
-    manga['date'] = data[3]
-    manga['status'] = data[4]
-    manga['score'] = data[5]
+    manga['srcName'] = data[3]
+    manga['date'] = data[4]
+    manga['status'] = data[5]
+    manga['score'] = data[6]
     manga['popularity_rank'] = data[6]
-    manga['site'] = data[7]
-    manga['background'] = data[8]
-    manga['img'] = data[9]
-    manga['genres'] = json.loads(data[10])
-    manga['authors'] = json.loads(data[11])
-    manga['characters'] = json.loads(data[12])
+    manga['site'] = data[8]
+    manga['background'] = data[9]
+    manga['img'] = data[10]
+    manga['genres'] = json.loads(data[11])
+    manga['authors'] = json.loads(data[12])
+    manga['characters'] = json.loads(data[13])
     return manga
 
 def cacheImage(imageURL):
@@ -151,6 +153,7 @@ def insertManga(manga):
             INSERT INTO manga (
                 name,
                 originURL,
+                srcName,
                 date,
                 status,
                 score,
@@ -162,11 +165,12 @@ def insertManga(manga):
                 authors,
                 characters
             ) VALUES 
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             [
                 manga['name'],
                 manga['originURL'],
+                manga['srcName'],
                 manga['date'],
                 manga['status'],
                 manga['score'],

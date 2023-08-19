@@ -9,6 +9,7 @@ export interface Manga {
     id: number,
     name: string,
     originURL: string,
+    srcName: string,
     date: string,
     status: string,
     score: string,
@@ -18,5 +19,5 @@ export interface Manga {
     img: string,
     genres: Array<string>,
     authors: Array<string>,
-    characters: Array<MangaCharacter>
+    characters: Array<MangaCharacter>,
 }

@@ -194,9 +194,13 @@ def getMangaInfo():
             character['role']=c.next_sibling.next_sibling.find('small').string
     
             # Image
-            cImgSrc=c.parent.find_previous_sibling().a.img['data-src']
-            cImgSrc = re.sub(r'r/\d+x\d+/', '', cImgSrc)
-            character['image'] = cImgSrc
+            character['image'] = ''
+            try:
+                cImgSrc=c.parent.find_previous_sibling().a.img['data-src']
+                cImgSrc = re.sub(r'r/\d+x\d+/', '', cImgSrc)
+                character['image'] = cImgSrc
+            except:
+                pass
     
             charactersList.append(character)
             # URL
@@ -241,8 +245,10 @@ def getMangaInfo():
     manga['background'] = background
 
     # Image
-    img = html.find('img', itemprop='image')
-    manga['img'] = img['data-src']
+    manga['img'] = ''
+    img = html.find('img', attrs={'itemprop':'image','data-src':True})
+    if(img):
+        manga['img'] = img['data-src']
 
     return manga
 

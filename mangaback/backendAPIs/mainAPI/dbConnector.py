@@ -120,19 +120,21 @@ def cacheImage(imageURL):
 
 def convertImagesToLocal(manga):
     # Manga Portrait
-    res = requests.get(manga['img'])
-    res.raise_for_status()
-    imageBytes = res.content
-    unique_filename = str(uuid.uuid4()) + '.jpg'
-    with open(folder + os.sep + unique_filename, 'wb') as f:
-        f.write(imageBytes)
-    manga['img']= '/mangaDB/' + unique_filename
+    if(manga['img'] != ''):
+        res = requests.get(manga['img'])
+        res.raise_for_status()
+        imageBytes = res.content
+        unique_filename = str(uuid.uuid4()) + '.jpg'
+        with open(folder + os.sep + unique_filename, 'wb') as f:
+            f.write(imageBytes)
+        manga['img']= '/mangaDB/' + unique_filename
     # Characters images
     characters = manga['characters']
     newcharacters = []
     for character in characters:
         url = character['image']
-        character['image'] = cacheImage(url)
+        if(url != ''):
+            character['image'] = cacheImage(url)
         newcharacters.append(character)
     manga['characters']=newcharacters
     return manga

@@ -85,7 +85,7 @@ def getTopMangasInSources():
     for endpoint in mangaInfoEndpoints:
         if(endpoint['enabled'] == True):
             print("Getting top mangas for "+endpoint['name'])
-            body = {"limit": limit}
+            body = {"limit": limit+50}
             url = endpoint['url'] + "/getTopMangas"
             res = requests.post(url, json=body)
             res.raise_for_status()
@@ -99,7 +99,7 @@ def getTopMangasInSources():
                     results.append(data)
                 topmangas = topmangas + results
             time.sleep(1)
-    return topmangas
+    return topmangas[:limit]
 
 @app.post("/mangaAPI/insertMangaDB")
 def insertMangaDB():

@@ -21,6 +21,7 @@ export class SiteConfigModalComponent implements OnInit {
   backend = environment.mainMangaAPI
   filling = false
   mangaFetchAmount = 100
+  remainingAmount = 0
 
   @ViewChild('srcConfigModal', { static: false }) srcConfigModal!: SourceConfigModalComponent;
 
@@ -147,6 +148,7 @@ export class SiteConfigModalComponent implements OnInit {
     logContainer?.append(span.cloneNode(true));
     this.mangaAPI.obtenerTopMangasFuentes(this.mangaFetchAmount).subscribe(async (mangas) => {
       span.innerText = `Found ${mangas.length} mangas.`
+      this.remainingAmount = mangas.length
       logContainer?.append(span.cloneNode(true));
       const delay = (ms:any) => new Promise(res => setTimeout(res, ms));
       for (const manga of mangas) {
@@ -159,6 +161,7 @@ export class SiteConfigModalComponent implements OnInit {
               resolve();
             })
           });
+          this.remainingAmount = this.remainingAmount - 1;
           await delay(2000);
         }
       }

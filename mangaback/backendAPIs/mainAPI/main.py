@@ -195,6 +195,7 @@ def searchManga():
 @app.post("/mangaAPI/saveMangaInfo")
 def saveMangaInfo():
     data = request.json
+    srcName = data['srcName']
     url = data['url']
     body = {"url": url}
     manga = {}
@@ -420,7 +421,7 @@ def getUserGenres():
     data = request.json
     uid = data['uid']
     userInput = getUserRatings(uid)
-    userGenres = obtener_generos(userInput)
+    userGenres = obtener_generos(userInput)[:5] # Max 5 genres
     return userGenres
 
 @app.post("/mangaAPI/user/getUserRecomendations")

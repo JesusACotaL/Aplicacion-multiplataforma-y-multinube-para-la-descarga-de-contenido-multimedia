@@ -167,23 +167,24 @@ def getLocalDBmetadata():
 @app.post("/mangaAPI/searchManga")
 def searchManga():
     data = request.json
+    srcName = data['srcName']
     searchQuery = data['manga']
     safeSearch = data['safeSearch']
     body = {"manga": searchQuery, "safeSearch":safeSearch}
     mangas = []
     for endpoint in mangaInfoEndpoints:
-        try:
-            url = endpoint['url'] + "/searchManga"
-            res = requests.post(url, json=body)
-            res.raise_for_status()
-            result = json.loads(res.content)
-            if(type(result) is list):
-                sourceRes = {}
-                sourceRes['srcName'] = endpoint['name']
-                sourceRes['mangas'] = result[:25] # Only 25 results
-                mangas.append(sourceRes)
-        except:
-            print("Endpoint failure: " + endpoint["name"])
+        if endpoint['name'] == srcName:
+            try:
+                url = endpoint['url'] + "/searchManga"
+                res = requests.post(url, json=body)
+                res.raise_for_status()
+                result = json.loads(res.content)
+                if(type(result) is list):
+                    for manga in result:
+                        manga['srcName'] = endpoint['name']
+                    mangas = result[:25] # Only 25 results
+            except:
+                print("Endpoint failure: " + endpoint["name"])
     return mangas
 
 @app.post("/mangaAPI/saveMangaInfo")
@@ -208,6 +209,13 @@ def saveMangaInfo():
 def getMangaEndpoints():
     endpoints = []
     for endpoint in mangaEndpoints:
+        endpoints.append(endpoint['name'])
+    return endpoints
+
+@app.get("/mangaAPI/getMangaInfoEndpoints")
+def getMangaInfoEndpoints():
+    endpoints = []
+    for endpoint in mangaInfoEndpoints:
         endpoints.append(endpoint['name'])
     return endpoints
 

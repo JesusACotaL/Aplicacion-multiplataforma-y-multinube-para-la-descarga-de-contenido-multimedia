@@ -13,10 +13,11 @@ export class MangaApiService {
   backend = environment.mainMangaAPI;
   constructor(private http: HttpClient) {}
 
-  buscarManga(nombre: string, filtroAdulto: boolean): Observable<Array<any>>{
+  buscarManga(nombre: string, srcName: string, filtroAdulto: boolean): Observable<Array<any>>{
     const body = {
       manga: nombre,
-      safeSearch: filtroAdulto
+      safeSearch: filtroAdulto,
+      srcName: srcName
     }
     const url = `${this.backend}/searchManga`;
     return this.http.post<any>(url,body);
@@ -49,6 +50,11 @@ export class MangaApiService {
 
   obtenerFuentes(): Observable<Array<string>>{
     const url = `${this.backend}/getMangaEndpoints`;
+    return this.http.get<any>(url);
+  }
+
+  obtenerFuentesInfo(): Observable<Array<string>>{
+    const url = `${this.backend}/getMangaInfoEndpoints`;
     return this.http.get<any>(url);
   }
 

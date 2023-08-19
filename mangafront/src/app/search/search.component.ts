@@ -10,23 +10,14 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
-  cargando = true;
   mangaBuscado = ''
   manga = '';
   mangasEncontradosDBLocal: Array<Manga> = [];
-  mangasEncontrados: any[] = [
-    {
-      name: '',
-      img: '',
-      score: '',
-      short_desc: '',
-      url: ''
-    }
-  ];
   filtroAdulto = false;
   fuentesInfo: Array<any> = []
   backend = environment.mainMangaAPI;
-
+  cargandoLocal = true;
+  
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService) { }
 
   ngOnInit(): void {
@@ -34,26 +25,48 @@ export class SearchComponent implements OnInit {
     // Obtener nombre de manga
     this.route.params.subscribe( (parametros) => {
       this.manga = parametros['name'];
-      this.buscarAPI();  
+      this.mangaBuscado = this.manga;
+      this.buscarLocal(); 
+      this.obtenerFuentesInfo();
     });
   }
 
   cambiarFiltroAdultos(valor: boolean) {
     localStorage.setItem("filtroAdulto",String(valor));
     this.filtroAdulto = valor;
+    location.reload();
   }
-  
-  buscarAPI() {
-    this.cargando = true;
-    // Buscar manga en API
+
+  obtenerFuentesInfo() {
+    this.mangaAPI.obtenerFuentesInfo().subscribe( (fuentesInfo) => {
+      let newfuentes = [];
+      for (const fuente of fuentesInfo) {
+        let newfuente: any = {};
+        newfuente.nombre = fuente;
+        newfuente.cargando = true;
+        newfuente.mangasEncontrados = [];
+        newfuentes.push(newfuente);
+      }
+      this.fuentesInfo = newfuentes;
+    });
+  }
+
+  buscarLocal() {
     this.mangaAPI.buscarMangaLocalDB(this.manga, this.filtroAdulto).subscribe( (mangasLocal) => {
       this.mangasEncontradosDBLocal = mangasLocal;
-      this.mangaAPI.buscarManga(this.manga, this.filtroAdulto).subscribe( (fuentesEncontradas) => {
-        this.fuentesInfo = fuentesEncontradas;
-        this.mangaBuscado = this.manga
-        this.cargando= false;
-      });
+      this.cargandoLocal = false;
     });
+  }
+  
+  buscarFuente(fuente: string) {
+    for (const f of this.fuentesInfo) {
+      if(fuente == f.nombre) {
+        this.mangaAPI.buscarManga(this.manga, fuente, this.filtroAdulto).subscribe( (resultados) => {
+          f.mangasEncontrados = resultados;
+          f.cargando = false;
+        });
+      }
+    }
   }
 
   verManga(id: number) {

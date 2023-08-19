@@ -2,22 +2,22 @@
 <div class="p-4">
     <div style="display: flex; align-items: center;">
         <span>Showing search results for: <span style="font-weight: bold;"> {{ mangaBuscado }} </span></span>
-        <div style="margin-left: auto;">
-            <span>
-                Safe search: 
-                <button type="button" class="btn btn-danger btn-sm" *ngIf="filtroAdulto" (click)="cambiarFiltroAdultos(false)">Yes</button>
-                <button type="button" class="btn btn-danger btn-sm" *ngIf="!filtroAdulto" (click)="cambiarFiltroAdultos(true)">No</button>
-            </span>
-        </div>
     </div>
     <hr>
     <div>
         <div class="fuenteBusqueda">
             <nav>
-                <div style="display: flex;">
+                <div style="display: flex;justify-content: center; align-items: center;">
                     <h4>App database</h4>
-                    <button type="button" class="loadBtn" *ngIf="listaLocal.style.display" (click)="listaLocal.removeAttribute('style'); buscarLocal();"><i class="bi bi-chevron-down"></i></button>
-                    <button type="button" class="loadBtn" *ngIf="!listaLocal.style.display" (click)="listaLocal.style.display = 'none'"><i class="bi bi-chevron-up"></i></button>
+                    <div style="margin-left: auto;display: flex;justify-content:center;align-items:center">
+                        <span style="margin-right: 1rem;display: flex;justify-content:center;align-items:center;gap:1rem">
+                            Safe search: 
+                            <button type="button" class="btn btn-danger btn-sm" *ngIf="filtroAdulto" (click)="cambiarFiltroAdultos(false)">Yes</button>
+                            <button type="button" class="btn btn-danger btn-sm" *ngIf="!filtroAdulto" (click)="cambiarFiltroAdultos(true)">No</button>
+                        </span>
+                        <button type="button" class="loadBtn" *ngIf="listaLocal.style.display" (click)="listaLocal.removeAttribute('style'); buscarLocal();"><i class="bi bi-chevron-down"></i></button>
+                        <button type="button" class="loadBtn" *ngIf="!listaLocal.style.display" (click)="listaLocal.style.display = 'none'"><i class="bi bi-chevron-up"></i></button>
+                    </div>
                 </div>
                 <hr>
             </nav>
@@ -44,10 +44,12 @@
         </div>
         <div class="fuenteBusqueda" *ngFor="let fuente of fuentesInfo">
             <nav>
-                <div style="display: flex;">
+                <div style="display: flex;justify-content: center; align-items: center;">
                     <h4>{{fuente.nombre}}</h4>
-                    <button type="button" class="loadBtn" *ngIf="listaManga.style.display" (click)="listaManga.removeAttribute('style'); buscarFuente(fuente.nombre);"><i class="bi bi-chevron-down"></i></button>
-                    <button type="button" class="loadBtn" *ngIf="!listaManga.style.display" (click)="listaManga.style.display = 'none'"><i class="bi bi-chevron-up"></i></button>
+                    <div style="margin-left: auto;display: flex;justify-content:center;align-items:center">
+                        <button type="button" class="loadBtn" *ngIf="listaManga.style.display" (click)="listaManga.removeAttribute('style'); buscarFuente(fuente.nombre);"><i class="bi bi-chevron-down"></i></button>
+                        <button type="button" class="loadBtn" *ngIf="!listaManga.style.display" (click)="listaManga.style.display = 'none'"><i class="bi bi-chevron-up"></i></button>
+                    </div>
                 </div>
                 <hr>
             </nav>

@@ -13,10 +13,9 @@ export class MangaApiService {
   backend = environment.mainMangaAPI;
   constructor(private http: HttpClient) {}
 
-  buscarManga(nombre: string, srcName: string, filtroAdulto: boolean): Observable<Array<any>>{
+  buscarManga(nombre: string, srcName: string): Observable<Array<any>>{
     const body = {
       manga: nombre,
-      safeSearch: filtroAdulto,
       srcName: srcName
     }
     const url = `${this.backend}/searchManga`;

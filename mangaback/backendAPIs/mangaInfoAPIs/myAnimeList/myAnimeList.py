@@ -18,7 +18,7 @@ def info():
 @app.post("/searchManga")
 def searchManga():
     """
-    Parameters: manga, safeSearch(boolean)
+    Parameters: manga
     Returns an array[] like:
     [
         {
@@ -34,14 +34,11 @@ def searchManga():
     """
     data = request.json
     searchQuery = data['manga']
-    safeSearch = data['safeSearch']
 
     # Get HTML
     siteUrl = "https://myanimelist.net/manga.php"
     columns = ['a', 'g', 'c', 'f'] # Type=a, Chapters=c, Score=g, ,Total members=f
     excluded_genres = []
-    if(safeSearch):
-        excluded_genres = [49,12] # Exclude Erotica and Hentai
     parameters = {
         'cat': 'manga',
         'q' : searchQuery,

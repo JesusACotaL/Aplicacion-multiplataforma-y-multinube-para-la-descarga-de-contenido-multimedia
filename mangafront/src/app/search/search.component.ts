@@ -34,7 +34,7 @@ export class SearchComponent implements OnInit {
   cambiarFiltroAdultos(valor: boolean) {
     localStorage.setItem("filtroAdulto",String(valor));
     this.filtroAdulto = valor;
-    location.reload();
+    this.buscarLocal();
   }
 
   obtenerFuentesInfo() {
@@ -61,7 +61,7 @@ export class SearchComponent implements OnInit {
   buscarFuente(fuente: string) {
     for (const f of this.fuentesInfo) {
       if(fuente == f.nombre) {
-        this.mangaAPI.buscarManga(this.manga, fuente, this.filtroAdulto).subscribe( (resultados) => {
+        this.mangaAPI.buscarManga(this.manga, fuente).subscribe( (resultados) => {
           f.mangasEncontrados = resultados;
           f.cargando = false;
         });

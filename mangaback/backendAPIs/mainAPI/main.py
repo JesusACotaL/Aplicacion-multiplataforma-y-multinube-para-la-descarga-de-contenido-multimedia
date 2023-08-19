@@ -169,8 +169,7 @@ def searchManga():
     data = request.json
     srcName = data['srcName']
     searchQuery = data['manga']
-    safeSearch = data['safeSearch']
-    body = {"manga": searchQuery, "safeSearch":safeSearch}
+    body = {"manga": searchQuery}
     mangas = []
     for endpoint in mangaInfoEndpoints:
         if endpoint['name'] == srcName:

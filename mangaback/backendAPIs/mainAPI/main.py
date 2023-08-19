@@ -118,6 +118,7 @@ def insertMangaDB():
             if(type(result) is dict):
                 manga = result
                 print("Saving to db...")
+                manga['srcName'] = srcName
                 dbConnector.insertManga(manga)
     return {'status':'done', 'totalMangas':dbConnector.getLocalDBMeta()['totalMangas']}
 

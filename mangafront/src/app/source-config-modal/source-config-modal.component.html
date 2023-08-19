@@ -5,8 +5,8 @@
                 <h5 class="modal-title">Manga source configuration</h5>
             </div>
             <div class="modal-body" style="background: var(--secondary-color); color: var(--text-color);">
-                <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center;">
-                    <div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
                         <div>
                             <label for="">Prefered manga information source:</label> 
                             <select #defaultMangaInfoSrc class="form-select" (change)="fuenteInfoDefecto(defaultMangaInfoSrc.value)">
@@ -22,7 +22,7 @@
                             </li> 
                         </ul>
                     </div>
-                    <div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
                         <div>
                             <label for="">Prefered manga source:</label> 
                             <select #defaultMangaSrc class="form-select" (change)="fuenteDefecto(defaultMangaSrc.value)">

@@ -29,3 +29,17 @@
   margin-bottom: 1rem;
   transition: all 1s;
 }
+
+#saveToDBModallogContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: black; 
+  color: white; 
+  font-family: Consolas; 
+  width: 100%; 
+  word-wrap: break-word;
+  font-size: 10px;
+  min-height: 100px;
+  max-height: 100px;
+  overflow-y: scroll; 
+}

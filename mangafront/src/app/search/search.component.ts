@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MangaApiService } from '../services/manga-api.service';
 import { Manga } from '../interfaces/manga.interface';
 import { environment } from 'src/environments/environment';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-search',
@@ -17,6 +18,8 @@ export class SearchComponent implements OnInit {
   fuentesInfo: Array<any> = []
   backend = environment.mainMangaAPI;
   cargandoLocal = true;
+  totalMangaToSave = 0;
+  filling = false;
   
   constructor(private route: ActivatedRoute, private mangaAPI: MangaApiService) { }
 
@@ -74,6 +77,39 @@ export class SearchComponent implements OnInit {
   }
   verMangaLink(url: string) {
     return '/manga?' + new URLSearchParams({id: url}).toString()
+  }
+
+  async saveResultsToDB(mangas: Array<any>) {
+    this.totalMangaToSave = mangas.length;
+    const modal = new bootstrap.Modal('#saveToDBModal', {keyboard: false});
+    modal.show();
+    const logContainer = document.getElementById('saveToDBModallogContainer');
+    const span = document.createElement('span');
+    logContainer!.innerHTML = '';
+    this.filling = true;
+    span.innerText = `Found ${mangas.length} mangas.`
+    logContainer?.append(span.cloneNode(true));
+    const delay = (ms:any) => new Promise(res => setTimeout(res, ms));
+    for (const manga of mangas) {
+      if(this.filling) {
+        await new Promise<void>(resolve => {
+          span.innerText = `Saving ${manga.url}...`
+          logContainer?.append(span.cloneNode(true));
+          this.mangaAPI.subirMangaDB(manga.url, manga.srcName).subscribe((result)=>{
+            this.totalMangaToSave = this.totalMangaToSave - 1;
+            resolve();
+          })
+        });
+        await delay(2000);
+      }
+    }
+    span.innerText = 'Operation finished.'
+    logContainer?.append(span.cloneNode(true));
+    this.filling = false;
+  }
+
+  cancelFill() {
+    this.filling = false;
   }
 
 }

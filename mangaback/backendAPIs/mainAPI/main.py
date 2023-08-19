@@ -396,18 +396,20 @@ def addToTopManga():
     # Verify existance
     manga = db.collection('topmanga').where('name', '==', data['name']).get()
     if len(manga) == 0:
-        # Create url for image in firestore
-        # https://stackoverflow.com/questions/52451215/find-the-url-of-uploaded-file-firebase-storage-python#:~:text=You%20can%20get%20the%20public%20url%20with%20blob.public_url,blob%20%3D%20bucket.blob%20%28BLOB_PATH%29%20blob.upload_from_filename%20%28FILE_PATH%29%20print%20%28blob.public_url%29
-        filename = data['img'][1:] # Remove first backlash
-        with open(filename, mode='rb') as file:
-            fileContent = file.read()
-            unique_filename = str(uuid.uuid4()) + '.jpg'
-            filePath = 'mangaIMG/' + unique_filename;
-            bucket = storage.bucket('mango-ec7e1.appspot.com')
-            blob = bucket.blob(filePath)
-            blob.upload_from_string(fileContent, content_type="image/jpeg")
-            blob.make_public()
-            url = blob.public_url
+        # Create url for image in firestore if exists
+        url = ''
+        if(data['img'] != ''):
+            # https://stackoverflow.com/questions/52451215/find-the-url-of-uploaded-file-firebase-storage-python#:~:text=You%20can%20get%20the%20public%20url%20with%20blob.public_url,blob%20%3D%20bucket.blob%20%28BLOB_PATH%29%20blob.upload_from_filename%20%28FILE_PATH%29%20print%20%28blob.public_url%29
+            filename = data['img'][1:] # Remove first backlash
+            with open(filename, mode='rb') as file:
+                fileContent = file.read()
+                unique_filename = str(uuid.uuid4()) + '.jpg'
+                filePath = 'mangaIMG/' + unique_filename;
+                bucket = storage.bucket('mango-ec7e1.appspot.com')
+                blob = bucket.blob(filePath)
+                blob.upload_from_string(fileContent, content_type="image/jpeg")
+                blob.make_public()
+                url = blob.public_url
         newtopmanga = {
             'name': data['name'],
             'img': url,
@@ -532,18 +534,20 @@ def addMangaToBookmarks():
     bookmarks = db.collection('bookmarks').where('uid', '==', data['uid'])
     query = bookmarks.where('name', '==', data['name']).get()
     if len(query) == 0:
-        # Create url for image in firestore
+        # Create url for image in firestore if exists
         # https://stackoverflow.com/questions/52451215/find-the-url-of-uploaded-file-firebase-storage-python#:~:text=You%20can%20get%20the%20public%20url%20with%20blob.public_url,blob%20%3D%20bucket.blob%20%28BLOB_PATH%29%20blob.upload_from_filename%20%28FILE_PATH%29%20print%20%28blob.public_url%29
-        filename = data['img'][1:] # Remove first backlash
-        with open(filename, mode='rb') as file:
-            fileContent = file.read()
-            unique_filename = str(uuid.uuid4()) + '.jpg'
-            filePath = 'mangaIMG/' + unique_filename;
-            bucket = storage.bucket('mango-ec7e1.appspot.com')
-            blob = bucket.blob(filePath)
-            blob.upload_from_string(fileContent, content_type="image/jpeg")
-            blob.make_public()
-            url = blob.public_url
+        url = ''
+        if(data['img'] != ''):
+            filename = data['img'][1:] # Remove first backlash
+            with open(filename, mode='rb') as file:
+                fileContent = file.read()
+                unique_filename = str(uuid.uuid4()) + '.jpg'
+                filePath = 'mangaIMG/' + unique_filename;
+                bucket = storage.bucket('mango-ec7e1.appspot.com')
+                blob = bucket.blob(filePath)
+                blob.upload_from_string(fileContent, content_type="image/jpeg")
+                blob.make_public()
+                url = blob.public_url
         # Add
         newbookmark = {
             'uid': data['uid'],
@@ -586,18 +590,20 @@ def addToHistory():
     history = db.collection('history').where('uid', '==', data['uid'])
     query = history.where('name', '==', data['name']).get()
     if len(query) == 0:
-        # Create url for image in firestore
+        # Create url for image in firestore if exists
         # https://stackoverflow.com/questions/52451215/find-the-url-of-uploaded-file-firebase-storage-python#:~:text=You%20can%20get%20the%20public%20url%20with%20blob.public_url,blob%20%3D%20bucket.blob%20%28BLOB_PATH%29%20blob.upload_from_filename%20%28FILE_PATH%29%20print%20%28blob.public_url%29
-        filename = data['img'][1:] # Remove first backlash
-        with open(filename, mode='rb') as file:
-            fileContent = file.read()
-            unique_filename = str(uuid.uuid4()) + '.jpg'
-            filePath = 'mangaIMG/' + unique_filename;
-            bucket = storage.bucket('mango-ec7e1.appspot.com')
-            blob = bucket.blob(filePath)
-            blob.upload_from_string(fileContent, content_type="image/jpeg")
-            blob.make_public()
-            url = blob.public_url
+        url = ''
+        if(data['img'] != ''):
+            filename = data['img'][1:] # Remove first backlash
+            with open(filename, mode='rb') as file:
+                fileContent = file.read()
+                unique_filename = str(uuid.uuid4()) + '.jpg'
+                filePath = 'mangaIMG/' + unique_filename;
+                bucket = storage.bucket('mango-ec7e1.appspot.com')
+                blob = bucket.blob(filePath)
+                blob.upload_from_string(fileContent, content_type="image/jpeg")
+                blob.make_public()
+                url = blob.public_url
         newhistory = {
             'uid': data['uid'],
             'name': data['name'],

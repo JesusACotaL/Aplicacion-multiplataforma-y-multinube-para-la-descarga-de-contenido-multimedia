@@ -6,9 +6,14 @@
             </div>
             <div class="modal-body" style="background: var(--secondary-color); color: var(--text-color);">
                 <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center;">
-                    <span>Click any source to toggle it!</span>
                     <div>
-                        Total manga information sources: {{mangaInfoFuentes.length}}
+                        <div>
+                            <label for="">Prefered manga information source:</label> 
+                            <select #defaultMangaInfoSrc class="form-select" (change)="fuenteInfoDefecto(defaultMangaInfoSrc.value)">
+                                <option [selected]="fuenteInfoDefault==fuente.name" *ngFor="let fuente of mangaInfoFuentes;let i=index" [value]="fuente.name">{{fuente.name}}</option>
+                            </select>
+                        </div>
+                        <span>Click any manga info source to toggle it!</span>
                         <ul style="display: flex;align-items:center;gap:1rem;flex-wrap: wrap;">
                             <li *ngFor="let fuente of mangaInfoFuentes" class="btn btn-primary btn-sm sourceBtn">
                                 <input type="checkbox" [checked]="fuente.enabled" [id]="'input'+fuente" #inputMangaInfo style="transform: scale(1.5);">
@@ -18,7 +23,13 @@
                         </ul>
                     </div>
                     <div>
-                        Total manga sources: {{mangaFuentes.length}}
+                        <div>
+                            <label for="">Prefered manga source:</label> 
+                            <select #defaultMangaSrc class="form-select" (change)="fuenteDefecto(defaultMangaSrc.value)">
+                                <option [selected]="fuenteDefault==fuente.name" *ngFor="let fuente of mangaFuentes;let i=index" [value]="fuente.name">{{fuente.name}}</option>
+                            </select>
+                        </div>
+                        <span>Click any manga source to toggle it!</span>
                         <ul style="display: flex;align-items:center;gap:1rem;flex-wrap: wrap;">
                             <li *ngFor="let fuente of mangaFuentes" class="btn btn-primary btn-sm sourceBtn">
                                 <input type="checkbox" [checked]="fuente.enabled" [id]="'input'+fuente" #inputManga style="transform: scale(1.5);">

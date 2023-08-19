@@ -11,6 +11,8 @@ export class SourceConfigModalComponent implements OnInit {
   srcConfigModal!: bootstrap.Modal;
   mangaFuentes: Array<any> = []
   mangaInfoFuentes: Array<any> = []
+  fuenteDefault = ""
+  fuenteInfoDefault = ""
 
   constructor(private mangaApi: MangaApiService) { }
 
@@ -23,6 +25,12 @@ export class SourceConfigModalComponent implements OnInit {
       this.mangaFuentes = fuentes;
       this.mangaApi.obtenerFuentesInfo().subscribe( (fuentesInfo) => {
         this.mangaInfoFuentes = fuentesInfo;
+        const defaultSrc = localStorage.getItem('defaultSrc');
+        const defaultInfoSrc = localStorage.getItem('defaultInfoSrc');
+        if(defaultSrc)
+          this.fuenteDefault = defaultSrc;
+        if(defaultInfoSrc)
+          this.fuenteInfoDefault = defaultInfoSrc;
         this.srcConfigModal.show();
       });
     });
@@ -40,6 +48,13 @@ export class SourceConfigModalComponent implements OnInit {
         this.mangaInfoFuentes = fuentes.mangaInfoEndpoints
       });
     }
+  }
+
+  fuenteDefecto(fuenteNombre: string) {
+    localStorage.setItem('defaultSrc',fuenteNombre);
+  }
+  fuenteInfoDefecto(fuenteNombre: string) {
+    localStorage.setItem('defaultInfoSrc',fuenteNombre);
   }
 
 }

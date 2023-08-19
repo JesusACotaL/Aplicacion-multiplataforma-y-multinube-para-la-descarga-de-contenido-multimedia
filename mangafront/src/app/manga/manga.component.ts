@@ -104,7 +104,15 @@ export class MangaComponent implements OnInit {
           fuentesActivas.push(f)
       }
       this.fuentes = fuentesActivas;
+      
+      // Set default source
       this.fuenteActual = this.fuentes[0];
+      let fuenteDefault = localStorage.getItem('defaultSrc');
+      if(fuenteDefault)
+        for (const f of this.fuentes) {
+          if(f.name == fuenteDefault)
+          this.fuenteActual = f;
+        }
       this.mangaAPI.buscarEnFuente(this.fuenteActual.name, this.manga.name).subscribe( (sources: any[]) => {
         // Order by string length (so we mix by similar results to query provided)
         // ASC  -> a.length - b.length

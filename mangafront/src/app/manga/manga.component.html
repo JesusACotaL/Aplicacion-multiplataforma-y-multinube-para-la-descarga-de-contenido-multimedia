@@ -7,19 +7,14 @@
     </div>
     <div class="manga-contenedor">
         <div *ngIf="manga.name" class="resumen">
-            <div class="logotipo">
-                <img [src]="backend + manga.img" alt="" class="img-fluid">
-            </div>
+            <img [src]="backend + manga.img" alt="">
             <div class="informacion">     
-                <h5>Ranking {{manga.popularity_rank}}</h5>
+                <span>
+                    Top
+                    <span style="font-weight: bold;">{{manga.popularity_rank}}</span>
+                </span>
                 <span>{{manga.score}} <i class="bi bi-star-fill"></i></span>
-                <span>By: {{manga.authors}}</span>
-                <span>{{manga.genres}}</span>
-                <span>{{manga.date}}</span>
-                <span>Status: {{manga.status}}</span>
-                <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
-                <a [href]="manga.originURL" target="_blank">Visit original source <i class="bi bi-box-arrow-up-right"></i></a>
-                <div *ngIf="user" style="margin-top: .5rem;">
+                <div *ngIf="user">
                     <span>Your rating: {{userRating}}</span>
                     <div class="rating">
                         <form>
@@ -37,6 +32,21 @@
                             </p>
                         </form>
                     </div>
+                </div>
+                <div class="genres">
+                    <a [href]="'/search/'+genre" *ngFor="let genre of manga.genres" class="genre btn btnPrimary">{{genre}}</a>
+                </div>
+                <div>
+                    <span>Authors: </span>
+                    <ul style="margin: 0;">
+                        <li *ngFor="let author of manga.authors">{{author}}</li>
+                    </ul>
+                </div>
+                <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
+                <a [href]="manga.originURL" target="_blank">Visit original source <i class="bi bi-box-arrow-up-right"></i></a>
+                <div class="status">
+                    <span>Status:</span>
+                    <span>{{manga.status}}</span>
                 </div>
             </div>
         </div>

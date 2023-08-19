@@ -32,6 +32,7 @@ import { FooterComponent } from './footer/footer.component';
 import { ModifyUserInfoModalComponent } from './modify-user-info-modal/modify-user-info-modal.component';
 import { SiteConfigModalComponent } from './site-config-modal/site-config-modal.component';
 import { GenreComponent } from './genre/genre.component';
+import { SourceConfigModalComponent } from './source-config-modal/source-config-modal.component';
 
 @NgModule({
   declarations: [ 
@@ -48,7 +49,8 @@ import { GenreComponent } from './genre/genre.component';
     FooterComponent,
     ModifyUserInfoModalComponent,
     SiteConfigModalComponent,
-    GenreComponent
+    GenreComponent,
+    SourceConfigModalComponent
   ],
   imports: [
     BrowserModule,

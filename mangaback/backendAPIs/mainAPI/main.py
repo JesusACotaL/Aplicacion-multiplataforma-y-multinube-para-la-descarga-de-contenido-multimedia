@@ -18,21 +18,25 @@ mangaEndpoints = []
 mangaInfoEndpoints = [
     {
         "name": "myanimelist",
-        "url": "http://127.0.0.1:5001"
+        "url": "http://127.0.0.1:5001",
+        "enabled": True
     }
 ]
 mangaEndpoints = [
     {
         "name": "manganelo",
-        "url": "http://127.0.0.1:5002"
+        "url": "http://127.0.0.1:5002",
+        "enabled": True
     },
     {
         "name": "mangakakalottv",
-        "url": "http://127.0.0.1:5003"
+        "url": "http://127.0.0.1:5003",
+        "enabled": True
     },
     {
         "name": "mangakakalotcom",
-        "url": "http://127.0.0.1:5004"
+        "url": "http://127.0.0.1:5004",
+        "enabled": True
     }
 ]
 
@@ -79,21 +83,22 @@ def getTopMangasInSources():
     limit = int(data['limit'])
     topmangas = []
     for endpoint in mangaInfoEndpoints:
-        print("Getting top mangas for "+endpoint['name'])
-        body = {"limit": limit}
-        url = endpoint['url'] + "/getTopMangas"
-        res = requests.post(url, json=body)
-        res.raise_for_status()
-        result = json.loads(res.content)
-        if(type(result) == list):
-            results = []
-            for res in result:
-                data = {}
-                data['url'] = res
-                data['srcName'] = endpoint['name']
-                results.append(data)
-            topmangas = topmangas + results
-        time.sleep(1)
+        if(endpoint['enabled'] == True):
+            print("Getting top mangas for "+endpoint['name'])
+            body = {"limit": limit}
+            url = endpoint['url'] + "/getTopMangas"
+            res = requests.post(url, json=body)
+            res.raise_for_status()
+            result = json.loads(res.content)
+            if(type(result) == list):
+                results = []
+                for res in result:
+                    data = {}
+                    data['url'] = res
+                    data['srcName'] = endpoint['name']
+                    results.append(data)
+                topmangas = topmangas + results
+            time.sleep(1)
     return topmangas
 
 @app.post("/mangaAPI/insertMangaDB")
@@ -102,7 +107,7 @@ def insertMangaDB():
     url = data['url']
     srcName = data['srcName']
     for endpoint in mangaInfoEndpoints:
-        if(endpoint['name'] == srcName):
+        if(endpoint['name'] == srcName and endpoint['enabled'] == True):
             print("Scrapping "+url+" ...",end="")
             time.sleep(1)
             requrl = endpoint['url'] + "/getMangaInfo"
@@ -178,7 +183,7 @@ def searchManga():
     body = {"manga": searchQuery}
     mangas = []
     for endpoint in mangaInfoEndpoints:
-        if endpoint['name'] == srcName:
+        if (endpoint['name'] == srcName and endpoint['enabled'] == True):
             try:
                 url = endpoint['url'] + "/searchManga"
                 res = requests.post(url, json=body)
@@ -200,7 +205,7 @@ def saveMangaInfo():
     body = {"url": url}
     manga = {}
     for endpoint in mangaInfoEndpoints:
-        if endpoint['name'] == srcInfoName:
+        if (endpoint['name'] == srcInfoName and endpoint['enabled'] == True):
             url = endpoint['url'] + "/getMangaInfo"
             res = requests.post(url, json=body)
             res.raise_for_status() 
@@ -215,15 +220,39 @@ def saveMangaInfo():
 def getMangaEndpoints():
     endpoints = []
     for endpoint in mangaEndpoints:
-        endpoints.append(endpoint['name'])
+        endpoints.append(endpoint)
     return endpoints
 
 @app.get("/mangaAPI/getMangaInfoEndpoints")
 def getMangaInfoEndpoints():
     endpoints = []
     for endpoint in mangaInfoEndpoints:
-        endpoints.append(endpoint['name'])
+        endpoints.append(endpoint)
     return endpoints
+
+@app.post("/mangaAPI/enableEndpoint")
+def enableEndpoint():
+    data = request.json
+    name = data['endpoint']
+    for endpoint in mangaEndpoints:
+        if(endpoint['name'] == name):
+            endpoint['enabled'] = True
+    for endpoint in mangaInfoEndpoints:
+        if(endpoint['name'] == name):
+            endpoint['enabled'] = True
+    return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
+
+@app.post("/mangaAPI/disableEndpoint")
+def disableEndpoint():
+    data = request.json
+    name = data['endpoint']
+    for endpoint in mangaEndpoints:
+        if(endpoint['name'] == name):
+            endpoint['enabled'] = False
+    for endpoint in mangaInfoEndpoints:
+        if(endpoint['name'] == name):
+            endpoint['enabled'] = False
+    return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
 
 @app.post("/mangaAPI/findMangaInEndpoint")
 def findMangaInEndpoint():
@@ -233,7 +262,7 @@ def findMangaInEndpoint():
     body = {"manga": searchQuery}
     mangas = []
     for endpoint in mangaEndpoints:
-        if(endpoint["name"] == sourceName):
+        if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
             try:
                 url = endpoint['url'] + "/searchManga"
                 res = requests.post(url, json=body)
@@ -256,7 +285,7 @@ def getMangaChapters():
     body = {"url": url}
     chapters = []
     for endpoint in mangaEndpoints:
-        if(endpoint["name"] == sourceName):
+        if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
             try:
                 url = endpoint['url'] + "/getMangaChapters"
                 res = requests.post(url, json=body)
@@ -287,7 +316,7 @@ def getChapterURLS():
             images.append(tempRes)
         return images
     for endpoint in mangaEndpoints:
-        if(endpoint["name"] == sourceName):
+        if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
             try:
                 url = endpoint['url'] + "/getChapterURLS"
                 res = requests.post(url, json=body)
@@ -314,7 +343,7 @@ def getChapterImage():
     cached = dbConnector.checkIfCachedImage(data['url'])
     if(not cached):
         for endpoint in mangaEndpoints:
-            if(endpoint["name"] == sourceName):
+            if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
                 urlreq = endpoint['url'] + "/getImageBlob"
                 body = {"url": data['url']}
                 res = requests.post(urlreq, json=body)
@@ -337,7 +366,7 @@ def getImageBlob():
     body = {"url": url}
     imageBlob = {}
     for endpoint in mangaEndpoints:
-        if(endpoint["name"] == sourceName):
+        if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
             try:
                 url = endpoint['url'] + "/getImageBlob"
                 res = requests.post(url, json=body)

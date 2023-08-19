@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as bootstrap from 'bootstrap';
 import { MangaApiService } from '../services/manga-api.service';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { SourceConfigModalComponent } from '../source-config-modal/source-config-modal.component';
 
 @Component({
   selector: 'app-site-config-modal',
@@ -20,6 +21,8 @@ export class SiteConfigModalComponent implements OnInit {
   backend = environment.mainMangaAPI
   filling = false
   mangaFetchAmount = 100
+
+  @ViewChild('srcConfigModal', { static: false }) srcConfigModal!: SourceConfigModalComponent;
 
   constructor(private mangaAPI: MangaApiService, router: Router) {
   }

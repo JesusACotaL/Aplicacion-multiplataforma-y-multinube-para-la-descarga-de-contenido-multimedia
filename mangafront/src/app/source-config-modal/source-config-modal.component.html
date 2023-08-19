@@ -1,0 +1,37 @@
+<div class="modal fade" id="srcConfigModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered mx-auto">
+        <div class="modal-content bg-dark">
+            <div class="modal-header" style="background: var(--primary-color); color: var(--text-color); border: none;">
+                <h5 class="modal-title">Manga source configuration</h5>
+            </div>
+            <div class="modal-body" style="background: var(--secondary-color); color: var(--text-color);">
+                <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center;">
+                    <span>Click any source to toggle it!</span>
+                    <div>
+                        Total manga information sources: {{mangaInfoFuentes.length}}
+                        <ul style="display: flex;align-items:center;gap:1rem;flex-wrap: wrap;">
+                            <li *ngFor="let fuente of mangaInfoFuentes" class="btn btn-primary btn-sm sourceBtn">
+                                <input type="checkbox" [checked]="fuente.enabled" [id]="'input'+fuente" #inputMangaInfo style="transform: scale(1.5);">
+                                <label [for]="'input'+fuente">{{fuente.name}}</label>
+                                <button type="button" (click)="cambiarEstadoFuente(fuente.name,!fuente.enabled)" ></button>
+                            </li> 
+                        </ul>
+                    </div>
+                    <div>
+                        Total manga sources: {{mangaFuentes.length}}
+                        <ul style="display: flex;align-items:center;gap:1rem;flex-wrap: wrap;">
+                            <li *ngFor="let fuente of mangaFuentes" class="btn btn-primary btn-sm sourceBtn">
+                                <input type="checkbox" [checked]="fuente.enabled" [id]="'input'+fuente" #inputManga style="transform: scale(1.5);">
+                                <label [for]="'input'+fuente">{{fuente.name}}</label>
+                                <button type="button" (click)="cambiarEstadoFuente(fuente.name,!fuente.enabled)"></button>
+                            </li> 
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: var(--primary-color); color: var(--text-color); border: none;">
+                <button type="button" class="btn btnPrimary ms-auto" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

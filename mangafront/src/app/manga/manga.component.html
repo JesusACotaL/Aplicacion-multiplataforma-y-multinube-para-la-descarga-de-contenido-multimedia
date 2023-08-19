@@ -62,11 +62,11 @@
                     <div class="sourceSelector">
                         <span>Choose a source to read this manga: </span>
                         <select #fuenteFiltro class="form-select" (change)="filtrarFuentesPorNombre(fuenteFiltro.value)">
-                            <option [selected]="fuenteActual==fuente" *ngFor="let fuente of fuentesNombres;let i=index; first as isFirst" [value]="fuente">{{fuente}}</option>
+                            <option [selected]="fuenteActual==fuente" *ngFor="let fuente of fuentes;let i=index; first as isFirst" [value]="fuente.name">{{fuente.name}}</option>
                         </select>
                     </div>
-                    <div class="fuentes" *ngIf="fuentesFiltradas.length > 0">
-                        <div class="fuenteManga" *ngFor="let fuente of fuentesFiltradas" (click)="obtenerCapitulos(fuente.srcName, fuente.chapters_url)">
+                    <div class="fuentes" *ngIf="mangaLinksFiltrados.length > 0">
+                        <div class="fuenteManga" *ngFor="let fuente of mangaLinksFiltrados" (click)="obtenerCapitulos(fuente.srcName, fuente.chapters_url)">
                             <img [src]="fuente.image_url" alt="" width="50">
                             <div style="display: flex; flex-direction: column; justify-content: center;">
                                 <span>{{fuente.name}}</span>
@@ -74,7 +74,7 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="fuentesFiltradas.length <= 0" style="height: 10rem;display: flex;align-items: center;">
+                    <div *ngIf="mangaLinksFiltrados.length <= 0" style="height: 10rem;display: flex;align-items: center;">
                         <h5>Oops! Sorry, we couldn't find this manga in this source :(</h5>
                     </div>
                 </div>

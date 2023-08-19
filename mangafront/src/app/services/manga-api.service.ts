@@ -56,12 +56,12 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
 
-  obtenerFuentes(): Observable<Array<string>>{
+  obtenerFuentes(): Observable<Array<any>>{
     const url = `${this.backend}/getMangaEndpoints`;
     return this.http.get<any>(url);
   }
 
-  obtenerFuentesInfo(): Observable<Array<string>>{
+  obtenerFuentesInfo(): Observable<Array<any>>{
     const url = `${this.backend}/getMangaInfoEndpoints`;
     return this.http.get<any>(url);
   }
@@ -174,6 +174,22 @@ export class MangaApiService {
       srcName: srcName
     }
     const url = `${this.backend}/insertMangaDB`;
+    return this.http.post<any>(url,body);
+  }
+
+  habilitarFuente(fuenteNombre: string): Observable<any> { 
+    const body = {
+      endpoint: fuenteNombre
+    }
+    const url = `${this.backend}/enableEndpoint`;
+    return this.http.post<any>(url,body);
+  }
+  
+  deshabilitarFuente(fuenteNombre: string): Observable<any> { 
+    const body = {
+      endpoint: fuenteNombre
+    }
+    const url = `${this.backend}/disableEndpoint`;
     return this.http.post<any>(url,body);
   }
 }

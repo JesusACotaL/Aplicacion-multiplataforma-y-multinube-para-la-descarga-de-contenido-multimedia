@@ -45,7 +45,7 @@ export class SearchComponent implements OnInit {
       let newfuentes = [];
       for (const fuente of fuentesInfo) {
         let newfuente: any = {};
-        newfuente.nombre = fuente;
+        newfuente.nombre = fuente.name;
         newfuente.cargando = true;
         newfuente.mangasEncontrados = [];
         newfuentes.push(newfuente);

@@ -13,6 +13,7 @@
                         <span>Database size: {{dbSize}}</span>
                         <span>Mangas in DB: {{totalMangas}}</span>
                     </div>
+                    <button type="button" class="btn btn-primary" (click)="this.srcConfigModal.mostrar()" data-bs-dismiss="modal">📝 Source configuration</button>
                     <button type="button" class="btn btn-dark" (click)="favcolor.click()" style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
                         🎨 Change theme color:
                         <input #favcolor type="color" id="favcolor" name="favcolor" [(ngModel)]="themeColor" (change)="switchTheme(favcolor.value)">
@@ -61,3 +62,4 @@
         </div>
     </div>
 </div>
+<app-source-config-modal #srcConfigModal></app-source-config-modal>

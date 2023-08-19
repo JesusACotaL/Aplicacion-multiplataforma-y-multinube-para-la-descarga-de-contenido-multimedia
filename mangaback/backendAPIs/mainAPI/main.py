@@ -195,12 +195,12 @@ def searchManga():
 @app.post("/mangaAPI/saveMangaInfo")
 def saveMangaInfo():
     data = request.json
-    srcName = data['srcName']
+    srcInfoName = data['srcInfoName']
     url = data['url']
     body = {"url": url}
     manga = {}
     for endpoint in mangaInfoEndpoints:
-        if endpoint['name'] == 'myanimelist':
+        if endpoint['name'] == srcInfoName:
             url = endpoint['url'] + "/getMangaInfo"
             res = requests.post(url, json=body)
             res.raise_for_status() 

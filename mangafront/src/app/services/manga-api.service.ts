@@ -49,7 +49,8 @@ export class MangaApiService {
 
   guardarMangaInfo(manga_url: string): Observable<any>{
     const body = {
-      url: manga_url
+      url: manga_url,
+      srcInfoName: 'myanimelist'
     }
     const url = `${this.backend}/saveMangaInfo`;
     return this.http.post<any>(url,body);

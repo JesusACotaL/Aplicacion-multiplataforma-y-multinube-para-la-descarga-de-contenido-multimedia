@@ -75,8 +75,8 @@ export class SearchComponent implements OnInit {
   verManga(id: number) {
     return '/manga?' + new URLSearchParams({id: id.toString()}).toString()
   }
-  verMangaLink(url: string) {
-    return '/manga?' + new URLSearchParams({id: url}).toString()
+  verMangaLink(url: string, srcInfoName: string) {
+    return '/manga?' + new URLSearchParams({id: url, srcInfoName: srcInfoName}).toString()
   }
 
   async saveResultsToDB(mangas: Array<any>) {

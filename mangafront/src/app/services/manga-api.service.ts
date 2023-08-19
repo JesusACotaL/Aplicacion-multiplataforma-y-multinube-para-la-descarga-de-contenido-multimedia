@@ -47,10 +47,10 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
 
-  guardarMangaInfo(manga_url: string): Observable<any>{
+  guardarMangaInfo(manga_url: string, srcInfoName: string): Observable<any>{
     const body = {
       url: manga_url,
-      srcInfoName: 'myanimelist'
+      srcInfoName: srcInfoName
     }
     const url = `${this.backend}/saveMangaInfo`;
     return this.http.post<any>(url,body);

@@ -15,7 +15,7 @@
         <div class="topmangas">
             <span class="text-decoration-underline">Top mangas:</span>
             <ul class="busquedas">
-                <a *ngFor="let manga of busquedasPopulares" [href]="verMangaLink(manga.originURL)">{{manga.name}}</a>
+                <a *ngFor="let manga of busquedasPopulares" [href]="verMangaLink(manga.originURL, manga.srcName)">{{manga.name}}</a>
             </ul>
         </div>
     </div>

@@ -85,8 +85,8 @@ export class AccountComponent implements OnInit {
   verManga(id: any) {
     return '/manga?id='+id.toString()
   }
-  verMangaLink(url: string) {
-    return '/manga?' + new URLSearchParams({id: url}).toString()
+  verMangaLink(url: string, srcInfoName: string) {
+    return '/manga?' + new URLSearchParams({id: url, srcInfoName: srcInfoName}).toString()
   }
 
   volver() {

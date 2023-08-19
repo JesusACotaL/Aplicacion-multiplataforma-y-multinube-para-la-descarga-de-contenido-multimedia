@@ -84,8 +84,9 @@ export class MangaComponent implements OnInit {
           });
         });
       } else {
+        const srcInfoName = parametros['srcInfoName'];
         // Guardar, luego cargar
-        this.mangaAPI.guardarMangaInfo(urlORid).subscribe( (manga: Manga) => {
+        this.mangaAPI.guardarMangaInfo(urlORid, srcInfoName).subscribe( (manga: Manga) => {
           this.router.navigateByUrl('/manga?id=' + manga.id.toString())
         });
       }

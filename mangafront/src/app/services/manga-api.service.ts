@@ -30,6 +30,14 @@ export class MangaApiService {
     const url = `${this.backend}/searchMangaInLocalDB`;
     return this.http.post<any>(url,body);
   }
+  
+  buscarGeneroLocalDB(genero: string): Observable<Array<Manga>>{
+    const body = {
+      genre: genero
+    }
+    const url = `${this.backend}/searchGenreInLocalDB`;
+    return this.http.post<any>(url,body);
+  }
 
   obtenerMangaInfoLocalDB(id: number): Observable<Manga>{
     const body = {

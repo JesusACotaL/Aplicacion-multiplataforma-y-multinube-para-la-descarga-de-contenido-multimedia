@@ -1,0 +1,31 @@
+.manga {
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: all .2s ease-in-out;
+  }
+  
+  .manga:hover {
+    transform: scale(1.1);
+  }
+  
+  .loadBtn {
+    border: none;
+    background: none;
+    color: var(--text-color);
+  }
+  
+  .listaMangas {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit,12rem); 
+    justify-content: space-evenly; 
+    gap: 2rem; 
+    width: 100%;
+  }
+  
+  .fuenteBusqueda {
+    margin-bottom: 1rem;
+    transition: all 1s;
+  }

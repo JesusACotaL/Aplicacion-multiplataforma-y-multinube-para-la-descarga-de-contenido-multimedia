@@ -128,8 +128,14 @@ def searchMangaInLocalDB():
     data = request.json
     searchQuery = data['manga']
     safeSearch = data['safeSearch']
-    body = {"manga": searchQuery, "safeSearch":safeSearch}
     mangas = dbConnector.searchManga(searchQuery, safeSearch)
+    return mangas
+
+@app.post("/mangaAPI/searchGenreInLocalDB")
+def searchGenreInLocalDB():
+    data = request.json
+    searchQuery = data['genre']
+    mangas = dbConnector.searchGenre(searchQuery)
     return mangas
 
 @app.post("/mangaAPI/clearChapterCacheDB")

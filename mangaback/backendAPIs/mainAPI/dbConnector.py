@@ -217,6 +217,17 @@ def searchManga(manga, safeSearch=False):
             mangas.append(manga)
     return mangas
 
+def searchGenre(genre):
+    res = cursor.execute("""
+    SELECT * FROM manga WHERE genres LIKE ?
+    """, [ '%'+genre+'%' ])
+    data = res.fetchall()
+    mangas = []
+    for manga in data:
+        manga = formatAsManga(manga)
+        mangas.append(manga)
+    return mangas
+
 def getLocalDBMeta():
     def get_tree_size(path):
         """Return total size of files in given path and subdirs."""

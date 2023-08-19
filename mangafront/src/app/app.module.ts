@@ -31,6 +31,7 @@ import { UserLicenseComponent } from './user-license/user-license.component';
 import { FooterComponent } from './footer/footer.component';
 import { ModifyUserInfoModalComponent } from './modify-user-info-modal/modify-user-info-modal.component';
 import { SiteConfigModalComponent } from './site-config-modal/site-config-modal.component';
+import { GenreComponent } from './genre/genre.component';
 
 @NgModule({
   declarations: [ 
@@ -46,7 +47,8 @@ import { SiteConfigModalComponent } from './site-config-modal/site-config-modal.
     UserLicenseComponent,
     FooterComponent,
     ModifyUserInfoModalComponent,
-    SiteConfigModalComponent
+    SiteConfigModalComponent,
+    GenreComponent
   ],
   imports: [
     BrowserModule,

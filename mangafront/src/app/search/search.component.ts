@@ -44,11 +44,13 @@ export class SearchComponent implements OnInit {
     this.mangaAPI.obtenerFuentesInfo().subscribe( (fuentesInfo) => {
       let newfuentes = [];
       for (const fuente of fuentesInfo) {
-        let newfuente: any = {};
-        newfuente.nombre = fuente.name;
-        newfuente.cargando = true;
-        newfuente.mangasEncontrados = [];
-        newfuentes.push(newfuente);
+        if(fuente.enabled) {
+          let newfuente: any = {};
+          newfuente.nombre = fuente.name;
+          newfuente.cargando = true;
+          newfuente.mangasEncontrados = [];
+          newfuentes.push(newfuente);
+        }
       }
       this.fuentesInfo = newfuentes;
     });

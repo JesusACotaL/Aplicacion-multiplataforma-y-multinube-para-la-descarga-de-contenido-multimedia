@@ -13,10 +13,10 @@ export class MangaApiService {
   backend = environment.mainMangaAPI;
   constructor(private http: HttpClient) {}
 
-  buscarManga(nombre: string, filtroAdulto: boolean): Observable<Array<any>>{
+  buscarManga(nombre: string, srcName: string): Observable<Array<any>>{
     const body = {
       manga: nombre,
-      safeSearch: filtroAdulto
+      srcName: srcName
     }
     const url = `${this.backend}/searchManga`;
     return this.http.post<any>(url,body);
@@ -30,6 +30,14 @@ export class MangaApiService {
     const url = `${this.backend}/searchMangaInLocalDB`;
     return this.http.post<any>(url,body);
   }
+  
+  buscarGeneroLocalDB(genero: string): Observable<Array<Manga>>{
+    const body = {
+      genre: genero
+    }
+    const url = `${this.backend}/searchGenreInLocalDB`;
+    return this.http.post<any>(url,body);
+  }
 
   obtenerMangaInfoLocalDB(id: number): Observable<Manga>{
     const body = {
@@ -39,16 +47,22 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
 
-  guardarMangaInfo(manga_url: string): Observable<any>{
+  guardarMangaInfo(manga_url: string, srcInfoName: string): Observable<any>{
     const body = {
-      url: manga_url
+      url: manga_url,
+      srcInfoName: srcInfoName
     }
     const url = `${this.backend}/saveMangaInfo`;
     return this.http.post<any>(url,body);
   }
 
-  obtenerFuentes(): Observable<Array<string>>{
+  obtenerFuentes(): Observable<Array<any>>{
     const url = `${this.backend}/getMangaEndpoints`;
+    return this.http.get<any>(url);
+  }
+
+  obtenerFuentesInfo(): Observable<Array<any>>{
+    const url = `${this.backend}/getMangaInfoEndpoints`;
     return this.http.get<any>(url);
   }
 
@@ -69,9 +83,19 @@ export class MangaApiService {
     const url = `${this.backend}/getMangaChapters`;
     return this.http.post<any>(url,body);
   }
-
-  obtenerLinksCapitulo(fuenteNombre: string, capituloURL: string): Observable<any>{
+  
+  obtenerCapitulosCacheados(mangaID: number): Observable<any>{
     const body = {
+      mangaID: mangaID
+    }
+    const url = `${this.backend}/getCachedChapters`;
+    return this.http.post<any>(url,body);
+  }
+
+  obtenerLinksCapitulo(nombreCapitulo: string, mangaID: number, fuenteNombre: string, capituloURL: string): Observable<any>{
+    const body = {
+      chapterName: nombreCapitulo,
+      mangaID: mangaID,
       source: fuenteNombre,
       url: capituloURL
     }
@@ -160,6 +184,22 @@ export class MangaApiService {
       srcName: srcName
     }
     const url = `${this.backend}/insertMangaDB`;
+    return this.http.post<any>(url,body);
+  }
+
+  habilitarFuente(fuenteNombre: string): Observable<any> { 
+    const body = {
+      endpoint: fuenteNombre
+    }
+    const url = `${this.backend}/enableEndpoint`;
+    return this.http.post<any>(url,body);
+  }
+  
+  deshabilitarFuente(fuenteNombre: string): Observable<any> { 
+    const body = {
+      endpoint: fuenteNombre
+    }
+    const url = `${this.backend}/disableEndpoint`;
     return this.http.post<any>(url,body);
   }
 }

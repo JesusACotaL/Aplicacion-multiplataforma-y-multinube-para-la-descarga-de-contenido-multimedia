@@ -24,6 +24,7 @@ export class AccountComponent implements OnInit {
   historial: Array<any> = []
   favoritos: Array<any> = []
   topmangas = [] as any
+  usergenres = [] as any
   profilePicture= '';
   backend = environment.mainMangaAPI;
   
@@ -75,13 +76,17 @@ export class AccountComponent implements OnInit {
       this.obtenerTopMangas();
       resolve();
     });
+    await new Promise<void>(resolve => {
+      this.obtenerGeneros();
+      resolve();
+    });
   }
 
   verManga(id: any) {
     return '/manga?id='+id.toString()
   }
-  verMangaLink(url: string) {
-    return '/manga?' + new URLSearchParams({id: url}).toString()
+  verMangaLink(url: string, srcInfoName: string) {
+    return '/manga?' + new URLSearchParams({id: url, srcInfoName: srcInfoName}).toString()
   }
 
   volver() {
@@ -122,12 +127,23 @@ export class AccountComponent implements OnInit {
   
   obtenerGeneros() {
     this.userService.getUserGenres(this.user!.uid).subscribe( async (genres: Array<any>) => {
+      let newgenres = []
       for (const genre of genres) {
+        let newgenre: any = {}
+        newgenre.nombre = genre;
+        newgenre.mangas = []
+        newgenres.push(newgenre)
+      }
+      this.usergenres = newgenres;
+      for (const genero of this.usergenres) {
         await new Promise<void>(resolve => {
-          // Implementar busqueda por genero para continuar aqui
-          resolve();
+          this.mangaAPI.buscarGeneroLocalDB(genero.nombre).subscribe( (mangas) => {
+            genero.mangas = mangas;
+            resolve();
+          });
         });
       }
+      
     });
   }
 

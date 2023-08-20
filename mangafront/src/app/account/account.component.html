@@ -12,7 +12,7 @@
                 <i class="bi bi-arrow-left"></i>
             </button>
             <div class="lista-mangas" id="historyMangas">
-                <a *ngFor="let manga of historial" class="card bg-dark manga" [href]="verMangaLink(manga.originURL)">
+                <a *ngFor="let manga of historial" class="card bg-dark manga" [href]="verMangaLink(manga.originURL, manga.srcName)">
                     <img [src]="manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
                     <div class="card-body d-flex flex-column p-0">
                         <div class="p-2">
@@ -26,6 +26,29 @@
             </button>
         </div>
     </div>
+
+    <div class="listaMangasDiv" *ngIf="favoritos.length > 0">
+        <h4>Bookmarks</h4>
+        <div class="listaMangasContainer">
+            <button class="arrow arrowLeft" (click)="desplazarLista('bookmarksMangas',true)" style="border: none; color: white;">
+                <i class="bi bi-arrow-left"></i>
+            </button>
+            <div class="lista-mangas" id="bookmarksMangas">
+                <a *ngFor="let manga of favoritos" class="card bg-dark manga" [href]="verMangaLink(manga.originURL, manga.srcName)">
+                    <img [src]="manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
+                    <div class="card-body d-flex flex-column p-0">
+                        <div class="p-2">
+                            <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga.name}}</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <button class="arrow arrowRight" (click)="desplazarLista('bookmarksMangas',false)" style="border: none; color: white;">
+                <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
     <div class="listaMangasDiv" *ngIf="recomendados.length > 0">
         <h4>Recommended for you</h4>
         <div class="listaMangasContainer">
@@ -47,27 +70,31 @@
             </button>
         </div>
     </div>
-    <div class="listaMangasDiv" *ngIf="favoritos.length > 0">
-        <h4>Bookmarks</h4>
-        <div class="listaMangasContainer">
-            <button class="arrow arrowLeft" (click)="desplazarLista('bookmarksMangas',true)" style="border: none; color: white;">
-                <i class="bi bi-arrow-left"></i>
-            </button>
-            <div class="lista-mangas" id="bookmarksMangas">
-                <a *ngFor="let manga of favoritos" class="card bg-dark manga" [href]="verMangaLink(manga.originURL)">
-                    <img [src]="manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
-                    <div class="card-body d-flex flex-column p-0">
-                        <div class="p-2">
-                            <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga.name}}</h5>
+
+    <div *ngIf="usergenres.length > 0">
+        <div class="listaMangasDiv" *ngFor="let genre of usergenres">
+            <h4>{{genre.nombre}}</h4>
+            <div class="listaMangasContainer">
+                <button class="arrow arrowLeft" (click)="desplazarLista('topsiteMangas',true)" style="border: none; color: white;">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+                <div class="lista-mangas" id="topsiteMangas">
+                    <a *ngFor="let manga of genre.mangas" class="card bg-dark manga" [href]="verManga(manga.id)">
+                        <img [src]="backend + manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
+                        <div class="card-body d-flex flex-column p-0">
+                            <div class="p-2">
+                                <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga.name}}</h5>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
+                <button class="arrow arrowRight" (click)="desplazarLista('topsiteMangas',false)" style="border: none; color: white;">
+                    <i class="bi bi-arrow-right"></i>
+                </button>
             </div>
-            <button class="arrow arrowRight" (click)="desplazarLista('bookmarksMangas',false)" style="border: none; color: white;">
-                <i class="bi bi-arrow-right"></i>
-            </button>
         </div>
     </div>
+
     <div class="listaMangasDiv" *ngIf="topmangas.length > 0">
         <h4>Top site mangas</h4>
         <div class="listaMangasContainer">
@@ -75,7 +102,7 @@
                 <i class="bi bi-arrow-left"></i>
             </button>
             <div class="lista-mangas" id="topsiteMangas">
-                <a *ngFor="let manga of topmangas" class="card bg-dark manga" [href]="verMangaLink(manga.originURL)">
+                <a *ngFor="let manga of topmangas" class="card bg-dark manga" [href]="verMangaLink(manga.originURL, manga.srcName)">
                     <img [src]="manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
                     <div class="card-body d-flex flex-column p-0">
                         <div class="p-2">

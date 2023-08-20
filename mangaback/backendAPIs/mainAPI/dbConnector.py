@@ -8,11 +8,7 @@ import math
 
 # Local storage folder
 folder = 'mangaDB'
-if not os.path.exists(folder):
-    os.makedirs(folder)
 chaptersFolder = 'chapterCache'
-if not os.path.exists(folder+os.sep+chaptersFolder):
-    os.makedirs(folder+os.sep+chaptersFolder)
 
 # Create connection
 # SQLITE only allows a single thread (since it's only one file), so we inform it that we want to use it as an import
@@ -21,11 +17,16 @@ con = sqlite3.connect("mangas.db", check_same_thread=False)
 cursor = con.cursor()
 
 def recreateDatabase():
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    if not os.path.exists(folder+os.sep+chaptersFolder):
+        os.makedirs(folder+os.sep+chaptersFolder)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS manga(
             id INTEGER PRIMARY KEY,
             name TEXT,
             originURL TEXT,
+            srcName TEXT,
             date TEXT,
             status TEXT,
             score TEXT,
@@ -41,6 +42,8 @@ def recreateDatabase():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS chapter(
             id INTEGER PRIMARY KEY,
+            chapterName TEXT,
+            mangaID INTEGER,
             chapterURL TEXT,
             srcName TEXT,
             images TEXT
@@ -95,16 +98,17 @@ def formatAsManga(data):
     manga['id'] = manga['id'][0] # Stupid sqlite threats id as tuple only when saving value, why?
     manga['name'] = data[1]
     manga['originURL'] = data[2]
-    manga['date'] = data[3]
-    manga['status'] = data[4]
-    manga['score'] = data[5]
+    manga['srcName'] = data[3]
+    manga['date'] = data[4]
+    manga['status'] = data[5]
+    manga['score'] = data[6]
     manga['popularity_rank'] = data[6]
-    manga['site'] = data[7]
-    manga['background'] = data[8]
-    manga['img'] = data[9]
-    manga['genres'] = json.loads(data[10])
-    manga['authors'] = json.loads(data[11])
-    manga['characters'] = json.loads(data[12])
+    manga['site'] = data[8]
+    manga['background'] = data[9]
+    manga['img'] = data[10]
+    manga['genres'] = json.loads(data[11])
+    manga['authors'] = json.loads(data[12])
+    manga['characters'] = json.loads(data[13])
     return manga
 
 def cacheImage(imageURL):
@@ -118,19 +122,21 @@ def cacheImage(imageURL):
 
 def convertImagesToLocal(manga):
     # Manga Portrait
-    res = requests.get(manga['img'])
-    res.raise_for_status()
-    imageBytes = res.content
-    unique_filename = str(uuid.uuid4()) + '.jpg'
-    with open(folder + os.sep + unique_filename, 'wb') as f:
-        f.write(imageBytes)
-    manga['img']= '/mangaDB/' + unique_filename
+    if(manga['img'] != ''):
+        res = requests.get(manga['img'])
+        res.raise_for_status()
+        imageBytes = res.content
+        unique_filename = str(uuid.uuid4()) + '.jpg'
+        with open(folder + os.sep + unique_filename, 'wb') as f:
+            f.write(imageBytes)
+        manga['img']= '/mangaDB/' + unique_filename
     # Characters images
     characters = manga['characters']
     newcharacters = []
     for character in characters:
         url = character['image']
-        character['image'] = cacheImage(url)
+        if(url != ''):
+            character['image'] = cacheImage(url)
         newcharacters.append(character)
     manga['characters']=newcharacters
     return manga
@@ -151,6 +157,7 @@ def insertManga(manga):
             INSERT INTO manga (
                 name,
                 originURL,
+                srcName,
                 date,
                 status,
                 score,
@@ -162,11 +169,12 @@ def insertManga(manga):
                 authors,
                 characters
             ) VALUES 
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             [
                 manga['name'],
                 manga['originURL'],
+                manga['srcName'],
                 manga['date'],
                 manga['status'],
                 manga['score'],
@@ -217,6 +225,17 @@ def searchManga(manga, safeSearch=False):
             mangas.append(manga)
     return mangas
 
+def searchGenre(genre):
+    res = cursor.execute("""
+    SELECT * FROM manga WHERE genres LIKE ?
+    """, [ '%'+genre+'%' ])
+    data = res.fetchall()
+    mangas = []
+    for manga in data:
+        manga = formatAsManga(manga)
+        mangas.append(manga)
+    return mangas
+
 def getLocalDBMeta():
     def get_tree_size(path):
         """Return total size of files in given path and subdirs."""
@@ -260,14 +279,29 @@ def checkIfChapterExists(chapterURL):
         return images
     return False
 
-def insertChapter(chapterURL, srcName, images):
+def insertChapter(chapterName, mangaID, chapterURL, srcName, images):
     res = cursor.execute("""
     SELECT * FROM chapter WHERE chapterURL = ?
     """,[chapterURL])
     data = res.fetchone()
     if(not data):
-        cursor.execute("INSERT INTO chapter (chapterURL, srcName, images) VALUES (?, ?, ?)",[chapterURL, srcName, images])
+        cursor.execute("INSERT INTO chapter (chapterName, mangaID, chapterURL, srcName, images) VALUES (?, ?, ?, ?, ?)",[chapterName, mangaID, chapterURL, srcName, images])
         con.commit()
+
+def getCachedChapters(mangaID):
+    res = cursor.execute("""
+    SELECT chapterName, srcName, chapterURL FROM chapter WHERE mangaID = ?
+    """,[mangaID])
+    data = res.fetchall()
+    chapters = []
+    if(data):
+        for chap in data:
+            c = {}
+            c['name'] = chap[0]
+            c['srcName'] = chap[1]
+            c['url'] = chap[2]
+            chapters.append(c)
+    return chapters
 
 def checkIfCachedImage(imageURL):
     """

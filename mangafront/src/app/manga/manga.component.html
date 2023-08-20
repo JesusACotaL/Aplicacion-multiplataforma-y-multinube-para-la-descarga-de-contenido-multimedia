@@ -7,19 +7,14 @@
     </div>
     <div class="manga-contenedor">
         <div *ngIf="manga.name" class="resumen">
-            <div class="logotipo">
-                <img [src]="backend + manga.img" alt="" class="img-fluid">
-            </div>
+            <img [src]="backend + manga.img" alt="" class="logotipo">
             <div class="informacion">     
-                <h5>Ranking {{manga.popularity_rank}}</h5>
+                <span>
+                    Top
+                    <span style="font-weight: bold;">{{manga.popularity_rank}}</span>
+                </span>
                 <span>{{manga.score}} <i class="bi bi-star-fill"></i></span>
-                <span>By: {{manga.authors}}</span>
-                <span>{{manga.genres}}</span>
-                <span>{{manga.date}}</span>
-                <span>Status: {{manga.status}}</span>
-                <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
-                <a [href]="manga.originURL" target="_blank">Visit original source <i class="bi bi-box-arrow-up-right"></i></a>
-                <div *ngIf="user" style="margin-top: .5rem;">
+                <div *ngIf="user">
                     <span>Your rating: {{userRating}}</span>
                     <div class="rating">
                         <form>
@@ -38,6 +33,21 @@
                         </form>
                     </div>
                 </div>
+                <div class="genres">
+                    <a [href]="'/genre/'+genre" *ngFor="let genre of manga.genres" class="genre btn btnPrimary">{{genre}}</a>
+                </div>
+                <div>
+                    <span>Authors: </span>
+                    <ul style="margin: 0;">
+                        <li *ngFor="let author of manga.authors">{{author}}</li>
+                    </ul>
+                </div>
+                <a *ngIf="manga.site" [href]="manga.site" target="_blank">Oficial site <i class="bi bi-box-arrow-up-right"></i></a>
+                <a [href]="manga.originURL" target="_blank">Visit original source <i class="bi bi-box-arrow-up-right"></i></a>
+                <div class="status">
+                    <span>Status:</span>
+                    <span>{{manga.status}}</span>
+                </div>
             </div>
         </div>
         <div class="capitulos">
@@ -52,11 +62,18 @@
                     <div class="sourceSelector">
                         <span>Choose a source to read this manga: </span>
                         <select #fuenteFiltro class="form-select" (change)="filtrarFuentesPorNombre(fuenteFiltro.value)">
-                            <option [selected]="fuenteActual==fuente" *ngFor="let fuente of fuentesNombres;let i=index; first as isFirst" [value]="fuente">{{fuente}}</option>
+                            <option [selected]="fuenteActual==fuente" *ngFor="let fuente of fuentes;let i=index; first as isFirst" [value]="fuente.name">{{fuente.name}}</option>
                         </select>
                     </div>
-                    <div class="fuentes" *ngIf="fuentesFiltradas.length > 0">
-                        <div class="fuenteManga" *ngFor="let fuente of fuentesFiltradas" (click)="obtenerCapitulos(fuente.srcName, fuente.chapters_url)">
+                    <div class="fuentes" *ngIf="mangaLinksFiltrados.length > 0">
+                        <div *ngIf="capitulosCacheados.length > 0" class="fuenteManga fuenteLocal" (click)="verCapitulosCacheados()" style="height: 72px;">
+                            <img [src]="backend + manga.img" alt="" width="50">
+                            <div style="display: flex; flex-direction: column; justify-content: center;">
+                                <span>Viewed Chapters cache</span>
+                                <span>(Chapters already in app database)</span>
+                            </div>
+                        </div>
+                        <div class="fuenteManga" *ngFor="let fuente of mangaLinksFiltrados" (click)="obtenerCapitulos(fuente.srcName, fuente.chapters_url)">
                             <img [src]="fuente.image_url" alt="" width="50">
                             <div style="display: flex; flex-direction: column; justify-content: center;">
                                 <span>{{fuente.name}}</span>
@@ -64,7 +81,7 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="fuentesFiltradas.length <= 0" style="height: 10rem;display: flex;align-items: center;">
+                    <div *ngIf="mangaLinksFiltrados.length <= 0" style="height: 10rem;display: flex;align-items: center;">
                         <h5>Oops! Sorry, we couldn't find this manga in this source :(</h5>
                     </div>
                 </div>

@@ -10,3 +10,36 @@
 .manga:hover {
   transform: scale(1.1);
 }
+
+.loadBtn {
+  border: none;
+  background: none;
+  color: var(--text-color);
+}
+
+.listaMangas {
+  display: grid; 
+  grid-template-columns: repeat(auto-fit,12rem); 
+  justify-content: space-evenly; 
+  gap: 2rem; 
+  width: 100%;
+}
+
+.fuenteBusqueda {
+  margin-bottom: 1rem;
+  transition: all 1s;
+}
+
+#saveToDBModallogContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: black; 
+  color: white; 
+  font-family: Consolas; 
+  width: 100%; 
+  word-wrap: break-word;
+  font-size: 10px;
+  min-height: 100px;
+  max-height: 100px;
+  overflow-y: scroll; 
+}

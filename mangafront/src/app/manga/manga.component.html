@@ -66,7 +66,7 @@
                         </select>
                     </div>
                     <div class="fuentes" *ngIf="mangaLinksFiltrados.length > 0">
-                        <div *ngIf="capitulosCacheados.length > 0" class="fuenteManga bg-danger" (click)="verCapitulosCacheados()" style="height: 72px;">
+                        <div *ngIf="capitulosCacheados.length > 0" class="fuenteManga fuenteLocal" (click)="verCapitulosCacheados()" style="height: 72px;">
                             <img [src]="backend + manga.img" alt="" width="50">
                             <div style="display: flex; flex-direction: column; justify-content: center;">
                                 <span>Viewed Chapters cache</span>

@@ -82,9 +82,15 @@
     margin-top: .2rem;
     color: white;
 }
-
 .fuenteManga:hover {
     background-color: var(--button-color);
+}
+
+.fuenteLocal {
+    background-color: #dc3545;
+}
+.fuenteLocal:hover {
+    background-color: #e45361;
 }
 
 .info-adicional {

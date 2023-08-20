@@ -8,11 +8,7 @@ import math
 
 # Local storage folder
 folder = 'mangaDB'
-if not os.path.exists(folder):
-    os.makedirs(folder)
 chaptersFolder = 'chapterCache'
-if not os.path.exists(folder+os.sep+chaptersFolder):
-    os.makedirs(folder+os.sep+chaptersFolder)
 
 # Create connection
 # SQLITE only allows a single thread (since it's only one file), so we inform it that we want to use it as an import
@@ -21,6 +17,10 @@ con = sqlite3.connect("mangas.db", check_same_thread=False)
 cursor = con.cursor()
 
 def recreateDatabase():
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    if not os.path.exists(folder+os.sep+chaptersFolder):
+        os.makedirs(folder+os.sep+chaptersFolder)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS manga(
             id INTEGER PRIMARY KEY,
@@ -42,6 +42,8 @@ def recreateDatabase():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS chapter(
             id INTEGER PRIMARY KEY,
+            chapterName TEXT,
+            mangaID INTEGER,
             chapterURL TEXT,
             srcName TEXT,
             images TEXT
@@ -277,14 +279,29 @@ def checkIfChapterExists(chapterURL):
         return images
     return False
 
-def insertChapter(chapterURL, srcName, images):
+def insertChapter(chapterName, mangaID, chapterURL, srcName, images):
     res = cursor.execute("""
     SELECT * FROM chapter WHERE chapterURL = ?
     """,[chapterURL])
     data = res.fetchone()
     if(not data):
-        cursor.execute("INSERT INTO chapter (chapterURL, srcName, images) VALUES (?, ?, ?)",[chapterURL, srcName, images])
+        cursor.execute("INSERT INTO chapter (chapterName, mangaID, chapterURL, srcName, images) VALUES (?, ?, ?, ?, ?)",[chapterName, mangaID, chapterURL, srcName, images])
         con.commit()
+
+def getCachedChapters(mangaID):
+    res = cursor.execute("""
+    SELECT chapterName, srcName, chapterURL FROM chapter WHERE mangaID = ?
+    """,[mangaID])
+    data = res.fetchall()
+    chapters = []
+    if(data):
+        for chap in data:
+            c = {}
+            c['name'] = chap[0]
+            c['srcName'] = chap[1]
+            c['url'] = chap[2]
+            chapters.append(c)
+    return chapters
 
 def checkIfCachedImage(imageURL):
     """

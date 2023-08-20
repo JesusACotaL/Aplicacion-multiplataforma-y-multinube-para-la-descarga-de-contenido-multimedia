@@ -83,9 +83,19 @@ export class MangaApiService {
     const url = `${this.backend}/getMangaChapters`;
     return this.http.post<any>(url,body);
   }
-
-  obtenerLinksCapitulo(fuenteNombre: string, capituloURL: string): Observable<any>{
+  
+  obtenerCapitulosCacheados(mangaID: number): Observable<any>{
     const body = {
+      mangaID: mangaID
+    }
+    const url = `${this.backend}/getCachedChapters`;
+    return this.http.post<any>(url,body);
+  }
+
+  obtenerLinksCapitulo(nombreCapitulo: string, mangaID: number, fuenteNombre: string, capituloURL: string): Observable<any>{
+    const body = {
+      chapterName: nombreCapitulo,
+      mangaID: mangaID,
       source: fuenteNombre,
       url: capituloURL
     }

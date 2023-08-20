@@ -23,6 +23,8 @@ export class MangaModalComponent implements OnInit {
   fuenteActualNombre = ""
   fuenteActualURL = ""
   backend = environment.mainMangaAPI;
+
+  mangaID: number = -1;
   
   constructor(private mangaAPI: MangaApiService, private router: Router, private route: ActivatedRoute) {}
 
@@ -32,15 +34,16 @@ export class MangaModalComponent implements OnInit {
     this.obtenerParametroCalidad();
   }
   
-  mostrar(nombreEpisodio: string, fuenteNombre: string, fuente:string) {
+  mostrar(mangaID:number, nombreEpisodio: string, fuenteNombre: string, fuente:string) {
     if(fuente != '' && this.div) {
       this.mangaModal.show();
       this.div.innerHTML = '';
+      this.mangaID = mangaID;
       this.fuenteActualNombre = fuenteNombre;
       this.fuenteActualURL = fuente;
+      this.titulo = nombreEpisodio;
       this.cargarImagenes();
     }
-    this.titulo = nombreEpisodio;
     this.mostrando = true;
   }
 
@@ -79,7 +82,7 @@ export class MangaModalComponent implements OnInit {
     const fuente_nombre = this.fuenteActualNombre; 
     const url = this.fuenteActualURL;
     this.obteniendoLinks = true;
-    this.mangaAPI.obtenerLinksCapitulo(fuente_nombre, url).subscribe( async (imagenes: Array<any>) => {
+    this.mangaAPI.obtenerLinksCapitulo(this.titulo, this.mangaID, fuente_nombre, url).subscribe( async (imagenes: Array<any>) => {
       this.cargadas = 0;
       this.total = imagenes.length;
       this.obteniendoLinks = false;

@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
 })
 export class MangaComponent implements OnInit {
   manga = {} as Manga
-  capitulos = [];
+  capitulos: any = [];
   cargando = true;
   seleccionandoManga = false;
   capitulosPorPagina = 6;
@@ -32,6 +32,8 @@ export class MangaComponent implements OnInit {
   mangaLinks: any[] = []
   mangaLinksFiltrados: any[] = []
   fuenteActual: any = {}
+
+  capitulosCacheados: any[] = []
 
   mainPlot: Array<MangaCharacter> = []
   additionalCharacters: Array<MangaCharacter> = []
@@ -59,16 +61,9 @@ export class MangaComponent implements OnInit {
           // Agregar vista a TopMangas
           this.mangaAPI.agregarBusquedaPopular(manga).subscribe(() => {});
           
-          
-          // Cargar visor de episodios si se selecciono ya uno
-          const src = parametros['src'];
-          const srcName = parametros['srcName'];
-          if(src && srcName) {
-            this.obtenerCapitulos(srcName, src);
-          } else {
-            // Obtener lista de fuentes disponibles de backend
-            this.obtenerFuentes();
-          }
+          // Obtener lista de fuentes disponibles de backend
+          this.obtenerCapitulosCacheados();
+          this.obtenerFuentes();
 
           // Iniciar sesion
           this.userService.getAuth().onAuthStateChanged((user) => {
@@ -93,6 +88,13 @@ export class MangaComponent implements OnInit {
 
     });
 
+  }
+
+  obtenerCapitulosCacheados() {
+    // Obtener episodios cacheados si existen
+    this.mangaAPI.obtenerCapitulosCacheados(this.manga.id).subscribe((capitulos)=>{
+      this.capitulosCacheados = capitulos;
+    });
   }
 
   obtenerFuentes() {
@@ -149,7 +151,7 @@ export class MangaComponent implements OnInit {
   }
 
   regresarAfuentes() {
-    window.history.pushState( {} , '', '/manga?id='+this.manga.id );
+    this.obtenerCapitulosCacheados();
     this.seleccionandoManga = true;
     if(this.mangaLinksFiltrados.length < 1) {
       this.seleccionandoManga = false;
@@ -158,8 +160,17 @@ export class MangaComponent implements OnInit {
     }
   }
 
+  verCapitulosCacheados() {
+    this.seleccionandoManga = false;
+    this.capitulos = this.capitulosCacheados;
+    this.filtrados = this.capitulos;
+    const cantPaginas = this.capitulos.length / this.capitulosPorPagina;
+    for (let i = 0; i < cantPaginas; i++) {
+      this.paginas.push(i+1);
+    }
+  }
+
   obtenerCapitulos(fuente_nombre:string, fuente_url: string) {
-    window.history.pushState( {} , '', '/manga?id='+this.manga.id+'&'+ new URLSearchParams({srcName: fuente_nombre, src: fuente_url}).toString() );
     this.seleccionandoManga = false;
     this.cargando = true;
     this.mangaAPI.obtenerCapitulos(fuente_nombre,fuente_url).subscribe( (capitulos) => {
@@ -191,7 +202,7 @@ export class MangaComponent implements OnInit {
     if(this.user) {
       this.userService.addToHistory(this.user.uid, this.manga).subscribe( () => {});
     }
-    this.mangaModal.mostrar(titulo, fuenteNombre, episodioURL);
+    this.mangaModal.mostrar(this.manga.id, titulo, fuenteNombre, episodioURL);
   }
 
   verPagina(pagina: number) {

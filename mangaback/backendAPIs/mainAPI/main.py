@@ -279,6 +279,14 @@ def findMangaInEndpoint():
                 print("Endpoint failure: " + endpoint["name"])
     return mangas
 
+@app.post("/mangaAPI/getCachedChapters")
+def getCachedChapters():
+    data = request.json
+    mangaID = data['mangaID']
+    # Get any cached chapters first on the list
+    cachedChapters = dbConnector.getCachedChapters(mangaID)
+    return cachedChapters
+
 @app.post("/mangaAPI/getMangaChapters")
 def getMangaChapters():
     data = request.json
@@ -305,6 +313,8 @@ def getMangaChapters():
 @app.post("/mangaAPI/getChapterURLS")
 def getChapterURLS():
     data = request.json
+    chapterName = data['chapterName']
+    mangaID = data['mangaID']
     url = data['url']
     sourceName = data['source']
     body = {"url": url}
@@ -326,7 +336,7 @@ def getChapterURLS():
                 result = json.loads(res.content)
                 if(type(result) is list):
                     temp = result
-                    dbConnector.insertChapter(data['url'], sourceName, json.dumps(temp)) # Cache chapter
+                    dbConnector.insertChapter(chapterName, mangaID, data['url'], sourceName, json.dumps(temp)) # Cache chapter
                     for i in temp:
                         tempRes = {}
                         tempRes['url'] = i

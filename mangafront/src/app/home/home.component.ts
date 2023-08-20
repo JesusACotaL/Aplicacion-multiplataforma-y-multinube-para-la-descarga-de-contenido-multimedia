@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/search',this.manga]);
   }
 
-  verMangaLink(url: string) {
-    return '/manga?' + new URLSearchParams({id: url}).toString()
+  verMangaLink(url: string, srcInfoName: string) {
+    return '/manga?' + new URLSearchParams({id: url, srcInfoName: srcInfoName}).toString()
   }
 }

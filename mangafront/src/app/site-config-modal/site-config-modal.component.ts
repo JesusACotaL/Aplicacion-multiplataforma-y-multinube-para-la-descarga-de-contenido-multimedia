@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as bootstrap from 'bootstrap';
 import { MangaApiService } from '../services/manga-api.service';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { SourceConfigModalComponent } from '../source-config-modal/source-config-modal.component';
 
 @Component({
   selector: 'app-site-config-modal',
@@ -20,6 +21,9 @@ export class SiteConfigModalComponent implements OnInit {
   backend = environment.mainMangaAPI
   filling = false
   mangaFetchAmount = 100
+  remainingAmount = 0
+
+  @ViewChild('srcConfigModal', { static: false }) srcConfigModal!: SourceConfigModalComponent;
 
   constructor(private mangaAPI: MangaApiService, router: Router) {
   }
@@ -35,6 +39,8 @@ export class SiteConfigModalComponent implements OnInit {
     const backgroundImg = localStorage.getItem('backgroundImg');
     if(backgroundImg)
       this.setBackgroundImg(backgroundImg);
+    else
+      this.setBackgroundImg('assets/fondo.jpg')
   }
 
   mostrar() {
@@ -142,6 +148,7 @@ export class SiteConfigModalComponent implements OnInit {
     logContainer?.append(span.cloneNode(true));
     this.mangaAPI.obtenerTopMangasFuentes(this.mangaFetchAmount).subscribe(async (mangas) => {
       span.innerText = `Found ${mangas.length} mangas.`
+      this.remainingAmount = mangas.length
       logContainer?.append(span.cloneNode(true));
       const delay = (ms:any) => new Promise(res => setTimeout(res, ms));
       for (const manga of mangas) {
@@ -154,6 +161,7 @@ export class SiteConfigModalComponent implements OnInit {
               resolve();
             })
           });
+          this.remainingAmount = this.remainingAmount - 1;
           await delay(2000);
         }
       }

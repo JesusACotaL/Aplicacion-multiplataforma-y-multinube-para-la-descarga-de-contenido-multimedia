@@ -18,21 +18,25 @@ mangaEndpoints = []
 mangaInfoEndpoints = [
     {
         "name": "myanimelist",
-        "url": "http://127.0.0.1:5001"
+        "url": "http://127.0.0.1:5001",
+        "enabled": True
     }
 ]
 mangaEndpoints = [
     {
         "name": "manganelo",
-        "url": "http://127.0.0.1:5002"
+        "url": "http://127.0.0.1:5002",
+        "enabled": True
     },
     {
         "name": "mangakakalottv",
-        "url": "http://127.0.0.1:5003"
+        "url": "http://127.0.0.1:5003",
+        "enabled": True
     },
     {
         "name": "mangakakalotcom",
-        "url": "http://127.0.0.1:5004"
+        "url": "http://127.0.0.1:5004",
+        "enabled": True
     }
 ]
 
@@ -79,22 +83,23 @@ def getTopMangasInSources():
     limit = int(data['limit'])
     topmangas = []
     for endpoint in mangaInfoEndpoints:
-        print("Getting top mangas for "+endpoint['name'])
-        body = {"limit": limit}
-        url = endpoint['url'] + "/getTopMangas"
-        res = requests.post(url, json=body)
-        res.raise_for_status()
-        result = json.loads(res.content)
-        if(type(result) == list):
-            results = []
-            for res in result:
-                data = {}
-                data['url'] = res
-                data['srcName'] = endpoint['name']
-                results.append(data)
-            topmangas = topmangas + results
-        time.sleep(1)
-    return topmangas
+        if(endpoint['enabled'] == True):
+            print("Getting top mangas for "+endpoint['name'])
+            body = {"limit": limit+50}
+            url = endpoint['url'] + "/getTopMangas"
+            res = requests.post(url, json=body)
+            res.raise_for_status()
+            result = json.loads(res.content)
+            if(type(result) == list):
+                results = []
+                for res in result:
+                    data = {}
+                    data['url'] = res
+                    data['srcName'] = endpoint['name']
+                    results.append(data)
+                topmangas = topmangas + results
+            time.sleep(1)
+    return topmangas[:limit]
 
 @app.post("/mangaAPI/insertMangaDB")
 def insertMangaDB():
@@ -102,7 +107,7 @@ def insertMangaDB():
     url = data['url']
     srcName = data['srcName']
     for endpoint in mangaInfoEndpoints:
-        if(endpoint['name'] == srcName):
+        if(endpoint['name'] == srcName and endpoint['enabled'] == True):
             print("Scrapping "+url+" ...",end="")
             time.sleep(1)
             requrl = endpoint['url'] + "/getMangaInfo"
@@ -113,6 +118,7 @@ def insertMangaDB():
             if(type(result) is dict):
                 manga = result
                 print("Saving to db...")
+                manga['srcName'] = srcName
                 dbConnector.insertManga(manga)
     return {'status':'done', 'totalMangas':dbConnector.getLocalDBMeta()['totalMangas']}
 
@@ -128,8 +134,14 @@ def searchMangaInLocalDB():
     data = request.json
     searchQuery = data['manga']
     safeSearch = data['safeSearch']
-    body = {"manga": searchQuery, "safeSearch":safeSearch}
     mangas = dbConnector.searchManga(searchQuery, safeSearch)
+    return mangas
+
+@app.post("/mangaAPI/searchGenreInLocalDB")
+def searchGenreInLocalDB():
+    data = request.json
+    searchQuery = data['genre']
+    mangas = dbConnector.searchGenre(searchQuery)
     return mangas
 
 @app.post("/mangaAPI/clearChapterCacheDB")
@@ -167,39 +179,41 @@ def getLocalDBmetadata():
 @app.post("/mangaAPI/searchManga")
 def searchManga():
     data = request.json
+    srcName = data['srcName']
     searchQuery = data['manga']
-    safeSearch = data['safeSearch']
-    body = {"manga": searchQuery, "safeSearch":safeSearch}
+    body = {"manga": searchQuery}
     mangas = []
     for endpoint in mangaInfoEndpoints:
-        try:
-            url = endpoint['url'] + "/searchManga"
-            res = requests.post(url, json=body)
-            res.raise_for_status()
-            result = json.loads(res.content)
-            if(type(result) is list):
-                sourceRes = {}
-                sourceRes['srcName'] = endpoint['name']
-                sourceRes['mangas'] = result[:25] # Only 25 results
-                mangas.append(sourceRes)
-        except:
-            print("Endpoint failure: " + endpoint["name"])
+        if (endpoint['name'] == srcName and endpoint['enabled'] == True):
+            try:
+                url = endpoint['url'] + "/searchManga"
+                res = requests.post(url, json=body)
+                res.raise_for_status()
+                result = json.loads(res.content)
+                if(type(result) is list):
+                    for manga in result:
+                        manga['srcName'] = endpoint['name']
+                    mangas = result[:25] # Only 25 results
+            except:
+                print("Endpoint failure: " + endpoint["name"])
     return mangas
 
 @app.post("/mangaAPI/saveMangaInfo")
 def saveMangaInfo():
     data = request.json
+    srcInfoName = data['srcInfoName']
     url = data['url']
     body = {"url": url}
     manga = {}
     for endpoint in mangaInfoEndpoints:
-        if endpoint['name'] == 'myanimelist':
+        if (endpoint['name'] == srcInfoName and endpoint['enabled'] == True):
             url = endpoint['url'] + "/getMangaInfo"
             res = requests.post(url, json=body)
             res.raise_for_status() 
             result = json.loads(res.content)
             if(type(result) is dict):
                 manga = result
+                manga['srcName'] = srcInfoName
                 id = dbConnector.insertManga(manga)
                 manga['id'] = id
     return manga
@@ -208,8 +222,39 @@ def saveMangaInfo():
 def getMangaEndpoints():
     endpoints = []
     for endpoint in mangaEndpoints:
-        endpoints.append(endpoint['name'])
+        endpoints.append(endpoint)
     return endpoints
+
+@app.get("/mangaAPI/getMangaInfoEndpoints")
+def getMangaInfoEndpoints():
+    endpoints = []
+    for endpoint in mangaInfoEndpoints:
+        endpoints.append(endpoint)
+    return endpoints
+
+@app.post("/mangaAPI/enableEndpoint")
+def enableEndpoint():
+    data = request.json
+    name = data['endpoint']
+    for endpoint in mangaEndpoints:
+        if(endpoint['name'] == name):
+            endpoint['enabled'] = True
+    for endpoint in mangaInfoEndpoints:
+        if(endpoint['name'] == name):
+            endpoint['enabled'] = True
+    return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
+
+@app.post("/mangaAPI/disableEndpoint")
+def disableEndpoint():
+    data = request.json
+    name = data['endpoint']
+    for endpoint in mangaEndpoints:
+        if(endpoint['name'] == name):
+            endpoint['enabled'] = False
+    for endpoint in mangaInfoEndpoints:
+        if(endpoint['name'] == name):
+            endpoint['enabled'] = False
+    return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
 
 @app.post("/mangaAPI/findMangaInEndpoint")
 def findMangaInEndpoint():
@@ -219,7 +264,7 @@ def findMangaInEndpoint():
     body = {"manga": searchQuery}
     mangas = []
     for endpoint in mangaEndpoints:
-        if(endpoint["name"] == sourceName):
+        if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
             try:
                 url = endpoint['url'] + "/searchManga"
                 res = requests.post(url, json=body)
@@ -234,6 +279,14 @@ def findMangaInEndpoint():
                 print("Endpoint failure: " + endpoint["name"])
     return mangas
 
+@app.post("/mangaAPI/getCachedChapters")
+def getCachedChapters():
+    data = request.json
+    mangaID = data['mangaID']
+    # Get any cached chapters first on the list
+    cachedChapters = dbConnector.getCachedChapters(mangaID)
+    return cachedChapters
+
 @app.post("/mangaAPI/getMangaChapters")
 def getMangaChapters():
     data = request.json
@@ -242,7 +295,7 @@ def getMangaChapters():
     body = {"url": url}
     chapters = []
     for endpoint in mangaEndpoints:
-        if(endpoint["name"] == sourceName):
+        if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
             try:
                 url = endpoint['url'] + "/getMangaChapters"
                 res = requests.post(url, json=body)
@@ -260,6 +313,8 @@ def getMangaChapters():
 @app.post("/mangaAPI/getChapterURLS")
 def getChapterURLS():
     data = request.json
+    chapterName = data['chapterName']
+    mangaID = data['mangaID']
     url = data['url']
     sourceName = data['source']
     body = {"url": url}
@@ -273,7 +328,7 @@ def getChapterURLS():
             images.append(tempRes)
         return images
     for endpoint in mangaEndpoints:
-        if(endpoint["name"] == sourceName):
+        if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
             try:
                 url = endpoint['url'] + "/getChapterURLS"
                 res = requests.post(url, json=body)
@@ -281,7 +336,7 @@ def getChapterURLS():
                 result = json.loads(res.content)
                 if(type(result) is list):
                     temp = result
-                    dbConnector.insertChapter(data['url'], sourceName, json.dumps(temp)) # Cache chapter
+                    dbConnector.insertChapter(chapterName, mangaID, data['url'], sourceName, json.dumps(temp)) # Cache chapter
                     for i in temp:
                         tempRes = {}
                         tempRes['url'] = i
@@ -300,7 +355,7 @@ def getChapterImage():
     cached = dbConnector.checkIfCachedImage(data['url'])
     if(not cached):
         for endpoint in mangaEndpoints:
-            if(endpoint["name"] == sourceName):
+            if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
                 urlreq = endpoint['url'] + "/getImageBlob"
                 body = {"url": data['url']}
                 res = requests.post(urlreq, json=body)
@@ -323,7 +378,7 @@ def getImageBlob():
     body = {"url": url}
     imageBlob = {}
     for endpoint in mangaEndpoints:
-        if(endpoint["name"] == sourceName):
+        if(endpoint["name"] == sourceName and endpoint['enabled'] == True):
             try:
                 url = endpoint['url'] + "/getImageBlob"
                 res = requests.post(url, json=body)
@@ -351,22 +406,25 @@ def addToTopManga():
     # Verify existance
     manga = db.collection('topmanga').where('name', '==', data['name']).get()
     if len(manga) == 0:
-        # Create url for image in firestore
-        # https://stackoverflow.com/questions/52451215/find-the-url-of-uploaded-file-firebase-storage-python#:~:text=You%20can%20get%20the%20public%20url%20with%20blob.public_url,blob%20%3D%20bucket.blob%20%28BLOB_PATH%29%20blob.upload_from_filename%20%28FILE_PATH%29%20print%20%28blob.public_url%29
-        filename = data['img'][1:] # Remove first backlash
-        with open(filename, mode='rb') as file:
-            fileContent = file.read()
-            unique_filename = str(uuid.uuid4()) + '.jpg'
-            filePath = 'mangaIMG/' + unique_filename;
-            bucket = storage.bucket('mango-ec7e1.appspot.com')
-            blob = bucket.blob(filePath)
-            blob.upload_from_string(fileContent, content_type="image/jpeg")
-            blob.make_public()
-            url = blob.public_url
+        # Create url for image in firestore if exists
+        url = ''
+        if(data['img'] != ''):
+            # https://stackoverflow.com/questions/52451215/find-the-url-of-uploaded-file-firebase-storage-python#:~:text=You%20can%20get%20the%20public%20url%20with%20blob.public_url,blob%20%3D%20bucket.blob%20%28BLOB_PATH%29%20blob.upload_from_filename%20%28FILE_PATH%29%20print%20%28blob.public_url%29
+            filename = data['img'][1:] # Remove first backlash
+            with open(filename, mode='rb') as file:
+                fileContent = file.read()
+                unique_filename = str(uuid.uuid4()) + '.jpg'
+                filePath = 'mangaIMG/' + unique_filename;
+                bucket = storage.bucket('mango-ec7e1.appspot.com')
+                blob = bucket.blob(filePath)
+                blob.upload_from_string(fileContent, content_type="image/jpeg")
+                blob.make_public()
+                url = blob.public_url
         newtopmanga = {
             'name': data['name'],
             'img': url,
             'originURL': data['originURL'],
+            'srcName': data['srcName'],
             'viewcount': 1
         }
         # Add with 1 view count
@@ -407,7 +465,7 @@ def getUserGenres():
     data = request.json
     uid = data['uid']
     userInput = getUserRatings(uid)
-    userGenres = obtener_generos(userInput)
+    userGenres = obtener_generos(userInput)[:5] # Max 5 genres
     return userGenres
 
 @app.post("/mangaAPI/user/getUserRecomendations")
@@ -486,24 +544,27 @@ def addMangaToBookmarks():
     bookmarks = db.collection('bookmarks').where('uid', '==', data['uid'])
     query = bookmarks.where('name', '==', data['name']).get()
     if len(query) == 0:
-        # Create url for image in firestore
+        # Create url for image in firestore if exists
         # https://stackoverflow.com/questions/52451215/find-the-url-of-uploaded-file-firebase-storage-python#:~:text=You%20can%20get%20the%20public%20url%20with%20blob.public_url,blob%20%3D%20bucket.blob%20%28BLOB_PATH%29%20blob.upload_from_filename%20%28FILE_PATH%29%20print%20%28blob.public_url%29
-        filename = data['img'][1:] # Remove first backlash
-        with open(filename, mode='rb') as file:
-            fileContent = file.read()
-            unique_filename = str(uuid.uuid4()) + '.jpg'
-            filePath = 'mangaIMG/' + unique_filename;
-            bucket = storage.bucket('mango-ec7e1.appspot.com')
-            blob = bucket.blob(filePath)
-            blob.upload_from_string(fileContent, content_type="image/jpeg")
-            blob.make_public()
-            url = blob.public_url
+        url = ''
+        if(data['img'] != ''):
+            filename = data['img'][1:] # Remove first backlash
+            with open(filename, mode='rb') as file:
+                fileContent = file.read()
+                unique_filename = str(uuid.uuid4()) + '.jpg'
+                filePath = 'mangaIMG/' + unique_filename;
+                bucket = storage.bucket('mango-ec7e1.appspot.com')
+                blob = bucket.blob(filePath)
+                blob.upload_from_string(fileContent, content_type="image/jpeg")
+                blob.make_public()
+                url = blob.public_url
         # Add
         newbookmark = {
             'uid': data['uid'],
             'name': data['name'],
             'img': url,
-            'originURL': data['originURL']
+            'originURL': data['originURL'],
+            'srcName': data['srcName']
         }
         db.collection('bookmarks').add(newbookmark)
     return {'result': str(data['id']) + ' added to bookmarks correctly'}
@@ -539,23 +600,26 @@ def addToHistory():
     history = db.collection('history').where('uid', '==', data['uid'])
     query = history.where('name', '==', data['name']).get()
     if len(query) == 0:
-        # Create url for image in firestore
+        # Create url for image in firestore if exists
         # https://stackoverflow.com/questions/52451215/find-the-url-of-uploaded-file-firebase-storage-python#:~:text=You%20can%20get%20the%20public%20url%20with%20blob.public_url,blob%20%3D%20bucket.blob%20%28BLOB_PATH%29%20blob.upload_from_filename%20%28FILE_PATH%29%20print%20%28blob.public_url%29
-        filename = data['img'][1:] # Remove first backlash
-        with open(filename, mode='rb') as file:
-            fileContent = file.read()
-            unique_filename = str(uuid.uuid4()) + '.jpg'
-            filePath = 'mangaIMG/' + unique_filename;
-            bucket = storage.bucket('mango-ec7e1.appspot.com')
-            blob = bucket.blob(filePath)
-            blob.upload_from_string(fileContent, content_type="image/jpeg")
-            blob.make_public()
-            url = blob.public_url
+        url = ''
+        if(data['img'] != ''):
+            filename = data['img'][1:] # Remove first backlash
+            with open(filename, mode='rb') as file:
+                fileContent = file.read()
+                unique_filename = str(uuid.uuid4()) + '.jpg'
+                filePath = 'mangaIMG/' + unique_filename;
+                bucket = storage.bucket('mango-ec7e1.appspot.com')
+                blob = bucket.blob(filePath)
+                blob.upload_from_string(fileContent, content_type="image/jpeg")
+                blob.make_public()
+                url = blob.public_url
         newhistory = {
             'uid': data['uid'],
             'name': data['name'],
             'img': url,
             'originURL': data['originURL'],
+            'srcName': data['srcName'],
             'datetime': now
         }
         # Add

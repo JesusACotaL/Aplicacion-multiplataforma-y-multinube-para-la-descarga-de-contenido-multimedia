@@ -2,54 +2,99 @@
 <div class="p-4">
     <div style="display: flex; align-items: center;">
         <span>Showing search results for: <span style="font-weight: bold;"> {{ mangaBuscado }} </span></span>
-        <div style="margin-left: auto;">
-            <span>
-                Safe search: 
-                <button type="button" class="btn btn-danger btn-sm" *ngIf="filtroAdulto" (click)="cambiarFiltroAdultos(false)">Yes</button>
-                <button type="button" class="btn btn-danger btn-sm" *ngIf="!filtroAdulto" (click)="cambiarFiltroAdultos(true)">No</button>
-            </span>
-        </div>
     </div>
     <hr>
     <div>
-        <div *ngIf="cargando">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
-                <div style="position: absolute; right: 50%+10rem;">Loading...</div>
-                <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
-            </div>
-        </div>
-        <div *ngIf="!cargando">
-            <div *ngIf="mangasEncontradosDBLocal.length > 0" style="margin-bottom: 1rem;">
-                <h4>App database</h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit,12rem); justify-content: space-evenly; gap: 2rem; width: 100%;">
-                    <a #listaMangas [href]="verManga(manga.id)"  *ngFor="let manga of mangasEncontradosDBLocal" class="card manga">
-                        <img [src]="backend + manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
-                        <div class="card-body d-flex flex-column p-0">
-                            <div class="p-2">
-                                <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga.name}}</h5>
-                            </div>
-                            <div class="btn btnPrimary mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</div>
+        <div class="fuenteBusqueda">
+            <nav>
+                <div style="display: flex;justify-content: center; align-items: center;">
+                    <h4>App database</h4>
+                    <div style="margin-left: auto;display: flex;justify-content:center;align-items:center">
+                        <span style="margin-right: 1rem;display: flex;justify-content:center;align-items:center;gap:1rem">
+                            Safe search: 
+                            <button type="button" class="btn btn-danger btn-sm" *ngIf="filtroAdulto" (click)="cambiarFiltroAdultos(false)">Yes</button>
+                            <button type="button" class="btn btn-danger btn-sm" *ngIf="!filtroAdulto" (click)="cambiarFiltroAdultos(true)">No</button>
+                        </span>
+                        <button type="button" class="loadBtn" *ngIf="listaLocal.style.display" (click)="listaLocal.removeAttribute('style'); buscarLocal();"><i class="bi bi-chevron-down"></i></button>
+                        <button type="button" class="loadBtn" *ngIf="!listaLocal.style.display" (click)="listaLocal.style.display = 'none'"><i class="bi bi-chevron-up"></i></button>
+                    </div>
+                </div>
+                <hr>
+            </nav>
+            <div class="listaMangas" #listaLocal>
+                <a [href]="verManga(manga.id)"  *ngFor="let manga of mangasEncontradosDBLocal" class="card manga">
+                    <img [src]="backend + manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
+                    <div class="card-body d-flex flex-column p-0">
+                        <div class="p-2">
+                            <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga.name}}</h5>
                         </div>
-                    </a>
+                        <div class="btn btnPrimary mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</div>
+                    </div>
+                </a>
+                <div *ngIf="cargandoLocal && mangasEncontradosDBLocal.length < 1">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
+                        <div style="position: absolute; right: 50%+10rem;">Loading...</div>
+                        <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
+                    </div>
+                </div>
+                <div *ngIf="!cargandoLocal && mangasEncontradosDBLocal.length < 1" class="text-center">
+                    No search results. Try on a source below.
                 </div>
             </div>
-            <div *ngFor="let fuente of fuentesInfo" style="margin-bottom: 1rem;">
-                <h4>Results from {{fuente.srcName}}</h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit,12rem); justify-content: space-evenly; gap: 2rem; width: 100%;">
-                    <a #listaMangas [href]="verMangaLink(manga.url)"  *ngFor="let manga of fuente.mangas" class="card manga">
-                        <img [src]="manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
-                        <div class="card-body d-flex flex-column p-0">
-                            <div class="p-2">
-                                <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga.name}}</h5>
-                            </div>
-                            <div class="btn btnPrimary mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</div>
+        </div>
+        <div class="fuenteBusqueda" *ngFor="let fuente of fuentesInfo">
+            <nav>
+                <div style="display: flex;justify-content: center; align-items: center;">
+                    <h4>{{fuente.nombre}}</h4>
+                    <div style="margin-left: auto;display: flex;justify-content:center;align-items:center;gap:1rem;">
+                        <button type="button" class="btn btn-sm btnPrimary" (click)="saveResultsToDB(fuente.mangasEncontrados)">💾 Save to DB</button>
+                        <button type="button" class="loadBtn" *ngIf="listaManga.style.display" (click)="listaManga.removeAttribute('style'); buscarFuente(fuente.nombre);"><i class="bi bi-chevron-down"></i></button>
+                        <button type="button" class="loadBtn" *ngIf="!listaManga.style.display" (click)="listaManga.style.display = 'none'"><i class="bi bi-chevron-up"></i></button>
+                    </div>
+                </div>
+                <hr>
+            </nav>
+            <div class="listaMangas" #listaManga style="display: none;">
+                <a [href]="verMangaLink(manga.url, manga.srcName)"  *ngFor="let manga of fuente.mangasEncontrados" class="card manga">
+                    <img [src]="manga.img" class="card-img-top" alt="..." style="background-color: white; height: 300px;">
+                    <div class="card-body d-flex flex-column p-0">
+                        <div class="p-2">
+                            <h5 class="card-title" style="font-size: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">{{manga.name}}</h5>
                         </div>
-                    </a>
+                        <div class="btn btnPrimary mx-auto w-100 mt-auto" style="border-top-left-radius: 0; border-top-right-radius: 0;">Watch</div>
+                    </div>
+                </a>
+                <div *ngIf="fuente.cargando && fuente.mangasEncontrados.length < 1">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
+                        <div style="position: absolute; right: 50%+10rem;">Loading...</div>
+                        <div style="width: 10rem; height: 10rem;" class="spinner-border" role="status" aria-hidden="true"></div>
+                    </div>
+                </div>
+                <div *ngIf="!fuente.cargando && fuente.mangasEncontrados.length < 1" class="text-center">
+                    No search results.
                 </div>
             </div>
         </div>
-        <div *ngIf="!cargando && mangasEncontrados.length < 1" class="text-center">
-            No search results.
+    </div>
+</div>
+<div class="modal fade" id="saveToDBModal">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered mx-auto">
+        <div class="modal-content bg-dark">
+            <div class="modal-header" style="background: var(--primary-color); color: var(--text-color); border: none;">
+                <h5 class="modal-title">Saving to manga database</h5>
+            </div>
+            <div class="modal-body" style="background: var(--secondary-color); color: var(--text-color);">
+                <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center;">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                        <span>Remaining manga amount: {{totalMangaToSave}}</span>
+                        <span>
+                            This operation will take a while.
+                        </span>
+                        <div id="saveToDBModallogContainer"></div>
+                    </div>
+                    <button type="button" class="btn btn-danger" *ngIf="filling" (click)="cancelFill()" data-bs-dismiss="modal">❌ Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

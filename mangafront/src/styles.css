@@ -7,7 +7,7 @@
     --button-color: hsl(var(--base-color), var(--base-saturation), 51%); 
     --button-hover-color: hsl(var(--base-color), var(--base-saturation), 60%); 
     --button-active-color: hsl(var(--base-color), var(--base-saturation), 70%);
-    --background: url('/assets/fondo.jpg');
+    --background: #212529;
     --text-color: #FFF;
 }
 
@@ -22,6 +22,8 @@ html, body {
     margin: 0;
     color: var(--text-color);
     position: relative;
+    background-color: #212529;
+    z-index: -2;
 }
 
 body::before {
@@ -33,7 +35,6 @@ body::before {
     display: block;
     width: 100%;
     height: 100%;
-    /* background-color: var(--background); */
     background: var(--background);
     background-position: center;
     background-size: cover;

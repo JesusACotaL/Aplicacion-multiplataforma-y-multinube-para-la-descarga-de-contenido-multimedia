@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
 })
 export class MangaComponent implements OnInit {
   manga = {} as Manga
-  capitulos = [];
+  capitulos: any = [];
   cargando = true;
   seleccionandoManga = false;
   capitulosPorPagina = 6;
@@ -29,9 +29,11 @@ export class MangaComponent implements OnInit {
   filtrados: any[] = [];
 
   fuentes: any[] = []
-  fuentesFiltradas: any[] = []
-  fuentesNombres: any[] = []
-  fuenteActual = ''
+  mangaLinks: any[] = []
+  mangaLinksFiltrados: any[] = []
+  fuenteActual: any = {}
+
+  capitulosCacheados: any[] = []
 
   mainPlot: Array<MangaCharacter> = []
   additionalCharacters: Array<MangaCharacter> = []
@@ -59,16 +61,9 @@ export class MangaComponent implements OnInit {
           // Agregar vista a TopMangas
           this.mangaAPI.agregarBusquedaPopular(manga).subscribe(() => {});
           
-          
-          // Cargar visor de episodios si se selecciono ya uno
-          const src = parametros['src'];
-          const srcName = parametros['srcName'];
-          if(src && srcName) {
-            this.obtenerCapitulos(srcName, src);
-          } else {
-            // Obtener lista de fuentes disponibles de backend
-            this.obtenerFuentes();
-          }
+          // Obtener lista de fuentes disponibles de backend
+          this.obtenerCapitulosCacheados();
+          this.obtenerFuentes();
 
           // Iniciar sesion
           this.userService.getAuth().onAuthStateChanged((user) => {
@@ -84,8 +79,9 @@ export class MangaComponent implements OnInit {
           });
         });
       } else {
+        const srcInfoName = parametros['srcInfoName'];
         // Guardar, luego cargar
-        this.mangaAPI.guardarMangaInfo(urlORid).subscribe( (manga: Manga) => {
+        this.mangaAPI.guardarMangaInfo(urlORid, srcInfoName).subscribe( (manga: Manga) => {
           this.router.navigateByUrl('/manga?id=' + manga.id.toString())
         });
       }
@@ -94,18 +90,38 @@ export class MangaComponent implements OnInit {
 
   }
 
+  obtenerCapitulosCacheados() {
+    // Obtener episodios cacheados si existen
+    this.mangaAPI.obtenerCapitulosCacheados(this.manga.id).subscribe((capitulos)=>{
+      this.capitulosCacheados = capitulos;
+    });
+  }
+
   obtenerFuentes() {
     // Get list of sources retrieved
-    this.mangaAPI.obtenerFuentes().subscribe((fuentesNombres: string[]) => {
-      this.fuentesNombres = fuentesNombres;
-      this.fuenteActual = this.fuentesNombres[0];
-      this.mangaAPI.buscarEnFuente(this.fuenteActual, this.manga.name).subscribe( (sources: any[]) => {
+    this.mangaAPI.obtenerFuentes().subscribe((fuentes: any[]) => {
+      let fuentesActivas = []
+      for (const f of fuentes) {
+        if(f.enabled)
+          fuentesActivas.push(f)
+      }
+      this.fuentes = fuentesActivas;
+      
+      // Set default source
+      this.fuenteActual = this.fuentes[0];
+      let fuenteDefault = localStorage.getItem('defaultSrc');
+      if(fuenteDefault)
+        for (const f of this.fuentes) {
+          if(f.name == fuenteDefault)
+          this.fuenteActual = f;
+        }
+      this.mangaAPI.buscarEnFuente(this.fuenteActual.name, this.manga.name).subscribe( (sources: any[]) => {
         // Order by string length (so we mix by similar results to query provided)
         // ASC  -> a.length - b.length
         // DESC -> b.length - a.length
         sources.sort((a, b) => a['name'].length - b['name'].length);
-        this.fuentes = sources;
-        this.fuentesFiltradas = this.fuentes;
+        this.mangaLinks = sources;
+        this.mangaLinksFiltrados = this.mangaLinks;
         this.cargando = false;
         this.seleccionandoManga = true;
       });
@@ -114,17 +130,20 @@ export class MangaComponent implements OnInit {
 
   filtrarFuentesPorNombre(fuenteNombre: string) {
     if(fuenteNombre == '') {
-      this.fuentesFiltradas = this.fuentes;
+      this.mangaLinksFiltrados = this.mangaLinks;
     } else {
       this.cargando = true;
       this.seleccionandoManga = false;
-      this.fuenteActual = fuenteNombre;
-      this.mangaAPI.buscarEnFuente(this.fuenteActual, this.manga.name).subscribe( (sources: any[]) => {
+      for (const fuente of this.fuentes) {
+        if(fuente.name == fuenteNombre)
+          this.fuenteActual = fuente;
+      }
+      this.mangaAPI.buscarEnFuente(this.fuenteActual.name, this.manga.name).subscribe( (sources: any[]) => {
         // Order by string length (so we mix by similar results to query provided)
         // ASC  -> a.length - b.length
         // DESC -> b.length - a.length
         sources.sort((a, b) => a['name'].length - b['name'].length);
-        this.fuentesFiltradas = sources;
+        this.mangaLinksFiltrados = sources;
         this.cargando = false;
         this.seleccionandoManga = true;
       });
@@ -132,17 +151,26 @@ export class MangaComponent implements OnInit {
   }
 
   regresarAfuentes() {
-    window.history.pushState( {} , '', '/manga?id='+this.manga.id );
+    this.obtenerCapitulosCacheados();
     this.seleccionandoManga = true;
-    if(this.fuentesFiltradas.length < 1) {
+    if(this.mangaLinksFiltrados.length < 1) {
       this.seleccionandoManga = false;
       this.cargando = true;
       this.obtenerFuentes();
     }
   }
 
+  verCapitulosCacheados() {
+    this.seleccionandoManga = false;
+    this.capitulos = this.capitulosCacheados;
+    this.filtrados = this.capitulos;
+    const cantPaginas = this.capitulos.length / this.capitulosPorPagina;
+    for (let i = 0; i < cantPaginas; i++) {
+      this.paginas.push(i+1);
+    }
+  }
+
   obtenerCapitulos(fuente_nombre:string, fuente_url: string) {
-    window.history.pushState( {} , '', '/manga?id='+this.manga.id+'&'+ new URLSearchParams({srcName: fuente_nombre, src: fuente_url}).toString() );
     this.seleccionandoManga = false;
     this.cargando = true;
     this.mangaAPI.obtenerCapitulos(fuente_nombre,fuente_url).subscribe( (capitulos) => {
@@ -174,7 +202,7 @@ export class MangaComponent implements OnInit {
     if(this.user) {
       this.userService.addToHistory(this.user.uid, this.manga).subscribe( () => {});
     }
-    this.mangaModal.mostrar(titulo, fuenteNombre, episodioURL);
+    this.mangaModal.mostrar(this.manga.id, titulo, fuenteNombre, episodioURL);
   }
 
   verPagina(pagina: number) {

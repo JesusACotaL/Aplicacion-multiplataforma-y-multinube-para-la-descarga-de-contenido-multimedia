@@ -18,7 +18,7 @@ def info():
 @app.post("/searchManga")
 def searchManga():
     """
-    Parameters: manga, safeSearch(boolean)
+    Parameters: manga
     Returns an array[] like:
     [
         {
@@ -34,14 +34,11 @@ def searchManga():
     """
     data = request.json
     searchQuery = data['manga']
-    safeSearch = data['safeSearch']
 
     # Get HTML
     siteUrl = "https://myanimelist.net/manga.php"
     columns = ['a', 'g', 'c', 'f'] # Type=a, Chapters=c, Score=g, ,Total members=f
     excluded_genres = []
-    if(safeSearch):
-        excluded_genres = [49,12] # Exclude Erotica and Hentai
     parameters = {
         'cat': 'manga',
         'q' : searchQuery,
@@ -197,9 +194,13 @@ def getMangaInfo():
             character['role']=c.next_sibling.next_sibling.find('small').string
     
             # Image
-            cImgSrc=c.parent.find_previous_sibling().a.img['data-src']
-            cImgSrc = re.sub(r'r/\d+x\d+/', '', cImgSrc)
-            character['image'] = cImgSrc
+            character['image'] = ''
+            try:
+                cImgSrc=c.parent.find_previous_sibling().a.img['data-src']
+                cImgSrc = re.sub(r'r/\d+x\d+/', '', cImgSrc)
+                character['image'] = cImgSrc
+            except:
+                pass
     
             charactersList.append(character)
             # URL
@@ -244,8 +245,10 @@ def getMangaInfo():
     manga['background'] = background
 
     # Image
-    img = html.find('img', itemprop='image')
-    manga['img'] = img['data-src']
+    manga['img'] = ''
+    img = html.find('img', attrs={'itemprop':'image','data-src':True})
+    if(img):
+        manga['img'] = img['data-src']
 
     return manga
 

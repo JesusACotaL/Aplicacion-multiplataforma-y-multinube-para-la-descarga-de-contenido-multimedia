@@ -195,15 +195,16 @@ def getTopMangas():
     while(currentPage <= pageAmount):
         # Request search
         url = 'https://www.mangaupdates.com/series.html?orderby=rating&perpage=50'
-        res = requests.get(url, params=[('page',(currentPage*50) - 50)])
+        res = requests.get(url, params=[('page',currentPage)])
         res.raise_for_status()
         # Parse results
         topmanga_soup = BeautifulSoup(res.content, 'html.parser')
         mangaList = topmanga_soup.select('#main_content > div:nth-child(2) > div:nth-child(2) > div.col-12.col-lg-6.p-3.text')
         for manga in mangaList:
-            url = mangaDiv.select('div:nth-child(2) > div > div:nth-child(1)')[0].find('a',attrs={'alt':'Series Info'})['href']
+            url = manga.select('div:nth-child(2) > div > div:nth-child(1)')[0].find('a',attrs={'alt':'Series Info'})['href']
             urls.append(url)
         time.sleep(1)
+        currentPage = currentPage + 1
     return urls
 
 if __name__ == '__main__':

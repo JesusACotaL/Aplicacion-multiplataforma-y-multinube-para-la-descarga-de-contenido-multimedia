@@ -13,6 +13,16 @@ export class SourceConfigModalComponent implements OnInit {
   mangaInfoFuentes: Array<any> = []
   fuenteDefault = ""
   fuenteInfoDefault = ""
+  nuevaFuente: any = {
+    enabled: true,
+    name: '',
+    url: ''
+  }
+  nuevaInfoFuente: any = {
+    enabled: true,
+    name: '',
+    url: ''
+  }
 
   constructor(private mangaApi: MangaApiService) { }
 
@@ -36,18 +46,34 @@ export class SourceConfigModalComponent implements OnInit {
     });
   }
 
-  cambiarEstadoFuente(fuenteNombre: string, estado: boolean) {
-    if(estado) {
-      this.mangaApi.habilitarFuente(fuenteNombre).subscribe((fuentes) => {
-        this.mangaFuentes = fuentes.mangaEndpoints
-        this.mangaInfoFuentes = fuentes.mangaInfoEndpoints
+  insertarFuente(fuente: any) {
+    this.mangaApi.insertarFuente(fuente).subscribe((fuentesActualizadas)=>{
+      this.mangaFuentes = fuentesActualizadas.mangaEndpoints;
+      this.mangaInfoFuentes = fuentesActualizadas.mangaInfoEndpoints;
+    });
+  }
+  
+  insertarFuenteInfo(fuente: any) {
+    this.mangaApi.insertarFuenteInfo(fuente).subscribe((fuentesActualizadas)=>{
+      this.mangaFuentes = fuentesActualizadas.mangaEndpoints;
+      this.mangaInfoFuentes = fuentesActualizadas.mangaInfoEndpoints;
+    });
+  }
+
+  actualizarFuente(fuente: any) {
+    this.mangaApi.actualizarFuente(fuente).subscribe((fuentesActualizadas)=>{
+      this.mangaFuentes = fuentesActualizadas.mangaEndpoints;
+      this.mangaInfoFuentes = fuentesActualizadas.mangaInfoEndpoints;
+    });
+  }
+  
+  borrarFuente(fuente: any) {
+    const confirmation = confirm("Delete "+fuente.name+"?");
+    if(confirmation)
+      this.mangaApi.borrarFuente(fuente).subscribe((fuentesActualizadas)=>{
+        this.mangaFuentes = fuentesActualizadas.mangaEndpoints;
+        this.mangaInfoFuentes = fuentesActualizadas.mangaInfoEndpoints;
       });
-    } else {
-      this.mangaApi.deshabilitarFuente(fuenteNombre).subscribe((fuentes) => {
-        this.mangaFuentes = fuentes.mangaEndpoints
-        this.mangaInfoFuentes = fuentes.mangaInfoEndpoints
-      });
-    }
   }
 
   fuenteDefecto(fuenteNombre: string) {

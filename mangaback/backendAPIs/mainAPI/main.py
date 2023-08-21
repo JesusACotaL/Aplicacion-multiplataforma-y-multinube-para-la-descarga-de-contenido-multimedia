@@ -237,28 +237,45 @@ def getMangaInfoEndpoints():
         endpoints.append(endpoint)
     return endpoints
 
-@app.post("/mangaAPI/enableEndpoint")
-def enableEndpoint():
+@app.post("/mangaAPI/insertEndpoint")
+def insertEndpoint():
     data = request.json
-    name = data['endpoint']
-    for endpoint in mangaEndpoints:
-        if(endpoint['name'] == name):
-            endpoint['enabled'] = True
-    for endpoint in mangaInfoEndpoints:
-        if(endpoint['name'] == name):
-            endpoint['enabled'] = True
+    newEndpoint = data['endpoint']
+    mangaEndpoints.append(newEndpoint)
     return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
 
-@app.post("/mangaAPI/disableEndpoint")
-def disableEndpoint():
+@app.post("/mangaAPI/insertInfoEndpoint")
+def insertInfoEndpoint():
     data = request.json
-    name = data['endpoint']
+    newEndpoint = data['endpoint']
+    mangaInfoEndpoints.append(newEndpoint)
+    return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
+
+@app.post("/mangaAPI/updateEndpoint")
+def updateEndpoint():
+    data = request.json
+    endpointData = data['endpoint']
     for endpoint in mangaEndpoints:
-        if(endpoint['name'] == name):
-            endpoint['enabled'] = False
+        if(endpoint['name'] == endpointData['name']):
+            endpoint = endpointData
+    return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
+
+@app.post("/mangaAPI/removeEndpoint")
+def removeEndpoint():
+    global mangaEndpoints
+    global mangaInfoEndpoints
+    data = request.json
+    endpointData = data['endpoint']
+    newEndpoints = []
+    newInfoEndpoints = []
+    for endpoint in mangaEndpoints:
+        if(endpoint['name'] != endpointData['name']):
+            newEndpoints.append(endpoint)
     for endpoint in mangaInfoEndpoints:
-        if(endpoint['name'] == name):
-            endpoint['enabled'] = False
+        if(endpoint['name'] != endpointData['name']):
+            newInfoEndpoints.append(endpoint)
+    mangaEndpoints = newEndpoints
+    mangaInfoEndpoints = newInfoEndpoints
     return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
 
 @app.post("/mangaAPI/findMangaInEndpoint")

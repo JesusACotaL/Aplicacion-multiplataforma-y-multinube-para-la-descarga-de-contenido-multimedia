@@ -1,5 +1,5 @@
 <div class="modal fade" id="srcConfigModal">
-    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered mx-auto">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered mx-auto" style="max-width: fit-content;">
         <div class="modal-content bg-dark">
             <div class="modal-header" style="background: var(--primary-color); color: var(--text-color); border: none;">
                 <h5 class="modal-title">Manga source configuration</h5>
@@ -8,35 +8,67 @@
                 <div style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
                         <div>
+                            <span style="font-size: 1.2rem">Manga information sources</span>
+                            <hr style="margin: 1rem 0 0 0;">
+                        </div>
+                        <div>
                             <label for="">Prefered manga information source:</label> 
-                            <select #defaultMangaInfoSrc class="form-select" (change)="fuenteInfoDefecto(defaultMangaInfoSrc.value)">
+                            <select #defaultMangaInfoSrc class="form-select" style="padding: 0.3rem;" (change)="fuenteInfoDefecto(defaultMangaInfoSrc.value)">
                                 <option [selected]="fuenteInfoDefault==fuente.name" *ngFor="let fuente of mangaInfoFuentes;let i=index" [value]="fuente.name">{{fuente.name}}</option>
                             </select>
                         </div>
-                        <span>Click any manga info source to toggle it!</span>
-                        <ul style="display: flex;align-items:center;gap:1rem;flex-wrap: wrap;">
-                            <li *ngFor="let fuente of mangaInfoFuentes" class="btn btn-primary btn-sm sourceBtn">
-                                <input type="checkbox" [checked]="fuente.enabled" [id]="'input'+fuente" #inputMangaInfo style="transform: scale(1.5);">
-                                <label [for]="'input'+fuente">{{fuente.name}}</label>
-                                <button type="button" (click)="cambiarEstadoFuente(fuente.name,!fuente.enabled)" ></button>
-                            </li> 
-                        </ul>
+                        <div style="display: flex; flex-direction: column; gap: 0.3rem;">
+                            <form (ngSubmit)="actualizarFuente(fuente)" *ngFor="let fuente of mangaInfoFuentes" class="fuenteDatos">
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="checkbox" [id]="'input'+fuente" #inputMangaInfo style="transform: scale(1.5);" [(ngModel)]="fuente.enabled" [checked]="fuente.enabled">
+                                    <input required type="text" [name]="'nombre'+fuente.name" [id]="'nombre'+fuente.name" [(ngModel)]="fuente.name">
+                                </div>
+                                <input required type="text" [name]="'url'+fuente.name" [id]="'url'+fuente.name" [(ngModel)]="fuente.url">
+                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                                <button type="button" class="btn btn-sm btn-danger" (click)="borrarFuente(fuente)">Remove</button>
+                            </form>
+                            <span>Insert new manga info source</span>
+                            <form #insertInfoSrcForm="ngForm" (ngSubmit)="insertInfoSrcForm.valid && insertarFuenteInfo(nuevaInfoFuente)" class="fuenteDatos">
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="checkbox" [id]="'input'+nuevaInfoFuente" #inputMangaInfo style="transform: scale(1.5);" [(ngModel)]="nuevaInfoFuente.enabled" [checked]="nuevaInfoFuente.enabled">
+                                    <input required type="text" [name]="'nombre'+nuevaInfoFuente.name" [id]="'nombre'+nuevaInfoFuente.name" [(ngModel)]="nuevaInfoFuente.name">
+                                </div>
+                                <input required type="text" [name]="'url'+nuevaInfoFuente.name" [id]="'url'+nuevaInfoFuente.name" [(ngModel)]="nuevaInfoFuente.url">
+                                <button type="submit" class="btn btn-sm btn-danger" style="width: 100%;">Add</button>
+                            </form>
+                        </div>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center;">
                         <div>
+                            <span style="font-size: 1.2rem">Manga scrapper sources</span>
+                            <hr style="margin: 1rem 0 0 0;">
+                        </div>
+                        <div>
                             <label for="">Prefered manga source:</label> 
-                            <select #defaultMangaSrc class="form-select" (change)="fuenteDefecto(defaultMangaSrc.value)">
+                            <select #defaultMangaSrc class="form-select" style="padding: 0.3rem;" (change)="fuenteDefecto(defaultMangaSrc.value)">
                                 <option [selected]="fuenteDefault==fuente.name" *ngFor="let fuente of mangaFuentes;let i=index" [value]="fuente.name">{{fuente.name}}</option>
                             </select>
                         </div>
-                        <span>Click any manga source to toggle it!</span>
-                        <ul style="display: flex;align-items:center;gap:1rem;flex-wrap: wrap;">
-                            <li *ngFor="let fuente of mangaFuentes" class="btn btn-primary btn-sm sourceBtn">
-                                <input type="checkbox" [checked]="fuente.enabled" [id]="'input'+fuente" #inputManga style="transform: scale(1.5);">
-                                <label [for]="'input'+fuente">{{fuente.name}}</label>
-                                <button type="button" (click)="cambiarEstadoFuente(fuente.name,!fuente.enabled)"></button>
-                            </li> 
-                        </ul>
+                        <div style="display: flex; flex-direction: column; gap: 0.3rem;">
+                            <form (ngSubmit)="actualizarFuente(fuente)" *ngFor="let fuente of mangaFuentes" class="fuenteDatos">
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="checkbox" [id]="'input'+fuente" #inputMangaInfo style="transform: scale(1.5);" [(ngModel)]="fuente.enabled" [checked]="fuente.enabled">
+                                    <input required type="text" [name]="'nombre'+fuente.name" [id]="'nombre'+fuente.name" [(ngModel)]="fuente.name">
+                                </div>
+                                <input required type="text" [name]="'url'+fuente.name" [id]="'url'+fuente.name" [(ngModel)]="fuente.url">
+                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                                <button type="button" class="btn btn-sm btn-danger" (click)="borrarFuente(fuente)">Remove</button>
+                            </form>
+                            <span>Insert new manga source</span>
+                            <form #insertSrcForm="ngForm" (ngSubmit)="insertSrcForm.valid && insertarFuente(nuevaFuente)" class="fuenteDatos">
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="checkbox" [id]="'input'+nuevaFuente" #inputMangaInfo style="transform: scale(1.5);" [(ngModel)]="nuevaFuente.enabled" [checked]="nuevaFuente.enabled">
+                                    <input required type="text" [name]="'nombre'+nuevaFuente.name" [id]="'nombre'+nuevaFuente.name" [(ngModel)]="nuevaFuente.name">
+                                </div>
+                                <input required type="text" [name]="'url'+nuevaFuente.name" [id]="'url'+nuevaFuente.name" [(ngModel)]="nuevaFuente.url">
+                                <button type="submit" class="btn btn-sm btn-danger" style="width: 100%;">Add</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -20,22 +20,27 @@ mangaInfoEndpoints = [
         "name": "myanimelist",
         "url": "http://127.0.0.1:5001",
         "enabled": True
+    },
+    {
+        "name": "mangaUpdates",
+        "url": "http://127.0.0.1:5002",
+        "enabled": True
     }
 ]
 mangaEndpoints = [
     {
         "name": "manganelo",
-        "url": "http://127.0.0.1:5002",
-        "enabled": True
-    },
-    {
-        "name": "mangakakalottv",
         "url": "http://127.0.0.1:5003",
         "enabled": True
     },
     {
-        "name": "mangakakalotcom",
+        "name": "mangakakalottv",
         "url": "http://127.0.0.1:5004",
+        "enabled": True
+    },
+    {
+        "name": "mangakakalotcom",
+        "url": "http://127.0.0.1:5005",
         "enabled": True
     }
 ]

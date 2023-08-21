@@ -253,11 +253,24 @@ def insertInfoEndpoint():
 
 @app.post("/mangaAPI/updateEndpoint")
 def updateEndpoint():
+    global mangaEndpoints
+    global mangaInfoEndpoints
     data = request.json
     endpointData = data['endpoint']
+    newEndpoints = []
+    newInfoEndpoints = []
     for endpoint in mangaEndpoints:
-        if(endpoint['name'] == endpointData['name']):
-            endpoint = endpointData
+        if(endpoint['name'] != endpointData['name']):
+            newEndpoints.append(endpoint)
+        else:
+            newEndpoints.append(endpointData)
+    for endpoint in mangaInfoEndpoints:
+        if(endpoint['name'] != endpointData['name']):
+            newInfoEndpoints.append(endpoint)
+        else:
+            newEndpoints.append(endpointData)
+    mangaEndpoints = newEndpoints
+    mangaInfoEndpoints = newInfoEndpoints
     return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
 
 @app.post("/mangaAPI/removeEndpoint")

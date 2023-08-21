@@ -83,4 +83,9 @@ export class SourceConfigModalComponent implements OnInit {
     localStorage.setItem('defaultInfoSrc',fuenteNombre);
   }
 
+  actualizarPagina() {
+    this.srcConfigModal.hide();
+    location.reload();
+  }
+
 }

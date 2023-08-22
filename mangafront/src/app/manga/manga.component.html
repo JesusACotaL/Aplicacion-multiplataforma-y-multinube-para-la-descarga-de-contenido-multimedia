@@ -99,7 +99,7 @@
                             </span>
                         </li>
                         <li>
-                            <span class="page-link" [ngClass]="{'disabled': paginaActual === 1}" (click)="!(paginaActual === 1) && verColeccionPaginas(coleccionPaginas-5)">
+                            <span class="page-link" [ngClass]="{'disabled': paginaActual <= 5}" (click)="!(paginaActual <= 5) && verColeccionPaginas(coleccionPaginas-5)">
                                 <i class="bi bi-arrow-left"></i>
                             </span>
                         </li>
@@ -107,12 +107,12 @@
                             <span class="page-link">{{i}}</span>
                         </li>
                         <li>
-                            <span class="page-link" [ngClass]="{'disabled': paginaActual > paginas.length-5}" (click)="!(paginaActual > paginas.length-5) && verColeccionPaginas(coleccionPaginas+5)">
+                            <span class="page-link" [ngClass]="{'disabled': paginaActual >= paginas.length-5}" (click)="!(paginaActual >= paginas.length-5) && verColeccionPaginas(coleccionPaginas+5)">
                                 <i class="bi bi-arrow-right"></i>
                             </span>
                         </li>
                         <li>
-                            <span class="page-link" (click)="verColeccionPaginas(paginas.length)">
+                            <span class="page-link" (click)="verColeccionPaginas(paginas[paginas.length-5]); verPagina(paginas[paginas.length-1])">
                                 Last
                             </span>
                         </li>

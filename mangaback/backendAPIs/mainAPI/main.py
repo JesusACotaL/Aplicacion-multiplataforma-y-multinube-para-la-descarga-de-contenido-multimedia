@@ -239,6 +239,7 @@ def getMangaInfoEndpoints():
 
 @app.post("/mangaAPI/insertEndpoint")
 def insertEndpoint():
+    global mangaEndpoints
     data = request.json
     newEndpoint = data['endpoint']
     mangaEndpoints.append(newEndpoint)
@@ -246,6 +247,7 @@ def insertEndpoint():
 
 @app.post("/mangaAPI/insertInfoEndpoint")
 def insertInfoEndpoint():
+    global mangaInfoEndpoints
     data = request.json
     newEndpoint = data['endpoint']
     mangaInfoEndpoints.append(newEndpoint)
@@ -268,7 +270,7 @@ def updateEndpoint():
         if(endpoint['name'] != endpointData['name']):
             newInfoEndpoints.append(endpoint)
         else:
-            newEndpoints.append(endpointData)
+            newInfoEndpoints.append(endpointData)
     mangaEndpoints = newEndpoints
     mangaInfoEndpoints = newInfoEndpoints
     return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}

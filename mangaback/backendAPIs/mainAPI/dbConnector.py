@@ -57,8 +57,6 @@ def deleteDatabase():
     # Delete database
     cursor.execute("DROP TABLE IF EXISTS manga")
     cursor.execute("DROP TABLE IF EXISTS chapter")
-    # Recreate tables
-    recreateDatabase()
     # Clear storage folder
     for filename in os.listdir(folder):
         if(filename != '.gitignore'):
@@ -70,6 +68,8 @@ def deleteDatabase():
                     shutil.rmtree(file_path)
             except Exception as e:
                 print('Failed to delete %s. Reason: %s' % (file_path, e))
+    # Recreate tables & folders
+    recreateDatabase()
 
 def formatAsManga(data):
     """

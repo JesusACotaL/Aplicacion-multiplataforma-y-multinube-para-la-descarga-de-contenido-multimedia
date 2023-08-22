@@ -1,5 +1,5 @@
 <div class="siteFooter">
-    <div style="display: flex; align-items: center; gap: 2rem; padding: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem;">
         <div *ngIf="!user" class="d-flex align-items-center gap-2">
             <button class="btn btnPrimary" type="button" (click)="login();">Log in <i class="bi bi-door-open"></i></button>  
         </div>
@@ -10,9 +10,11 @@
             </div>
             <button class="btn btnPrimary" type="button" (click)="logOut();">Log out</button>   
         </div>
+        <button class="btn btnPrimary" type="button" (click)="this.siteConfigModal.mostrar()"><i class="bi bi-gear-fill" style="font-size: 1rem;"></i></button>
         <div class="ms-auto">
             <a (click)="licenseModal.mostrarLicencia()">Terms of usage ©2023</a>
         </div>
     </div>
     <app-user-license #licenseModal></app-user-license>
+    <app-site-config-modal #siteConfigModal></app-site-config-modal>
 </div>

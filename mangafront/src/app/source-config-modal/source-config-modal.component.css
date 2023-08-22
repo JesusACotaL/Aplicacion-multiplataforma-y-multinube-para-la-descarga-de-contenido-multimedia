@@ -1,15 +1,17 @@
-.sourceBtn {
+.fuenteDatos {
     display: flex;
-    align-items:center;
-    justify-content:center;
-    gap:5px;
-    position: relative;
+    gap: 0.5rem;
 }
 
-.sourceBtn button{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: none;
+@media (min-width: 600px) {
+    .fuenteDatos {
+        flex-direction: row;
+    }
+}
+@media (max-width: 600px) {
+    .fuenteDatos {
+        flex-direction: column;
+        border-bottom: 1px solid white;
+        margin-bottom: 1rem;
+    }
 }

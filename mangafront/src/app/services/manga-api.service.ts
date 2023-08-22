@@ -187,19 +187,35 @@ export class MangaApiService {
     return this.http.post<any>(url,body);
   }
 
-  habilitarFuente(fuenteNombre: string): Observable<any> { 
+  insertarFuente(fuente: any): Observable<any> { 
     const body = {
-      endpoint: fuenteNombre
+      endpoint: fuente
     }
-    const url = `${this.backend}/enableEndpoint`;
+    const url = `${this.backend}/insertEndpoint`;
+    return this.http.post<any>(url,body);
+  }
+
+  insertarFuenteInfo(fuente: any): Observable<any> { 
+    const body = {
+      endpoint: fuente
+    }
+    const url = `${this.backend}/insertInfoEndpoint`;
+    return this.http.post<any>(url,body);
+  }
+
+  actualizarFuente(fuente: any): Observable<any> { 
+    const body = {
+      endpoint: fuente
+    }
+    const url = `${this.backend}/updateEndpoint`;
     return this.http.post<any>(url,body);
   }
   
-  deshabilitarFuente(fuenteNombre: string): Observable<any> { 
+  borrarFuente(fuente: any): Observable<any> { 
     const body = {
-      endpoint: fuenteNombre
+      endpoint: fuente
     }
-    const url = `${this.backend}/disableEndpoint`;
+    const url = `${this.backend}/removeEndpoint`;
     return this.http.post<any>(url,body);
   }
 }

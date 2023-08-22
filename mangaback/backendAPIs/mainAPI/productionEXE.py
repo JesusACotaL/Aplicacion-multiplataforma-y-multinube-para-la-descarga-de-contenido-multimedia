@@ -18,5 +18,5 @@ def find_free_port():
 port = find_free_port()
 
 print('Serving on 0.0.0.0:'+str(port))
-webbrowser.open('http://0.0.0.0:'+str(port),new=0, autoraise=True)
+webbrowser.open('http://127.0.0.1:'+str(port),new=0, autoraise=True)
 serve(app, host='0.0.0.0', port=port)

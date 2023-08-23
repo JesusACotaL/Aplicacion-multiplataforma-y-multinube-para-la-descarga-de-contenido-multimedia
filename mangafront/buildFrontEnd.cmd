@@ -1,0 +1,1 @@
+npx ng build --output-path ../mangaback/backendAPIs/mainAPI/mangafront

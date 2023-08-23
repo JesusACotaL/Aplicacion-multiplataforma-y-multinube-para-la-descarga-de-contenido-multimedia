@@ -11,21 +11,34 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-siteURL = "https://ww5.mangakakalot.tv"
+siteURL = "https://mangakakalot.com/"
 
-# Initialize browser so we dont delay requests
+# Initialize browser configurations
 from selenium import webdriver # Javascript support
 from selenium.webdriver.chrome.options import Options # Browser headless option
 browserConfig = Options()
 browserConfig.add_argument('--headless')
 browserConfig.add_argument('--no-sandbox')
 browserConfig.add_argument("--log-level=3") # Hide debug info that we dont care about
+browserConfig.add_experimental_option('excludeSwitches', ['enable-logging']) # Hide chromedriver debug info
 browserConfig.add_argument('--disable-dev-shm-usage')
-browser = webdriver.Chrome(options=browserConfig)
+
+def renderWithJavascript(url, classToBeFound=None):
+    browser = webdriver.Chrome(options=browserConfig)
+    browser.get(url)
+    # Wait for element to be rendered
+    # More info https://www.selenium.dev/documentation/webdriver/waits/
+    try:
+        WebDriverWait(browser, timeout=2).until(lambda d: d.find_element(By.CLASS_NAME,classToBeFound))
+    except:
+        pass
+    html = browser.page_source
+    browser.close()
+    return html
 
 @app.route("/")
 def info():
-    return "<p>mangakakalot.tv Scrapper v1</p>"
+    return "<p>mangakakalot.com Scrapper v1</p>"
 
 @app.post("/searchManga")
 def searchManga():
@@ -43,11 +56,12 @@ def searchManga():
     data = request.json
     searchQuery = data['manga']
     # Purify search query
+    searchQuery = re.sub(r'\ ','_',searchQuery) # replace whitespaces with underscores
+    searchQuery = searchQuery.lower() # uncapitalize
     searchQuery = urllib.parse.quote(searchQuery)
-    url = siteURL+"/search/"+searchQuery
+    url = siteURL+"/search/story/"+searchQuery
     # Render w/ javascript
-    browser.get(url)
-    html = browser.page_source
+    html = renderWithJavascript(url,'panel_story_list')
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
     resultHTML = manga_soup.find('div',attrs={'class':'panel_story_list'}).find_all('div',attrs={'class':'story_item'})
@@ -55,7 +69,7 @@ def searchManga():
     for manga in resultHTML:
         newmanga = {}
         newmanga['name'] = manga.find('h3',attrs={'class':'story_name'}).find('a').string
-        newmanga['chapters_url'] = siteURL + manga.find('h3',attrs={'class':'story_name'}).find('a')['href']
+        newmanga['chapters_url'] = manga.find('h3',attrs={'class':'story_name'}).find('a')['href']
         newmanga['image_url'] = manga.find('img')['src']
         mangas.append(newmanga)
     return mangas
@@ -75,11 +89,10 @@ def getMangaChapters():
     data = request.json
     mangaURL = data['url']
     # Render w/ javascript
-    browser.get(mangaURL)
-    html = browser.page_source
+    html = renderWithJavascript(mangaURL, 'panel-story-chapter-list')
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
-    resultHTML = manga_soup.find('div',attrs={'class':'chapter-list'}).find_all('div',attrs={'class':'row'})
+    resultHTML = manga_soup.find('div',attrs={'class':'panel-story-chapter-list'}).find_all('li',attrs={'class':'a-h'})
     chapters = []
     for chapter in resultHTML:
         newchapter = {}
@@ -88,7 +101,7 @@ def getMangaChapters():
         name = ''.join(e for e in name if e.isalnum() or e == '/' or e == '_' or e == ':' or e == ' ')
         name = name.lstrip(' ')
         newchapter['name'] = name
-        newchapter['url'] = siteURL + chapter.find('a')['href']
+        newchapter['url'] = chapter.find('a')['href']
         chapters.append(newchapter)
     chapters.reverse() # Reverse because site goes lastest-first
     return chapters
@@ -105,14 +118,13 @@ def getChapterURLS():
     data = request.json
     chapterURL = data['url']
     # Render w/ javascript
-    browser.get(chapterURL)
-    html = browser.page_source
+    html = renderWithJavascript(chapterURL,'container-chapter-reader')
     # Parse HTML into dictionary
     manga_soup = BeautifulSoup(html, 'html.parser')
-    resultHTML = manga_soup.find('div',attrs={'id':'vungdoc'}).find_all('img',attrs={'class':'img-loading', 'data-src':True})
+    resultHTML = manga_soup.find('div', attrs={'class':'container-chapter-reader'}).findChildren('img',attrs={'style':'margin-top: 5px;','src':True,'title':True})
     links = []
     for link in resultHTML:
-        newlink = link['data-src']
+        newlink = link['src']
         links.append(newlink)
     return links
 

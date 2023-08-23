@@ -1,0 +1,31 @@
+{
+    "mangaInfoEndpoints": [
+        {
+            "name": "myAnimeList",
+            "url": "http://127.0.0.1:5001",
+            "enabled": true
+        },
+        {
+            "name": "mangaUpdates",
+            "url": "http://127.0.0.1:5002",
+            "enabled": true
+        }
+    ],
+    "mangaEndpoints": [
+        {
+            "name": "manganelo",
+            "url": "http://127.0.0.1:5003",
+            "enabled": true
+        },
+        {
+            "name": "mangakakalottv",
+            "url": "http://127.0.0.1:5004",
+            "enabled": true
+        },
+        {
+            "name": "mangakakalotcom",
+            "url": "http://127.0.0.1:5005",
+            "enabled": true
+        }
+    ]
+}

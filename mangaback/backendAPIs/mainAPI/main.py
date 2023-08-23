@@ -13,39 +13,15 @@ import uuid
 from threading import Thread
 from PIL import Image
 
-mangaInfoEndpoints = []
-mangaEndpoints = []
-mangaInfoEndpoints = [
-    {
-        "name": "myanimelist",
-        "url": "http://127.0.0.1:5001",
-        "enabled": True
-    },
-    {
-        "name": "mangaUpdates",
-        "url": "http://127.0.0.1:5002",
-        "enabled": True
-    }
-]
-mangaEndpoints = [
-    {
-        "name": "manganelo",
-        "url": "http://127.0.0.1:5003",
-        "enabled": True
-    },
-    {
-        "name": "mangakakalottv",
-        "url": "http://127.0.0.1:5004",
-        "enabled": True
-    },
-    {
-        "name": "mangakakalotcom",
-        "url": "http://127.0.0.1:5005",
-        "enabled": True
-    }
-]
-
 print("=== STARTING MAIN API ENDPOINT ===")
+print("Loading sources from file... ",end="")
+mangaEndpoints = []
+mangaInfoEndpoints = []
+with open('endpoints.json','r') as f:
+    endpoints = json.load(f)
+    mangaEndpoints = endpoints['mangaEndpoints']
+    mangaInfoEndpoints = endpoints['mangaInfoEndpoints']
+print("success")
 
 print("Connecting to local manga database... ",end="")
 import dbConnector
@@ -222,6 +198,15 @@ def saveMangaInfo():
                 id = dbConnector.insertManga(manga)
                 manga['id'] = id
     return manga
+
+@app.post("/mangaAPI/setMangaEndpoints")
+def setMangaEndpoints():
+    global mangaEndpoints, mangaInfoEndpoints
+    data = request.json
+    if(type(data) is list):
+        print('Setting new mangaendpoints...')
+        mangaEndpoints, mangaInfoEndpoints = data[0], data[1]
+    return {'mangaEndpoints':mangaEndpoints,'mangaInfoEndpoints':mangaInfoEndpoints}
 
 @app.get("/mangaAPI/getMangaEndpoints")
 def getMangaEndpoints():

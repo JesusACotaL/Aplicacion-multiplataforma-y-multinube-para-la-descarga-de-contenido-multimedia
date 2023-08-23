@@ -33,7 +33,7 @@ def startMainApi(apis=None) -> str:
             f.write(data)
     ip, port = find_current_IP(), find_free_port()
     port = 5050 # Always same port
-    mainAPI = subprocess.Popen(['executable.exe','-ip',ip,'-p',str(port)]) #,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT
+    mainAPI = subprocess.Popen(['executable.exe','-ip',ip,'-p',str(port)],stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT) #
     url = 'http://'+ip+':'+str(port)
     print('Serving on '+url)
     os.chdir(wd)

@@ -68,13 +68,6 @@ def stopAPIs():
     for source in mangaInfoAPIs:
         source['process'].terminate()
 
-def stopAPIs():
-    global mangaAPIs, mangaInfoAPIs
-    for source in mangaAPIs:
-        source['process'].terminate()
-    for source in mangaInfoAPIs:
-        source['process'].terminate()
-
 if __name__ == '__main__':
     startAPIs()
     input('Press ENTER to terminate everything...')

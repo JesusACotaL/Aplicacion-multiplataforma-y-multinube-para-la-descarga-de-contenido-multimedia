@@ -83,6 +83,8 @@ urlLink.bind("<Button-1>", lambda e: webbrowser.open(url,new=0, autoraise=True))
 def on_closing():
     global root, started
     if(started):
+        stopAPIs()
+        stopMainApi()
         stopApp()
     root.destroy()
 

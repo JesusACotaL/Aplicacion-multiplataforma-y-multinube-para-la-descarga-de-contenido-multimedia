@@ -23,8 +23,14 @@ browserConfig.add_argument("--log-level=3") # Hide debug info that we dont care 
 browserConfig.add_experimental_option('excludeSwitches', ['enable-logging']) # Hide chromedriver debug info
 browserConfig.add_argument('--disable-dev-shm-usage')
 
+# Stuff to make chromdriver cli window dissapear in selenium4
+from selenium.webdriver.chrome.service import Service
+from subprocess import CREATE_NO_WINDOW
+browserService = Service()
+browserService.creation_flags = CREATE_NO_WINDOW
+
 def renderWithJavascript(url, classToBeFound=None):
-    browser = webdriver.Chrome(options=browserConfig)
+    browser = webdriver.Chrome(options=browserConfig,service=browserService)
     browser.get(url)
     # Wait for element to be rendered
     # More info https://www.selenium.dev/documentation/webdriver/waits/

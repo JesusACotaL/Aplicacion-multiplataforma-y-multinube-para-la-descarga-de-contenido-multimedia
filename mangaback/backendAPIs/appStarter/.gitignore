@@ -1,0 +1,7 @@
+mainAPI
+mangaAPIs
+mangaInfoAPIs
+build
+dist
+*_BUILD
+appStarter.spec

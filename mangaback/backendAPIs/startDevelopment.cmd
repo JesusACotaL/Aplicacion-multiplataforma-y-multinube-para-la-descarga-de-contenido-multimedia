@@ -1,28 +1,23 @@
-call .venv/Scripts/activate
-cd mainAPI
-start python main.py
-cd ..
+SET /A counter=5000
+CALL .venv\Scripts\activate
+CD mainAPI
+START flask --app main run --debug --port %counter% --host=0.0.0.0
+SET /A counter+=1
 
-cd mangaInfoAPIs
-cd myAnimeList
-start flask --app myAnimeList run --debug --port 5001 --host=0.0.0.0
-cd ..
-cd mangaUpdates
-start flask --app mangaUpdates run --debug --port 5002 --host=0.0.0.0
-cd ..
-
-cd ..
-
-cd mangaAPIs
-cd manganelo
-start flask --app manganelo run --debug --port 5003 --host=0.0.0.0
-cd ..
-cd mangakakalottv
-start flask --app mangakakalottv run --debug --port 5004 --host=0.0.0.0
-cd ..
-cd mangakakalotcom
-start flask --app mangakakalotcom run --debug --port 5005 --host=0.0.0.0
-cd ..
-cd ..
-
-exit
+CD ../sourceAPIs
+rem https://stackoverflow.com/questions/12118810/arithmetic-inside-a-for-loop-batch-file
+setlocal enableDelayedExpansion
+FOR /F %%a IN ('dir /b /s /a:d "mangaInfoAPIs"') DO IF EXIST "%%a\main.py" (
+CD %%a 
+START flask --app main run --debug --port %%counter%% --host=0.0.0.0 
+SET /A counter+=1
+CD ..
+)
+CD ..
+FOR /F %%a IN ('dir /b /s /a:d "mangaAPIs"') DO IF EXIST "%%a\main.py" (
+CD %%a 
+START flask --app main run --debug --port %%counter%% --host=0.0.0.0
+SET /A counter+=1
+CD ..
+)
+pause

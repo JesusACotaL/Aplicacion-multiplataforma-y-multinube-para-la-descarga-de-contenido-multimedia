@@ -165,6 +165,7 @@ export class MangaComponent implements OnInit {
     this.capitulos = this.capitulosCacheados;
     this.filtrados = this.capitulos;
     const cantPaginas = this.capitulos.length / this.capitulosPorPagina;
+    this.paginas = []
     for (let i = 0; i < cantPaginas; i++) {
       this.paginas.push(i+1);
     }

@@ -25,11 +25,11 @@ browserConfig.add_argument('--disable-dev-shm-usage')
 
 # Stuff to make chromdriver cli window dissapear in selenium4
 from selenium.webdriver.chrome.service import Service
-from subprocess import CREATE_NO_WINDOW
+# Only works in windows from subprocess import CREATE_NO_WINDOW
 
 def renderWithJavascript(url, classToBeFound=None):
     browserService = Service()
-    browserService.creation_flags = CREATE_NO_WINDOW
+    # Only works in windows browserService.creation_flags = CREATE_NO_WINDOW
     browser = webdriver.Chrome(options=browserConfig,service=browserService)
     browser.get(url)
     # Wait for element to be rendered

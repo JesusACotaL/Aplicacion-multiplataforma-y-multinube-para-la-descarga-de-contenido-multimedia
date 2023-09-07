@@ -6,7 +6,7 @@
 #### *Saul Ezequiel García Ramos 215465492
 #### Carrera: INCO
 #### CENTRO UNIVERSITARIO DE CIENCIAS EXACTAS EN INGENIERÍAS CUCEI
-### Proyecto Modular con folio: M1-23A
+### Proyecto Modular con folio: 4PM2023B
 
 ### Objetivo:
 La preservación de las historietas japonesas y americanas en la era digital es muy compleja y se debe a que no se encuentra este tipo de materiales con facilidad en la red. Por esta razón, se ha propuesto la creación de una biblioteca en línea que permita a los usuarios acceder y descargar títulos de manera gratuita y sin fines de lucro.

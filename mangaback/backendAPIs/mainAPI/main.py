@@ -80,7 +80,7 @@ def getTopMangasInSources():
                     results.append(data)
                 topmangas = topmangas + results
             time.sleep(1)
-    return topmangas[:limit]
+    return topmangas[::-1]
 
 @app.post("/mangaAPI/insertMangaDB")
 def insertMangaDB():

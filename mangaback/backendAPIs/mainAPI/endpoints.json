@@ -1,19 +1,19 @@
 {
     "mangaInfoEndpoints": [
         {
-            "name": "myAnimeList",
+            "name": "mangaUpdates",
             "url": "http://127.0.0.1:5001",
             "enabled": true
         },
         {
-            "name": "mangaUpdates",
+            "name": "myAnimeList",
             "url": "http://127.0.0.1:5002",
             "enabled": true
         }
     ],
     "mangaEndpoints": [
         {
-            "name": "manganelo",
+            "name": "mangakakalotcom",
             "url": "http://127.0.0.1:5003",
             "enabled": true
         },
@@ -23,7 +23,7 @@
             "enabled": true
         },
         {
-            "name": "mangakakalotcom",
+            "name": "manganelo",
             "url": "http://127.0.0.1:5005",
             "enabled": true
         }

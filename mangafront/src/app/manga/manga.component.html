@@ -51,6 +51,13 @@
             </div>
         </div>
         <div class="capitulos">
+            <div *ngIf="capitulosCacheados.length > 0" class="fuenteManga fuenteLocal" (click)="verCapitulosCacheados()" style="height: 72px;margin-bottom: 1rem;">
+                <img [src]="backend + manga.img" alt="" width="50">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span>Viewed Chapters cache</span>
+                    <span>(Chapters already in app database)</span>
+                </div>
+            </div>
             <div *ngIf="cargando">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; position: relative;">
                     <div style="position: absolute; right: 50%+10rem;">Getting data <br> please wait ...</div>
@@ -66,13 +73,6 @@
                         </select>
                     </div>
                     <div class="fuentes" *ngIf="mangaLinksFiltrados.length > 0">
-                        <div *ngIf="capitulosCacheados.length > 0" class="fuenteManga fuenteLocal" (click)="verCapitulosCacheados()" style="height: 72px;">
-                            <img [src]="backend + manga.img" alt="" width="50">
-                            <div style="display: flex; flex-direction: column; justify-content: center;">
-                                <span>Viewed Chapters cache</span>
-                                <span>(Chapters already in app database)</span>
-                            </div>
-                        </div>
                         <div class="fuenteManga" *ngFor="let fuente of mangaLinksFiltrados" (click)="obtenerCapitulos(fuente.srcName, fuente.chapters_url)">
                             <img [src]="fuente.image_url" alt="" width="50">
                             <div style="display: flex; flex-direction: column; justify-content: center;">
